@@ -1,0 +1,8 @@
+obj
+bin
+*.startup*
+*.vs
+*.filters
+*.user
+
+Debug
