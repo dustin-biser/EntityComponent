@@ -1,5 +1,11 @@
-#ifndef TEST_C_APPLICATION_H
-#define TEST_C_APPLICATION_H
+//
+// C_Application.h
+//
+#pragma once
+
+// Forward declare
+class C_ApplicationImpl;
+
 
 class C_Application
 {
@@ -20,14 +26,6 @@ public:
 	static const T_PressedKey s_KeySpace = 0x10;
 
 private:
-
-	const int	m_ScreenWidth;
-	const int	m_ScreenHeight;
-	
-	// Members for sample tick
-	int			m_CannonX;
-	int			m_CannonY;
+	C_ApplicationImpl * impl;
 
 };
-
-#endif // #ifndef TEST_C_APPLICATION_H

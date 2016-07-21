@@ -44,6 +44,8 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Assets;$(IncludePath)</IncludePath>
+    <SourcePath>$(SolutionDir)Assets;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -86,15 +88,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Assets\AssetDefinitions.cpp" />
+    <ClCompile Include="AssetLoader.cpp" />
+    <ClCompile Include="CannonGraphicsComponent.cpp" />
     <ClCompile Include="C_Application.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="time.cpp" />
+    <ClCompile Include="vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetLoader.hpp" />
+    <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="CannonGraphicsComponent.hpp" />
     <ClInclude Include="C_Application.h" />
+    <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="GraphicsComponent.hpp" />
+    <ClInclude Include="Mesh2d.hpp" />
     <ClInclude Include="time.h" />
+    <ClInclude Include="vec2.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
