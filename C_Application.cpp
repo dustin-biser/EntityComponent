@@ -12,6 +12,9 @@ using std::unordered_map;
 #include "Assets\AssetDefinitions.hpp"
 #include "AssetLoader.hpp"
 #include "Mesh2d.hpp"
+#include "GameObject.hpp"
+#include "GraphicsComponent.hpp"
+#include "ObjectPool.hpp"
 
 
 static const float k_PI = 3.1415926536f;
@@ -22,15 +25,13 @@ class C_ApplicationImpl {
 private:
 	friend class C_Application;
 
-	const int	m_ScreenWidth;
-	const int	m_ScreenHeight;
+	const int m_ScreenWidth;
+	const int m_ScreenHeight;
 
-	// Members for sample tick
-	int			m_CannonX;
-	int			m_CannonY;
+	// TODO - Move these into Cannon GameObject
+	int	m_CannonX;
+	int	m_CannonY;
 
-
-	typedef std::string MeshId;
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
 
@@ -40,6 +41,7 @@ private:
 	);
 
 	void buildMeshAssetDirectory();
+	void initGraphicsObjects();
 
 	void Tick (
 		C_Application::T_PressedKey pressedKeys
@@ -59,7 +61,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 	  m_CannonY(m_ScreenHeight / 2)
 {
 	 buildMeshAssetDirectory();
-	// initGraphicsObjects();
+	 initGraphicsObjects();
 }
 
 //---------------------------------------------------------------------------------------
@@ -76,6 +78,33 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 		AssetLoader::decodeMesh(asset, mesh);
 		meshAssetDirectory[mesh.meshId] = std::move(mesh);
 	}
+}
+
+
+//---------------------------------------------------------------------------------------
+void C_ApplicationImpl::initGraphicsObjects()
+{
+	GraphicsComponent cannonGraphicsComponent{
+		Color{ 0.0f, 0.1f, 1.0f },
+		&meshAssetDirectory.at("Cannon")
+	};
+
+	GameObject cannon (&cannonGraphicsComponent);
+
+	////////////////////////////////////////////////////////////
+	// TODO - Remove after testing
+	const int NUM_OBJECTS(4);
+	ObjectPool<GraphicsComponent, NUM_OBJECTS> graphicsObjPool;
+	GraphicsComponent * graphics;
+	for(int i(0); i < NUM_OBJECTS; ++i) {
+		graphicsObjPool.create(EntityID(i));
+		graphics = graphicsObjPool.getObject(EntityID(i));
+		graphics->color.red = (i+1) * 0.1f;
+	}
+	for(int i(0); i < NUM_OBJECTS; ++i) {
+		graphicsObjPool.destroy(EntityID(i));
+	}
+	////////////////////////////////////////////////////////////
 }
 
 //---------------------------------------------------------------------------------------
@@ -118,9 +147,9 @@ void C_ApplicationImpl::Tick (
 	}
 
 	// Draw cannon
-	DrawLine(m_CannonX,    m_CannonY,    m_CannonX-10, m_CannonY+30, GetRGB(0,  0, 255));
-	DrawLine(m_CannonX,    m_CannonY,    m_CannonX+10, m_CannonY+30, GetRGB( 0, 0, 255));
-	DrawLine(m_CannonX-10, m_CannonY+30, m_CannonX+10, m_CannonY+30, GetRGB( 0, 0, 255));
+	DrawLine(m_CannonX,    m_CannonY,    m_CannonX-10, m_CannonY+30, GetRGB(40,  40, 255));
+	DrawLine(m_CannonX,    m_CannonY,    m_CannonX+10, m_CannonY+30, GetRGB(40, 40, 255));
+	DrawLine(m_CannonX-10, m_CannonY+30, m_CannonX+10, m_CannonY+30, GetRGB(40, 40, 255));
 }
 
 //---------------------------------------------------------------------------------------
