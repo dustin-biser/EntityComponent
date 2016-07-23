@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "EntityID.hpp"
+typedef unsigned long EntityID;
 
 // Forward declare.
 template <class T, size_t NUM_OBJECTS>

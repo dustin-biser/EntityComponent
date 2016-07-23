@@ -15,5 +15,4 @@ struct Mesh2d {
 	MeshId meshId;
 	std::vector<Vertex> vertexList;
 	std::vector<Index> edgeIndexList;
-	std::vector<Mesh2d> subMeshes;
 };

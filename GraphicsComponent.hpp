@@ -3,11 +3,11 @@
 //
 #pragma once
 
-#include "EntityID.hpp"
 #include <vector>
 
 // Forward declare
 struct Mesh2d;
+class GameObject;
 
 struct Color {
 	float red;
@@ -25,7 +25,8 @@ public:
 		const Mesh2d * mesh
 	);
 
-	EntityID id;
+	void draw(const GameObject & gameobject) const;
+
 	Color color;
 	const Mesh2d * mesh;
 };

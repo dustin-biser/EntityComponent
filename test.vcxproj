@@ -92,6 +92,7 @@
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="C_Application.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="main.cpp" />
@@ -102,7 +103,7 @@
     <ClInclude Include="AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
     <ClInclude Include="C_Application.h" />
-    <ClInclude Include="EntityID.hpp" />
+    <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="GraphicsComponent.hpp" />
     <ClInclude Include="Mesh2d.hpp" />

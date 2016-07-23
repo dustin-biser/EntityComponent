@@ -13,7 +13,7 @@ using std::unordered_map;
 #include "AssetLoader.hpp"
 #include "Mesh2d.hpp"
 #include "GraphicsComponent.hpp"
-#include "ObjectPool.hpp"
+#include "GameObject.hpp"
 
 
 static const float k_PI = 3.1415926536f;
@@ -33,6 +33,9 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
+	GameObject * m_cannon;
+	GameObject * m_clockPrototype;
+	GameObject * m_projectile;
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -40,7 +43,7 @@ private:
 	);
 
 	void buildMeshAssetDirectory();
-	void initGraphicsObjects();
+	void initGameObjects();
 
 	void Tick (
 		C_Application::T_PressedKey pressedKeys
@@ -60,7 +63,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 	  m_CannonY(m_ScreenHeight / 2)
 {
 	 buildMeshAssetDirectory();
-	 initGraphicsObjects();
+	 initGameObjects();
 }
 
 //---------------------------------------------------------------------------------------
@@ -68,8 +71,11 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 {
 	Asset::Definition assetDefinitions[] = {
 		Asset::Cannon,
-		Asset::Clock,
-		Asset::Projectile
+		Asset::Projectile,
+		Asset::ClockBase,
+		Asset::HourHand,
+		Asset::MinuteHand,
+		Asset::SecondHand
 	};
 
 	for (auto asset : assetDefinitions) {
@@ -81,27 +87,47 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 
 
 //---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initGraphicsObjects()
+void C_ApplicationImpl::initGameObjects()
 {
-	GraphicsComponent cannonGraphicsComponent{
-		Color{ 0.0f, 0.1f, 1.0f },
-		&meshAssetDirectory.at("Cannon")
-	};
+	// Construct Clock Prototype
+	{
+		GraphicsComponent * hourHandGraphicsComponent = new GraphicsComponent(
+			Color{ 1.0f, 1.0f, 1.0f },
+			&meshAssetDirectory.at("HourHand")
+		);
 
-	////////////////////////////////////////////////////////////
-	// TODO - Remove after testing
-	const int NUM_OBJECTS(4);
-	ObjectPool<GraphicsComponent, NUM_OBJECTS> graphicsObjPool;
-	GraphicsComponent * graphics;
-	for(int i(0); i < NUM_OBJECTS; ++i) {
-		graphicsObjPool.create(EntityID(i));
-		graphics = graphicsObjPool.getObject(EntityID(i));
-		graphics->color.red = (i+1) * 0.1f;
+		GraphicsComponent * minuteHandGraphicsComponent = new GraphicsComponent(
+			Color{ 0.5f, 1.0f, 0.5f },
+			&meshAssetDirectory.at("MinuteHand")
+		);
+
+		GraphicsComponent * secondHandGraphicsComponent = new GraphicsComponent(
+			Color{ 1.0f, 0.7f, 0.7f },
+			&meshAssetDirectory.at("SecondHand")
+		);
+
+		GraphicsComponent * clockGraphicsComponent = new GraphicsComponent(
+			Color{ 0.8f, 0.2f, 0.2f },
+			&meshAssetDirectory.at("ClockBase")
+		);
+
+		GameObject * hourHand = new GameObject();
+		hourHand->graphics = hourHandGraphicsComponent;
+
+		GameObject * minuteHand = new GameObject();
+		minuteHand->graphics = minuteHandGraphicsComponent;
+
+		GameObject * secondHand = new GameObject();
+		secondHand->graphics = secondHandGraphicsComponent;
+
+
+		m_clockPrototype = new GameObject();
+		m_clockPrototype->graphics = clockGraphicsComponent;
+
+		m_clockPrototype->childObjects.push_back(hourHand);
+		m_clockPrototype->childObjects.push_back(minuteHand);
+		m_clockPrototype->childObjects.push_back(secondHand);
 	}
-	for(int i(0); i < NUM_OBJECTS; ++i) {
-		graphicsObjPool.destroy(EntityID(i));
-	}
-	////////////////////////////////////////////////////////////
 }
 
 //---------------------------------------------------------------------------------------
