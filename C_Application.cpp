@@ -12,7 +12,6 @@ using std::unordered_map;
 #include "Assets\AssetDefinitions.hpp"
 #include "AssetLoader.hpp"
 #include "Mesh2d.hpp"
-#include "GameObject.hpp"
 #include "GraphicsComponent.hpp"
 #include "ObjectPool.hpp"
 
@@ -88,8 +87,6 @@ void C_ApplicationImpl::initGraphicsObjects()
 		Color{ 0.0f, 0.1f, 1.0f },
 		&meshAssetDirectory.at("Cannon")
 	};
-
-	GameObject cannon (&cannonGraphicsComponent);
 
 	////////////////////////////////////////////////////////////
 	// TODO - Remove after testing
