@@ -4,7 +4,7 @@
 #pragma once
 
 #include <vector>
-#include "vec2.hpp"
+#include "TransformComponent.hpp"
 
 // Forward declare
 class InputComponent;
@@ -17,11 +17,7 @@ class GameObject {
 public:
 	GameObject();
 
-	struct TransformComponent {
-		vec2 position;
-		vec2 scale;
-		float rotationAngle;
-	} transform;
+	TransformComponent transform;
 
 // Optional Components
 	InputComponent * input;

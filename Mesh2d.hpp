@@ -8,7 +8,7 @@
 #include "vec2.hpp"
 
 typedef vec2 Vertex;
-typedef unsigned char Index;
+typedef unsigned int Index;
 typedef std::string MeshId;
 
 struct Mesh2d {

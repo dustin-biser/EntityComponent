@@ -14,6 +14,7 @@ using std::unordered_map;
 #include "Mesh2d.hpp"
 #include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
+#include "GraphicsSystem.hpp"
 
 
 static const float k_PI = 3.1415926536f;
@@ -36,6 +37,8 @@ private:
 	GameObject * m_cannon;
 	GameObject * m_clockPrototype;
 	GameObject * m_projectile;
+
+	GraphicsSystem * graphicsSystem;
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -64,6 +67,8 @@ C_ApplicationImpl::C_ApplicationImpl(
 {
 	 buildMeshAssetDirectory();
 	 initGameObjects();
+
+	 graphicsSystem = new GraphicsSystem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -127,6 +132,9 @@ void C_ApplicationImpl::initGameObjects()
 		m_clockPrototype->childObjects.push_back(hourHand);
 		m_clockPrototype->childObjects.push_back(minuteHand);
 		m_clockPrototype->childObjects.push_back(secondHand);
+
+		m_clockPrototype->transform.position = vec2(m_ScreenWidth / 2.0f, m_ScreenHeight / 2.0f);
+		m_clockPrototype->transform.scale = vec2(50.0f, 50.0f);
 	}
 }
 
@@ -134,14 +142,16 @@ void C_ApplicationImpl::initGameObjects()
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
+	// Clear the screen
+	FillRect(0, 0, m_ScreenWidth, m_ScreenHeight, 0);
+
+	graphicsSystem->drawScene(m_clockPrototype, 1);
+
 	// Sample tick
 
 	// Clear screen on cannon position
 
 	//FillRect(m_CannonX-10, m_CannonY, 21, 31, GetRGB(0, 0, 0));
-
-	// Clear the screen
-	FillRect(0,0, m_ScreenWidth, m_ScreenHeight, 0);
 
 	// Key processing
 
