@@ -12,14 +12,14 @@
 #define MAX_LINES_DRAWN 1024
 
 
-static inline TransformComponent multiplyTransforms(
-	const TransformComponent & tA,
-	const TransformComponent & tB
+static inline Transform multiplyTransforms(
+	const Transform & tA,
+	const Transform & tB
 );
 
 static inline Vertex transformVertex (
 	const Vertex & vertex,
-	const TransformComponent & transform
+	const Transform & transform
 );
 
 
@@ -36,14 +36,14 @@ private:
 	std::vector<Line> lineList;
 
 	// Transforms vertices in world space to window space.
-	TransformComponent viewportTransform;
+	Transform viewportTransform;
 
 
 	void buildLinesFromGameObject (
 		const GameObject & gameObject,
 		std::vector<Line> & lineList,
 		size_t & currentLine,
-		const TransformComponent & parentTransform = TransformComponent()
+		const Transform & parentTransform = Transform()
 	);
 
 	void drawGameObjects (
@@ -80,7 +80,7 @@ void GraphicsSystem::setViewport (
 	int x, int y,
 	int width, int height
 ) {
-	TransformComponent & viewportTransform = impl->viewportTransform;
+	Transform & viewportTransform = impl->viewportTransform;
 	const float half_width = width / 2.0f;
 	const float half_height = height / 2.0f;
 	viewportTransform.position.x = x + half_width;
@@ -127,9 +127,9 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 	const GameObject & gameObject,
 	std::vector<Line> & lineList,
 	size_t & numLines,
-	const TransformComponent & parentTransform
+	const Transform & parentTransform
 ) {
-	TransformComponent transform = multiplyTransforms(gameObject.transform, parentTransform);
+	Transform transform = multiplyTransforms(gameObject.transform, parentTransform);
 	const Mesh2d * mesh = gameObject.graphics->mesh;
 	const auto vertexList = mesh->vertexList;
 
@@ -173,11 +173,11 @@ void GraphicsSystemImpl::drawLine(const Line & line)
 }
 
 //---------------------------------------------------------------------------------------
-static inline TransformComponent multiplyTransforms (
-	const TransformComponent & tA,
-	const TransformComponent & tB
+static inline Transform multiplyTransforms (
+	const Transform & tA,
+	const Transform & tB
 ) {
-	TransformComponent result;
+	Transform result;
 	result.position = tA.position + tB.position;
 	result.scale = tA.scale * tB.scale;
 	result.rotationAngle = tA.rotationAngle + tB.rotationAngle;
@@ -188,7 +188,7 @@ static inline TransformComponent multiplyTransforms (
 //---------------------------------------------------------------------------------------
 static inline Vertex transformVertex (
 	const Vertex & vertex,
-	const TransformComponent & transform
+	const Transform & transform
 ) {
 	float x = vertex.x;
 	float y = vertex.y;

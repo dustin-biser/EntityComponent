@@ -157,9 +157,8 @@ GameObject * GameObjectPool::create (
 	// Place object at location and call constructor.
 	GameObject * newObject = new (location) GameObject();
 
-	// Update GameObjectID fields
-	newObject->id = id;
-	newObject->residentPool = this;
+	// Update GameObject fields
+	newObject->init(id, this);
 
 	return newObject;
 }

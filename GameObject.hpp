@@ -4,7 +4,7 @@
 #pragma once
 
 #include <vector>
-#include "TransformComponent.hpp"
+#include "Transform.hpp"
 
 
 // Forward declare
@@ -23,7 +23,7 @@ public:
 	static GameObjectID generateID();
 
 	GameObjectID id;
-	TransformComponent transform;
+	Transform transform;
 
 	InputComponent * input;
 	MotionComponent * motion;
@@ -37,6 +37,8 @@ private:
 	// Game Objects can only be created using GameObjectPools.
 	friend class GameObjectPool;
 	GameObject();
+
+	void init(GameObjectID id, GameObjectPool * residentPool);
 
 	const GameObjectPool * residentPool;
 };

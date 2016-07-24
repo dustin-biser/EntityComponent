@@ -1,12 +1,12 @@
 //
-// TransformComponent.hpp
+// Transform.hpp
 //
 #pragma once
 
 #include "vec2.hpp"
 
-struct TransformComponent {
-	TransformComponent();
+struct Transform {
+	Transform();
 
 	vec2 position;
 	vec2 scale;
