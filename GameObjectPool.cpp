@@ -140,7 +140,6 @@ void GameObjectPoolImpl::destroy (
 		pObject = pLastActive;
 	}
 
-
 	// Set obj.next = firstAvailable.next
 	reinterpret_cast<FreeList *>(pObject)->next = firstAvailable;
 
@@ -166,8 +165,7 @@ GameObject * GameObjectPool::create (
 //---------------------------------------------------------------------------------------
 void GameObjectPool::destroy(
 	GameObjectID id
-)
-{
+) {
 	impl->destroy(id);
 }
 

@@ -5,6 +5,7 @@
 #include "Mesh2d.hpp"
 #include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
+#include "GameObjectPool.hpp"
 #include "graphics.h"
 
 #include <cmath>
@@ -150,8 +151,9 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 	}
 
 	// Build lines from child gameObjects.
-	for (size_t i(0); i < gameObject.childObjects.size(); ++i) {
-		buildLinesFromGameObject(*gameObject.childObjects[i], lineList, numLines, gameObject.transform);
+	for (auto & child : gameObject.childObjects) {
+		GameObject * childGameObject = child.residentPool->getObject(child.id);
+		buildLinesFromGameObject(*childGameObject, lineList, numLines, gameObject.transform);
 	}
 }
 

@@ -22,6 +22,7 @@ class GameObject {
 public:
 	~GameObject();
 
+	// Returns a globally unique GameObjectID.
 	static GameObjectID generateID();
 
 	GameObjectID id;
@@ -32,7 +33,20 @@ public:
 	GraphicsComponent * graphics;
 	PhysicsComponent * physics;
 
-	std::vector<GameObject *> childObjects;
+	void addChild (
+		GameObject * child
+	);
+
+	GameObject * getChild (
+		GameObjectID childID
+	) const;
+
+
+	struct ChildGameObject {
+		GameObjectID id;
+		GameObjectPool * residentPool;
+	};
+	std::vector<ChildGameObject> childObjects;
 
 
 private:
@@ -40,7 +54,11 @@ private:
 	friend class GameObjectPool;
 	GameObject();
 
-	void init(GameObjectID id, GameObjectPool * residentPool);
+	void init (
+		GameObjectID id,
+		GameObjectPool * residentPool
+	);
 
-	const GameObjectPool * residentPool;
+	// Pool where this GameObject is stored.
+	GameObjectPool * residentPool;  
 };

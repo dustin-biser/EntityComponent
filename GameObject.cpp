@@ -2,6 +2,7 @@
 // GameObject.cpp
 //
 #include "GameObject.hpp"
+#include "GameObjectPool.hpp"
 #include "InputComponent.hpp"
 #include "MotionComponent.hpp"
 #include "GraphicsComponent.hpp"
@@ -22,10 +23,19 @@ GameObject::GameObject ()
 //---------------------------------------------------------------------------------------
 GameObject::~GameObject()
 {
-	delete input;
-	delete motion;
-	delete graphics;
-	delete physics;
+	// Delete components
+	{
+		delete input; input = nullptr;
+		delete motion; motion = nullptr;
+		delete graphics; graphics = nullptr;
+		delete physics; physics = nullptr;
+	}
+
+	// Delete children GameObjects
+	for (auto & child : childObjects) {
+		GameObjectPool * childPool = child.residentPool;
+		childPool->destroy(child.id);
+	}
 }
 
 //---------------------------------------------------------------------------------------
@@ -42,4 +52,26 @@ GameObjectID GameObject::generateID()
 {
 	static GameObjectID nextID = 0;
 	return nextID++;
+}
+
+//---------------------------------------------------------------------------------------
+void GameObject::addChild (
+	GameObject * child
+) {
+	ChildGameObject childObj {child->id, child->residentPool};
+	childObjects.push_back(childObj);
+}
+
+//---------------------------------------------------------------------------------------
+GameObject * GameObject::getChild (
+	GameObjectID childID
+) const {
+	for (auto & child : childObjects) {
+		if (childID == child.id) {
+			return child.residentPool->getObject(childID);
+		}
+	}
+
+	// Not found.
+	return nullptr;
 }

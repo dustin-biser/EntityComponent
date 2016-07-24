@@ -172,9 +172,9 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 
 		clock->graphics = clockGraphicsComponent;
 
-		clock->childObjects.push_back(hourHand);
-		clock->childObjects.push_back(minuteHand);
-		clock->childObjects.push_back(secondHand);
+		clock->addChild(hourHand);
+		clock->addChild(minuteHand);
+		clock->addChild(secondHand);
 
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
