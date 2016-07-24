@@ -41,6 +41,8 @@ public:
 		GameObjectID childID
 	) const;
 
+	// Returns the pool where this GameObject resides.
+	GameObjectPool * getPool () const;
 
 	struct ChildGameObject {
 		GameObjectID id;

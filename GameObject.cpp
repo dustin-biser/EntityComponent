@@ -58,7 +58,12 @@ GameObjectID GameObject::generateID()
 void GameObject::addChild (
 	GameObject * child
 ) {
-	ChildGameObject childObj {child->id, child->residentPool};
+	GameObjectID child_id = child->id;
+	if (child_id == this->id) {
+		// Attempting to add self as a child!
+		throw;
+	}
+	ChildGameObject childObj {child_id, child->residentPool};
 	childObjects.push_back(childObj);
 }
 
@@ -74,4 +79,10 @@ GameObject * GameObject::getChild (
 
 	// Not found.
 	return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+GameObjectPool * GameObject::getPool() const
+{
+	return this->residentPool;
 }
