@@ -1,4 +1,15 @@
+//
+// GraphicsComponent.cpp
+//
 #include "GraphicsComponent.hpp"
+
+//---------------------------------------------------------------------------------------
+GraphicsComponent::GraphicsComponent()
+	: color{ 0.0f, 0.0f, 0.0f },
+	   mesh(nullptr)
+{
+
+}
 
 //---------------------------------------------------------------------------------------
 GraphicsComponent::GraphicsComponent (
@@ -7,13 +18,6 @@ GraphicsComponent::GraphicsComponent (
 )
 	: color(color),
 	  mesh(mesh)
-{
-
-}
-
-//---------------------------------------------------------------------------------------
-GraphicsComponent::GraphicsComponent()
-	: color{ 0.0f, 0.0f, 0.0f }
 {
 
 }

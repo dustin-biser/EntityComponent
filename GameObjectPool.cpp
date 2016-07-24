@@ -3,9 +3,6 @@
 //
 #include "GameObjectPool.hpp"
 
-#include <vector>
-using std::vector;
-
 #include <unordered_map>
 using std::unordered_map;
 
@@ -88,6 +85,10 @@ GameObjectPool::GameObjectPool(
 //---------------------------------------------------------------------------------------
 GameObjectPool::~GameObjectPool()
 {
+	// Free pool resources.
+	GameObject * pool = impl->pool;
+	delete[] pool; // Calls destructor on all GameObjects.
+
 	delete impl;
 	impl = nullptr;
 }
@@ -95,8 +96,7 @@ GameObjectPool::~GameObjectPool()
 //---------------------------------------------------------------------------------------
 GameObject * GameObjectPoolImpl::create (
 	GameObjectID id
-)
-{
+) {
 	if (firstAvailable == nullptr) {
 		// No space left in pool for allocation.
 		throw;

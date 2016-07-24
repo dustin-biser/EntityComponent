@@ -20,6 +20,8 @@ typedef unsigned long GameObjectID;
 
 class GameObject {
 public:
+	~GameObject();
+
 	static GameObjectID generateID();
 
 	GameObjectID id;

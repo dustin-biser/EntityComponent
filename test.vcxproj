@@ -98,7 +98,10 @@
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="GraphicsSystem.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MotionComponent.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="vec2.cpp" />
@@ -112,8 +115,11 @@
     <ClInclude Include="graphics.h" />
     <ClInclude Include="GraphicsComponent.hpp" />
     <ClInclude Include="GraphicsSystem.hpp" />
+    <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="Mesh2d.hpp" />
     <ClInclude Include="GameObjectPool.hpp" />
+    <ClInclude Include="MotionComponent.hpp" />
+    <ClInclude Include="PhysicsComponent.hpp" />
     <ClInclude Include="time.h" />
     <ClInclude Include="Transform.hpp" />
     <ClInclude Include="vec2.hpp" />
