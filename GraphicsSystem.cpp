@@ -35,6 +35,9 @@ private:
 	};
 	std::vector<Line> lineList;
 
+	// Transforms vertices in world space to window space.
+	TransformComponent viewportTransform;
+
 	void buildLinesFromGameObject (
 		const GameObject & gameObject,
 		std::vector<Line> & lineList,
@@ -69,6 +72,19 @@ GraphicsSystem::~GraphicsSystem()
 {
 	delete impl;
 	impl = nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicsSystem::setViewport (
+	int x, int y,
+	int width, int height
+) {
+	TransformComponent & viewportTransform = impl->viewportTransform;
+	const float half_width = width / 2.0f;
+	const float half_height = height / 2.0f;
+	viewportTransform.position.x = x + half_width;
+	viewportTransform.position.y = y + half_height;
+	viewportTransform.scale = vec2(half_width, -half_height);
 }
 
 //---------------------------------------------------------------------------------------
@@ -111,8 +127,14 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 	for (size_t index(0); index < mesh->edgeIndexList.size(); index += 2) {
 		const Index indexV0 = mesh->edgeIndexList[index];
 		const Index indexV1 = mesh->edgeIndexList[index+1];
+
+		// Transform vertices from model space to world space.
 		Vertex v0 = transformVertex(vertexList[indexV0], transform);
 		Vertex v1 = transformVertex(vertexList[indexV1], transform);
+
+		// Transform vertices to window coordinate space.
+		v0 = transformVertex(v0, viewportTransform);
+		v1 = transformVertex(v1, viewportTransform);
 
 		lineList[numLines] = Line {v0, v1, gameObject.graphics->color};
 		++numLines;
@@ -168,10 +190,12 @@ static inline Vertex transformVertex (
 
 	// Rotate
 	const float angle = transform.rotationAngle;
-	const float sinAngle = std::sin(angle);
-	const float cosAngle = std::cos(angle);
-	x = cosAngle * x - sinAngle * y;
-	y = sinAngle * x + cosAngle * y;
+	if (angle > 1.0e-6) {
+		const float sinAngle = std::sin(angle);
+		const float cosAngle = std::cos(angle);
+		x = cosAngle * x - sinAngle * y;
+		y = sinAngle * x + cosAngle * y;
+	}
 
 	// Translate
 	x += transform.position.x;

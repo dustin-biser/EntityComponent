@@ -69,6 +69,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 	 initGameObjects();
 
 	 graphicsSystem = new GraphicsSystem();
+	 graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 }
 
 //---------------------------------------------------------------------------------------
@@ -133,8 +134,9 @@ void C_ApplicationImpl::initGameObjects()
 		m_clockPrototype->childObjects.push_back(minuteHand);
 		m_clockPrototype->childObjects.push_back(secondHand);
 
-		m_clockPrototype->transform.position = vec2(m_ScreenWidth / 2.0f, m_ScreenHeight / 2.0f);
-		m_clockPrototype->transform.scale = vec2(50.0f, 50.0f);
+		float scale_x = (100.0f / m_ScreenWidth);
+		float scale_y = (100.0f / m_ScreenHeight);
+		m_clockPrototype->transform.scale = vec2(scale_x, scale_y);
 	}
 }
 
