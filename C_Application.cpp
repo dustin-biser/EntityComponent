@@ -179,6 +179,11 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
 		clock->transform.scale = vec2(scale_x, scale_y);
+
+		GameObjectPool * pool = clock->getPool();
+		pool->destroy(clock->id);
+
+		Color c = clockGraphicsComponent->color;
 	}
 
 	// Construct Projectile Prototype

@@ -124,15 +124,18 @@ void GameObjectPoolImpl::destroy (
 
 	GameObject * pObject = idPointerMap.at(id);
 
+	// Call destructor GameObject
+	pObject->~GameObject();
+
+	// Remove unused id
+	idPointerMap.erase(id);
+
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
 	GameObject * pLastActive = &pool[numActive - 1];
 	if (pLastActive != pObject) {
 		// Update idPointerMap to moved destination
 		idPointerMap[pLastActive->id] = pObject;
-
-		// Remove unused id
-		idPointerMap.erase(id);
 
 		std::swap(*pObject, *pLastActive);
 
