@@ -38,6 +38,7 @@ private:
 	// Transforms vertices in world space to window space.
 	TransformComponent viewportTransform;
 
+
 	void buildLinesFromGameObject (
 		const GameObject & gameObject,
 		std::vector<Line> & lineList,
@@ -45,7 +46,7 @@ private:
 		const TransformComponent & parentTransform = TransformComponent()
 	);
 
-	void drawScene (
+	void drawGameObjects (
 		GameObject * gameObjects,
 		size_t numGameObjects
 	);
@@ -88,15 +89,23 @@ void GraphicsSystem::setViewport (
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicsSystem::drawScene (
+void GraphicsSystem::drawGameObjects (
 	GameObject * gameObjects,
 	size_t numGameObjects
 ) {
-	impl->drawScene(gameObjects, numGameObjects);
+	impl->drawGameObjects(gameObjects, numGameObjects);
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicsSystemImpl::drawScene (
+void GraphicsSystem::clearScreen (
+	int screenWidth,
+	int screenHeight
+) const {
+	FillRect(0, 0, screenWidth, screenHeight, 0);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicsSystemImpl::drawGameObjects (
 	GameObject * gameObjects,
 	size_t numGameObjects
 ) {
@@ -141,8 +150,8 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 	}
 
 	// Build lines from child gameObjects.
-	for (const auto child : gameObject.childObjects) {
-		buildLinesFromGameObject(*child, lineList, numLines, gameObject.transform);
+	for (size_t i(0); i < gameObject.childObjects.size(); ++i) {
+		buildLinesFromGameObject(*gameObject.childObjects[i], lineList, numLines, gameObject.transform);
 	}
 }
 
@@ -193,8 +202,11 @@ static inline Vertex transformVertex (
 	if (angle > 1.0e-6) {
 		const float sinAngle = std::sin(angle);
 		const float cosAngle = std::cos(angle);
-		x = cosAngle * x - sinAngle * y;
-		y = sinAngle * x + cosAngle * y;
+		float x_new = cosAngle * x - sinAngle * y;
+		float y_new = sinAngle * x + cosAngle * y;
+
+		x = x_new;
+		y = y_new;
 	}
 
 	// Translate

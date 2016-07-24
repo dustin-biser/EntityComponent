@@ -11,6 +11,7 @@ class GameObject;
 class GraphicsSystem {
 public:
 	GraphicsSystem();
+
 	~GraphicsSystem();
 
 	// Adjusts viewport transformation for drawn scene.
@@ -20,10 +21,15 @@ public:
 		int width, int height
 	);
 
-	void drawScene (
+	void drawGameObjects (
 		GameObject * gameObjects,
 		size_t numGameObjects
 	);
+
+	void clearScreen (
+		int screenWidth,
+		int screenHeight
+	) const;
 
 
 private:

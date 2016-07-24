@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "ObjectPool.hpp"
+#include "EntityPool.hpp"
 
 #include <vector>
 using std::vector;
@@ -22,15 +22,15 @@ struct FreeList {
 
 
 template <class T, size_t NUM_OBJECTS>
-class ObjectPoolImpl {
+class EntityPoolImpl {
 private:
-	friend class ObjectPool<T, NUM_OBJECTS>;
+	friend class EntityPool<T, NUM_OBJECTS>;
 
-	ObjectPoolImpl();
+	EntityPoolImpl();
 
 	size_t numActiveObjects();
 
-	void create(EntityID id);
+	T * create(EntityID id);
 
 	void destroy(EntityID id);
 
@@ -48,7 +48,7 @@ private:
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-size_t ObjectPoolImpl<T, NUM_OBJECTS>::numActiveObjects()
+size_t EntityPoolImpl<T, NUM_OBJECTS>::numActiveObjects()
 {
 	if (firstAvailable == nullptr) {
 		return NUM_OBJECTS;
@@ -60,7 +60,7 @@ size_t ObjectPoolImpl<T, NUM_OBJECTS>::numActiveObjects()
 //---------------------------------------------------------------------------------------
 // Constructor
 template <class T, size_t NUM_OBJECTS>
-ObjectPoolImpl<T, NUM_OBJECTS>::ObjectPoolImpl()
+EntityPoolImpl<T, NUM_OBJECTS>::EntityPoolImpl()
 	: pool(NUM_OBJECTS)
 {
 	if (sizeof(T) < sizeof(T *)) {
@@ -84,14 +84,14 @@ ObjectPoolImpl<T, NUM_OBJECTS>::ObjectPoolImpl()
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-ObjectPool<T, NUM_OBJECTS>::ObjectPool()
+EntityPool<T, NUM_OBJECTS>::EntityPool()
 {
-	impl = new ObjectPoolImpl<T, NUM_OBJECTS>();
+	impl = new EntityPoolImpl<T, NUM_OBJECTS>();
 }
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-ObjectPool<T, NUM_OBJECTS>::~ObjectPool()
+EntityPool<T, NUM_OBJECTS>::~EntityPool()
 {
 	delete impl;
 	impl = nullptr;
@@ -99,7 +99,7 @@ ObjectPool<T, NUM_OBJECTS>::~ObjectPool()
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-void ObjectPoolImpl<T, NUM_OBJECTS>::create (
+T * EntityPoolImpl<T, NUM_OBJECTS>::create (
 	EntityID id
 ) {
 	if (firstAvailable == nullptr) {
@@ -107,20 +107,24 @@ void ObjectPoolImpl<T, NUM_OBJECTS>::create (
 		throw;
 	}
 
-	T * newObject = firstAvailable;
-	firstAvailable = reinterpret_cast<FreeList<T> *>(firstAvailable)->next;
+	T * nextAvailable = reinterpret_cast<FreeList<T> *>(firstAvailable)->next;
 
-	// For safety, zero out object's memory.
-	memset(newObject, 0, sizeof(T));
+	// Place object at firstAvailable and call constructor.
+	T * newObject = new (firstAvailable)T();
+	// Mark it's EntityID field
 	newObject->id = id;
+
+	firstAvailable = nextAvailable;
 
 	// Update idPointerMap
 	idPointerMap[id] = newObject;
+
+	return newObject;
 }
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-void ObjectPoolImpl<T, NUM_OBJECTS>::destroy (
+void EntityPoolImpl<T, NUM_OBJECTS>::destroy (
 	EntityID id
 ) {
 	size_t numActive = numActiveObjects();
@@ -133,11 +137,13 @@ void ObjectPoolImpl<T, NUM_OBJECTS>::destroy (
 
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
-	{
-		T * pLastActive = &pool[numActive - 1];
-
+	T * pLastActive = &pool[numActive - 1];
+	if (pLastActive != pObject) {
 		// Update idPointerMap to moved destination
 		idPointerMap[pLastActive->id] = pObject;
+
+		// Remove unused id
+		idPointerMap.erase(id);
 
 		std::swap(*pObject, *pLastActive);
 
@@ -155,7 +161,7 @@ void ObjectPoolImpl<T, NUM_OBJECTS>::destroy (
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-void ObjectPool<T, NUM_OBJECTS>::create(
+T * EntityPool<T, NUM_OBJECTS>::create(
 	EntityID id
 ) {
 	return impl->create(id);
@@ -163,7 +169,7 @@ void ObjectPool<T, NUM_OBJECTS>::create(
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-void ObjectPool<T, NUM_OBJECTS>::destroy (
+void EntityPool<T, NUM_OBJECTS>::destroy (
 	EntityID id
 ) {
 	impl->destroy(id);
@@ -171,12 +177,26 @@ void ObjectPool<T, NUM_OBJECTS>::destroy (
 
 //---------------------------------------------------------------------------------------
 template <class T, size_t NUM_OBJECTS>
-T * ObjectPool<T, NUM_OBJECTS>::getObject (
+T * EntityPool<T, NUM_OBJECTS>::getObject (
 	EntityID id
 ) {
 	return impl->idPointerMap.at(id);
-
 }
+
+//---------------------------------------------------------------------------------------
+template <class T, size_t NUM_OBJECTS>
+T * EntityPool<T, NUM_OBJECTS>::begin() const
+{
+	return impl->pool.data();
+}
+
+//---------------------------------------------------------------------------------------
+template <class T, size_t NUM_OBJECTS>
+size_t EntityPool<T, NUM_OBJECTS>::numActive() const
+{
+	return impl->numActiveObjects();
+}
+
 
 
 

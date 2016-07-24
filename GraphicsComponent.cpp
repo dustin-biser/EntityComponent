@@ -17,13 +17,3 @@ GraphicsComponent::GraphicsComponent()
 {
 
 }
-
-
-//---------------------------------------------------------------------------------------
-void GraphicsComponent::draw (
-	const GameObject & gameobject
-) const {
-
-	
-}
-

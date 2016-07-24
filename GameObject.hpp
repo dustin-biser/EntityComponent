@@ -5,6 +5,7 @@
 
 #include <vector>
 #include "TransformComponent.hpp"
+#include "EntityID.hpp"
 
 // Forward declare
 class InputComponent;
@@ -17,6 +18,7 @@ class GameObject {
 public:
 	GameObject();
 
+	EntityID id;
 	TransformComponent transform;
 
 // Optional Components

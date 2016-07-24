@@ -92,6 +92,7 @@
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="C_Application.cpp" />
+    <ClCompile Include="EntityID.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
@@ -105,19 +106,20 @@
     <ClInclude Include="AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
     <ClInclude Include="C_Application.h" />
+    <ClInclude Include="EntityID.hpp" />
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="GraphicsComponent.hpp" />
     <ClInclude Include="GraphicsSystem.hpp" />
     <ClInclude Include="Mesh2d.hpp" />
-    <ClInclude Include="ObjectPool.hpp" />
+    <ClInclude Include="EntityPool.hpp" />
     <ClInclude Include="time.h" />
     <ClInclude Include="TransformComponent.hpp" />
     <ClInclude Include="vec2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="ObjectPool.inl" />
+    <None Include="EntityPool.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

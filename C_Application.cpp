@@ -6,8 +6,6 @@
 using std::string;
 #include <vector>
 using std::vector;
-#include <unordered_map>
-using std::unordered_map;
 
 #include "Assets\AssetDefinitions.hpp"
 #include "AssetLoader.hpp"
@@ -15,9 +13,13 @@ using std::unordered_map;
 #include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
 #include "GraphicsSystem.hpp"
+#include "EntityPool.hpp"
 
 
 static const float k_PI = 3.1415926536f;
+
+#define MAX_GAME_OBJECTS		1024
+#define MAX_CHILD_GAME_OBJECTS	1024
 
 
 
@@ -34,9 +36,15 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
-	GameObject * m_cannon;
-	GameObject * m_clockPrototype;
-	GameObject * m_projectile;
+	EntityPool<GameObject, MAX_GAME_OBJECTS> gameObjectPool;
+
+	EntityPool<GameObject, 100> prototypePool;
+
+	EntityID cannon_id;
+
+	EntityID clockPrototype_id;
+	EntityID projectilePrototype_id;
+
 
 	GraphicsSystem * graphicsSystem;
 
@@ -46,7 +54,12 @@ private:
 	);
 
 	void buildMeshAssetDirectory();
-	void initGameObjects();
+
+	void initGameObjectPrototypes();
+
+	void initSubSystems();
+
+	void loadGameObjects();
 
 	void Tick (
 		C_Application::T_PressedKey pressedKeys
@@ -65,11 +78,13 @@ C_ApplicationImpl::C_ApplicationImpl(
 	  m_CannonX(m_ScreenWidth / 2),
 	  m_CannonY(m_ScreenHeight / 2)
 {
-	 buildMeshAssetDirectory();
-	 initGameObjects();
+	buildMeshAssetDirectory();
 
-	 graphicsSystem = new GraphicsSystem();
-	 graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+	initGameObjectPrototypes();
+
+	initSubSystems();
+
+	loadGameObjects();
 }
 
 //---------------------------------------------------------------------------------------
@@ -93,7 +108,7 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 
 
 //---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initGameObjects()
+void C_ApplicationImpl::initGameObjectPrototypes()
 {
 	// Construct Clock Prototype
 	{
@@ -103,12 +118,12 @@ void C_ApplicationImpl::initGameObjects()
 		);
 
 		GraphicsComponent * minuteHandGraphicsComponent = new GraphicsComponent(
-			Color{ 0.5f, 1.0f, 0.5f },
+			Color{ 1.0f, 0.3f, 0.3f },
 			&meshAssetDirectory.at("MinuteHand")
 		);
 
 		GraphicsComponent * secondHandGraphicsComponent = new GraphicsComponent(
-			Color{ 1.0f, 0.7f, 0.7f },
+			Color{ 0.8f, 0.8f, 0.2f },
 			&meshAssetDirectory.at("SecondHand")
 		);
 
@@ -119,24 +134,74 @@ void C_ApplicationImpl::initGameObjects()
 
 		GameObject * hourHand = new GameObject();
 		hourHand->graphics = hourHandGraphicsComponent;
+		hourHand->transform.rotationAngle = k_PI * 0.1f;
 
 		GameObject * minuteHand = new GameObject();
 		minuteHand->graphics = minuteHandGraphicsComponent;
+		minuteHand->transform.rotationAngle = k_PI * 0.2f;
 
 		GameObject * secondHand = new GameObject();
 		secondHand->graphics = secondHandGraphicsComponent;
+		secondHand->transform.rotationAngle = k_PI * 0.3f;
 
 
-		m_clockPrototype = new GameObject();
-		m_clockPrototype->graphics = clockGraphicsComponent;
+		clockPrototype_id = generateEntityID();
+		prototypePool.create(clockPrototype_id);
+		prototypePool.destroy(clockPrototype_id);
+		GameObject * clock = prototypePool.create(clockPrototype_id);
 
-		m_clockPrototype->childObjects.push_back(hourHand);
-		m_clockPrototype->childObjects.push_back(minuteHand);
-		m_clockPrototype->childObjects.push_back(secondHand);
+
+		clock->graphics = clockGraphicsComponent;
+
+		clock->childObjects.push_back(hourHand);
+		clock->childObjects.push_back(minuteHand);
+		clock->childObjects.push_back(secondHand);
 
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
-		m_clockPrototype->transform.scale = vec2(scale_x, scale_y);
+		clock->transform.scale = vec2(scale_x, scale_y);
+	}
+
+	// Construct Projectile Prototype
+	{
+		GraphicsComponent * projectileGraphicsComponent = new GraphicsComponent (
+			Color{ 1.0f, 1.0f, 1.0f },
+			&meshAssetDirectory.at("Projectile")
+		);
+
+		projectilePrototype_id = generateEntityID();
+		GameObject * projectile = prototypePool.create(projectilePrototype_id);
+		projectile->graphics = projectileGraphicsComponent;
+
+		float scale_x = (30.0f / m_ScreenWidth);
+		float scale_y = (30.0f / m_ScreenHeight);
+		projectile->transform.scale = vec2(scale_x, scale_y);
+		projectile->transform.position = vec2(-0.8f, 0.0f);
+	}
+}
+
+//---------------------------------------------------------------------------------------
+void C_ApplicationImpl::initSubSystems()
+{
+	graphicsSystem = new GraphicsSystem();
+	graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+}
+
+//---------------------------------------------------------------------------------------
+void C_ApplicationImpl::loadGameObjects()
+{
+	// Create Cannon
+	{
+		cannon_id = generateEntityID();
+		GameObject * cannon = gameObjectPool.create(cannon_id);
+		cannon->graphics = new GraphicsComponent(
+			Color{ 0.2f, 0.2f, 1.0f },
+			&meshAssetDirectory.at("Cannon")
+		);
+		float scale_x = (60.0f / m_ScreenWidth);
+		float scale_y = (60.0f / m_ScreenHeight);
+		cannon->transform.scale = vec2(scale_x, scale_y);
+		cannon->transform.position = vec2(0.0f, -0.8f);
 	}
 }
 
@@ -144,19 +209,12 @@ void C_ApplicationImpl::initGameObjects()
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
-	// Clear the screen
-	FillRect(0, 0, m_ScreenWidth, m_ScreenHeight, 0);
+	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
+	graphicsSystem->drawGameObjects(gameObjectPool.begin(), gameObjectPool.numActive());
+	graphicsSystem->drawGameObjects(prototypePool.begin(), prototypePool.numActive());
 
-	graphicsSystem->drawScene(m_clockPrototype, 1);
-
-	// Sample tick
-
-	// Clear screen on cannon position
-
-	//FillRect(m_CannonX-10, m_CannonY, 21, 31, GetRGB(0, 0, 0));
 
 	// Key processing
-
 	if(pressedKeys & C_Application::s_KeyLeft)
 	{
 		m_CannonX = max(0, m_CannonX-4);
@@ -181,10 +239,6 @@ void C_ApplicationImpl::Tick (
 	{
 	}
 
-	// Draw cannon
-	DrawLine(m_CannonX,    m_CannonY,    m_CannonX-10, m_CannonY+30, GetRGB(40,  40, 255));
-	DrawLine(m_CannonX,    m_CannonY,    m_CannonX+10, m_CannonY+30, GetRGB(40, 40, 255));
-	DrawLine(m_CannonX-10, m_CannonY+30, m_CannonX+10, m_CannonY+30, GetRGB(40, 40, 255));
 }
 
 //---------------------------------------------------------------------------------------
@@ -209,3 +263,4 @@ void C_Application::Tick(T_PressedKey pressedKeys)
 {
 	impl->Tick(pressedKeys);
 }
+

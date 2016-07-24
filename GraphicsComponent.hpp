@@ -3,8 +3,6 @@
 //
 #pragma once
 
-#include <vector>
-
 // Forward declare
 struct Mesh2d;
 class GameObject;
@@ -15,7 +13,6 @@ struct Color {
 	float blue;
 };
 
-// Abstract class
 class GraphicsComponent {
 public:
 	GraphicsComponent();
@@ -24,8 +21,6 @@ public:
 		const Color & color,
 		const Mesh2d * mesh
 	);
-
-	void draw(const GameObject & gameobject) const;
 
 	Color color;
 	const Mesh2d * mesh;
