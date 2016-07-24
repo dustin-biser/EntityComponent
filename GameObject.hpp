@@ -5,7 +5,6 @@
 
 #include <vector>
 #include "TransformComponent.hpp"
-#include "EntityID.hpp"
 
 // Forward declare
 class InputComponent;
@@ -14,18 +13,27 @@ class GraphicsComponent;
 class PhysicsComponent;
 
 
+typedef unsigned long GameObjectID;
+
+
 class GameObject {
 public:
 	GameObject();
 
-	EntityID id;
+	GameObjectID id;
 	TransformComponent transform;
 
-// Optional Components
 	InputComponent * input;
 	MotionComponent * motion;
 	GraphicsComponent * graphics;
 	PhysicsComponent * physics;
 
 	std::vector<GameObject *> childObjects;
+
+
+	static GameObjectID generateID();
+
+private:
+	static GameObjectID nextID;
+
 };

@@ -1,26 +1,32 @@
 #include "C_Application.h"
-#include "graphics.h"
-#include "time.h"
 
 #include <string>
 using std::string;
+
 #include <vector>
 using std::vector;
+
+#include <unordered_map>
+using std::unordered_map;
+
+#include "graphics.h"
+#include "time.h"
 
 #include "Assets\AssetDefinitions.hpp"
 #include "AssetLoader.hpp"
 #include "Mesh2d.hpp"
-#include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
+#include "GameObjectPool.hpp"
+#include "GameObjectReplicator.hpp"
 #include "GraphicsSystem.hpp"
-#include "EntityPool.hpp"
-#include "EntityGenerator.hpp"
+#include "GraphicsComponent.hpp"
 
 
 static const float k_PI = 3.1415926536f;
 
-#define MAX_GAME_OBJECTS		1024
-#define MAX_CHILD_GAME_OBJECTS	1024
+static const size_t MAX_GAME_OBJECTS       = 1024;
+static const size_t MAX_CHILD_GAME_OBJECTS = 1024;
+static const size_t MAX_PROTOTYPE_OBJECTS  = 3;
 
 
 
@@ -37,14 +43,14 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
-	EntityPool<GameObject, MAX_GAME_OBJECTS> gameObjectPool;
+	GameObjectPool * gameObjectPool;
+	GameObjectPool * childGameObjectPool;
+	GameObjectPool * prototypePool;
 
-	EntityPool<GameObject, 100> prototypePool;
+	GameObjectID cannon_id;
 
-	EntityID cannon_id;
-
-	EntityID clockPrototype_id;
-	EntityID projectilePrototype_id;
+	GameObjectID clockPrototype_id;
+	GameObjectID projectilePrototype_id;
 
 
 	GraphicsSystem * graphicsSystem;
@@ -55,6 +61,8 @@ private:
 	);
 
 	void buildMeshAssetDirectory();
+
+	void initGameObjectPools();
 
 	void initGameObjectPrototypes();
 
@@ -80,6 +88,8 @@ C_ApplicationImpl::C_ApplicationImpl(
 	  m_CannonY(m_ScreenHeight / 2)
 {
 	buildMeshAssetDirectory();
+
+	initGameObjectPools();
 
 	initGameObjectPrototypes();
 
@@ -107,6 +117,14 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 	}
 }
 
+
+//---------------------------------------------------------------------------------------
+void C_ApplicationImpl::initGameObjectPools()
+{
+	gameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
+	childGameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
+	prototypePool = new GameObjectPool(MAX_PROTOTYPE_OBJECTS);
+}
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::initGameObjectPrototypes()
@@ -146,10 +164,10 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 		secondHand->transform.rotationAngle = k_PI * 0.3f;
 
 
-		clockPrototype_id = generateEntityID();
-		prototypePool.create(clockPrototype_id);
-		prototypePool.destroy(clockPrototype_id);
-		GameObject * clock = prototypePool.create(clockPrototype_id);
+		clockPrototype_id = GameObject::generateID();
+		prototypePool->create(clockPrototype_id);
+		prototypePool->destroy(clockPrototype_id);
+		GameObject * clock = prototypePool->create(clockPrototype_id);
 
 
 		clock->graphics = clockGraphicsComponent;
@@ -170,8 +188,8 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 			&meshAssetDirectory.at("Projectile")
 		);
 
-		projectilePrototype_id = generateEntityID();
-		GameObject * projectile = prototypePool.create(projectilePrototype_id);
+		projectilePrototype_id = GameObject::generateID();
+		GameObject * projectile = prototypePool->create(projectilePrototype_id);
 		projectile->graphics = projectileGraphicsComponent;
 
 		float scale_x = (30.0f / m_ScreenWidth);
@@ -193,8 +211,8 @@ void C_ApplicationImpl::loadGameObjects()
 {
 	// Create Cannon
 	{
-		cannon_id = generateEntityID();
-		GameObject * cannon = gameObjectPool.create(cannon_id);
+		cannon_id = GameObject::generateID();
+		GameObject * cannon = gameObjectPool->create(cannon_id);
 		cannon->graphics = new GraphicsComponent(
 			Color{ 0.2f, 0.2f, 1.0f },
 			&meshAssetDirectory.at("Cannon")
@@ -211,8 +229,8 @@ void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
-	graphicsSystem->drawGameObjects(gameObjectPool.begin(), gameObjectPool.numActive());
-	graphicsSystem->drawGameObjects(prototypePool.begin(), prototypePool.numActive());
+	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
+	graphicsSystem->drawGameObjects(prototypePool->begin(), prototypePool->numActive());
 
 
 	// Key processing

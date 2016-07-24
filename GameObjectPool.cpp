@@ -1,118 +1,106 @@
 //
-// EntityPool.inl
+// GameObjectPool.cpp
 //
-#pragma once
-
-#include "EntityPool.hpp"
+#include "GameObjectPool.hpp"
 
 #include <vector>
 using std::vector;
-
-#include <cstring>
-using std::memset;
 
 #include <unordered_map>
 using std::unordered_map;
 
 
-template <class T>
 struct FreeList {
-	T * next;
+	GameObject * next;
 };
 
 
-template <class T, size_t NUM_OBJECTS>
-class EntityPoolImpl {
+class GameObjectPoolImpl {
 private:
-	template <class T, size_t NUM_OBJECTS>
-	friend class EntityPool;
+	friend class GameObjectPool;
 
-	EntityPoolImpl();
+	GameObjectPoolImpl(size_t numElements);
 
 	size_t numActiveObjects();
 
-	T * create(EntityID id);
+	GameObject * create(GameObjectID id);
 
-	void destroy(EntityID id);
+	void destroy(GameObjectID id);
 
 
 
-	std::vector<T> pool;
+	std::vector<GameObject> pool;
 
 	// Address of first available object for allocation.
-	T * firstAvailable;
+	GameObject * firstAvailable;
 
 	// Up-to-date mapping from EntityID to memory address.
-	std::unordered_map<EntityID, T *> idPointerMap;
+	std::unordered_map<GameObjectID, GameObject *> idPointerMap;
 };
 
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-size_t EntityPoolImpl<T, NUM_OBJECTS>::numActiveObjects()
+size_t GameObjectPoolImpl::numActiveObjects()
 {
 	if (firstAvailable == nullptr) {
-		return NUM_OBJECTS;
-	} else {
+		return pool.size();
+	}
+	else {
 		return size_t(firstAvailable - &pool[0]);
 	}
 }
 
 //---------------------------------------------------------------------------------------
 // Constructor
-template <class T, size_t NUM_OBJECTS>
-EntityPoolImpl<T, NUM_OBJECTS>::EntityPoolImpl()
-	: pool(NUM_OBJECTS)
+GameObjectPoolImpl::GameObjectPoolImpl(
+	size_t numElements
+)
+	: pool(numElements)
 {
-	if (sizeof(T) < sizeof(T *)) {
-		// sizeof T must be large enough to use it's data as a next pointer
-		// for FreeList.
-		throw;
-	}
-
 	firstAvailable = &pool[0];
 
 	// Set each T object equal memory address to next T object
-	FreeList<T> * freeList;
-	for (size_t i(0); i < NUM_OBJECTS - 1; ++i) {
-		freeList = reinterpret_cast<FreeList<T> *>(&pool[i]);
+	FreeList * freeList;
+	size_t lastPoolIndex = pool.size() - 1;
+	for (size_t i(0); i < lastPoolIndex; ++i) {
+		freeList = reinterpret_cast<FreeList *>(&pool[i]);
 		freeList->next = &pool[i + 1];
 	}
 	// Last T object points to nullptr.
-	freeList = reinterpret_cast<FreeList<T> *>(&pool[NUM_OBJECTS - 1]);
+	freeList = reinterpret_cast<FreeList *>(&pool.end());
 	freeList->next = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-EntityPool<T, NUM_OBJECTS>::EntityPool()
+GameObjectPool::GameObjectPool(
+	size_t numElements
+)
 {
-	impl = new EntityPoolImpl<T, NUM_OBJECTS>();
+	impl = new GameObjectPoolImpl(numElements);
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-EntityPool<T, NUM_OBJECTS>::~EntityPool()
+GameObjectPool::~GameObjectPool()
 {
 	delete impl;
 	impl = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-T * EntityPoolImpl<T, NUM_OBJECTS>::create (
-	EntityID id
-) {
+GameObject * GameObjectPoolImpl::create(
+	GameObjectID id
+)
+{
 	if (firstAvailable == nullptr) {
 		// No space left in pool for allocation.
 		throw;
 	}
 
-	T * nextAvailable = reinterpret_cast<FreeList<T> *>(firstAvailable)->next;
+	GameObject * nextAvailable = reinterpret_cast<FreeList *>(firstAvailable)->next;
 
 	// Place object at firstAvailable and call constructor.
-	T * newObject = new (firstAvailable)T();
-	// Mark it's EntityID field
+	GameObject * newObject = new (firstAvailable)GameObject();
+	// Mark it's GameObjectID field
 	newObject->id = id;
 
 	firstAvailable = nextAvailable;
@@ -124,21 +112,21 @@ T * EntityPoolImpl<T, NUM_OBJECTS>::create (
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-void EntityPoolImpl<T, NUM_OBJECTS>::destroy (
-	EntityID id
-) {
+void GameObjectPoolImpl::destroy(
+	GameObjectID id
+)
+{
 	size_t numActive = numActiveObjects();
 	if (numActive == 0) {
 		// No objects left to destroy.
 		throw;
 	}
 
-	T * pObject = idPointerMap.at(id);
+	GameObject * pObject = idPointerMap.at(id);
 
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
-	T * pLastActive = &pool[numActive - 1];
+	GameObject * pLastActive = &pool[numActive - 1];
 	if (pLastActive != pObject) {
 		// Update idPointerMap to moved destination
 		idPointerMap[pLastActive->id] = pObject;
@@ -154,46 +142,44 @@ void EntityPoolImpl<T, NUM_OBJECTS>::destroy (
 
 
 	// Set obj.next = firstAvailable.next
-	reinterpret_cast<FreeList<T> *>(pObject)->next = firstAvailable;
+	reinterpret_cast<FreeList *>(pObject)->next = firstAvailable;
 
 	// obj is now the firstAvailable.
 	firstAvailable = pObject;
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-T * EntityPool<T, NUM_OBJECTS>::create(
-	EntityID id
-) {
+GameObject * GameObjectPool::create(
+	GameObjectID id
+)
+{
 	return impl->create(id);
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-void EntityPool<T, NUM_OBJECTS>::destroy (
-	EntityID id
-) {
+void GameObjectPool::destroy(
+	GameObjectID id
+)
+{
 	impl->destroy(id);
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-T * EntityPool<T, NUM_OBJECTS>::getObject (
-	EntityID id
-) {
+GameObject * GameObjectPool::getObject(
+	GameObjectID id
+)
+{
 	return impl->idPointerMap.at(id);
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-T * EntityPool<T, NUM_OBJECTS>::begin() const
+GameObject * GameObjectPool::begin() const
 {
 	return impl->pool.data();
 }
 
 //---------------------------------------------------------------------------------------
-template <class T, size_t NUM_OBJECTS>
-size_t EntityPool<T, NUM_OBJECTS>::numActive() const
+size_t GameObjectPool::numActive() const
 {
 	return impl->numActiveObjects();
 }
