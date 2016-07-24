@@ -8,7 +8,6 @@
 
 
 // Forward declare
-class InputComponent;
 class MotionComponent;
 class GraphicsComponent;
 class PhysicsComponent;
@@ -28,7 +27,6 @@ public:
 	GameObjectID id;
 	Transform transform;
 
-	InputComponent * input;
 	MotionComponent * motion;
 	GraphicsComponent * graphics;
 	PhysicsComponent * physics;

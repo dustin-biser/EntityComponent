@@ -74,6 +74,9 @@ private:
 		C_Application::T_PressedKey pressedKeys
 	);
 
+	void handleInput (
+		C_Application::T_PressedKey pressedKeys
+	);
 
 };
 
@@ -179,11 +182,6 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
 		clock->transform.scale = vec2(scale_x, scale_y);
-
-		GameObjectPool * pool = clock->getPool();
-		pool->destroy(clock->id);
-
-		Color c = clockGraphicsComponent->color;
 	}
 
 	// Construct Projectile Prototype
@@ -233,36 +231,45 @@ void C_ApplicationImpl::loadGameObjects()
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
+	handleInput(pressedKeys);
+
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
 	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
 	graphicsSystem->drawGameObjects(prototypePool->begin(), prototypePool->numActive());
 
 
-	// Key processing
-	if(pressedKeys & C_Application::s_KeyLeft)
-	{
-		m_CannonX = max(0, m_CannonX-4);
+}
+
+//---------------------------------------------------------------------------------------
+void C_ApplicationImpl::handleInput (
+	C_Application::T_PressedKey pressedKeys
+) {
+	const float deltaAngle = 0.1f;
+	const float maxAngle = k_PI * 0.5f;
+	const float minAngle = -maxAngle;
+
+	if (pressedKeys & C_Application::s_KeyLeft) {
+		GameObject * cannon = gameObjectPool->getObject(cannon_id);
+		float & rotationAngle = cannon->transform.rotationAngle;
+		rotationAngle += deltaAngle;
+		rotationAngle = min(maxAngle, rotationAngle);
+	}
+	
+	if (pressedKeys & C_Application::s_KeyRight) {
+		GameObject * cannon = gameObjectPool->getObject(cannon_id);
+		float & rotationAngle = cannon->transform.rotationAngle;
+		rotationAngle -= deltaAngle;
+		rotationAngle = max(minAngle, rotationAngle);
 	}
 
-	if(pressedKeys & C_Application::s_KeyRight)
-	{
-		m_CannonX = min(m_ScreenWidth, m_CannonX+4);
+	if (pressedKeys & C_Application::s_KeyUp) {
 	}
 
-	if(pressedKeys & C_Application::s_KeyUp)
-	{
-		m_CannonY = max(0, m_CannonY-4);
+	if (pressedKeys & C_Application::s_KeyDown) {
 	}
 
-	if(pressedKeys & C_Application::s_KeyDown)
-	{
-		m_CannonY = min(m_ScreenHeight, m_CannonY+4);
+	if (pressedKeys & C_Application::s_KeySpace) {
 	}
-
-	if(pressedKeys & C_Application::s_KeySpace)
-	{
-	}
-
 }
 
 //---------------------------------------------------------------------------------------

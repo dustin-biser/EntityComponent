@@ -98,7 +98,6 @@
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="GraphicsSystem.cpp" />
-    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MotionComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
@@ -115,7 +114,6 @@
     <ClInclude Include="graphics.h" />
     <ClInclude Include="GraphicsComponent.hpp" />
     <ClInclude Include="GraphicsSystem.hpp" />
-    <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="Mesh2d.hpp" />
     <ClInclude Include="GameObjectPool.hpp" />
     <ClInclude Include="MotionComponent.hpp" />

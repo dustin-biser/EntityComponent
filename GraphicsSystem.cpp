@@ -201,7 +201,7 @@ static inline Vertex transformVertex (
 
 	// Rotate
 	const float angle = transform.rotationAngle;
-	if (angle > 1.0e-6) {
+	if (std::fabs(angle) > 1.0e-6) {
 		const float sinAngle = std::sin(angle);
 		const float cosAngle = std::cos(angle);
 		float x_new = cosAngle * x - sinAngle * y;

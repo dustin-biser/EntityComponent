@@ -3,7 +3,6 @@
 //
 #include "GameObject.hpp"
 #include "GameObjectPool.hpp"
-#include "InputComponent.hpp"
 #include "MotionComponent.hpp"
 #include "GraphicsComponent.hpp"
 #include "PhysicsComponent.hpp"
@@ -12,8 +11,7 @@
 // Constructor
 // Sets default components.
 GameObject::GameObject () 
-	: input(new InputComponent()),
-	  motion(new MotionComponent()),
+	: motion(new MotionComponent()),
 	  graphics(new GraphicsComponent()),
 	  physics(new PhysicsComponent())
 {
@@ -25,7 +23,6 @@ GameObject::~GameObject()
 {
 	// Delete components
 	{
-		delete input; input = nullptr;
 		delete motion; motion = nullptr;
 		delete graphics; graphics = nullptr;
 		delete physics; physics = nullptr;
