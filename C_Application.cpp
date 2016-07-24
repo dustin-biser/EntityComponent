@@ -14,6 +14,7 @@ using std::vector;
 #include "GameObject.hpp"
 #include "GraphicsSystem.hpp"
 #include "EntityPool.hpp"
+#include "EntityGenerator.hpp"
 
 
 static const float k_PI = 3.1415926536f;

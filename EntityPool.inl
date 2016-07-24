@@ -1,5 +1,5 @@
 //
-// ObjectPool.inl
+// EntityPool.inl
 //
 #pragma once
 
@@ -24,7 +24,8 @@ struct FreeList {
 template <class T, size_t NUM_OBJECTS>
 class EntityPoolImpl {
 private:
-	friend class EntityPool<T, NUM_OBJECTS>;
+	template <class T, size_t NUM_OBJECTS>
+	friend class EntityPool;
 
 	EntityPoolImpl();
 

@@ -1,5 +1,5 @@
 //
-// ObjectPool.hpp
+// EntityPool.hpp
 //
 #pragma once
 
