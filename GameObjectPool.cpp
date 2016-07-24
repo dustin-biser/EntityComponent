@@ -19,7 +19,10 @@ class GameObjectPoolImpl {
 private:
 	friend class GameObjectPool;
 
-	GameObjectPoolImpl(size_t numElements);
+	GameObjectPoolImpl (
+		GameObject * pool,
+		size_t numElements
+	);
 
 	size_t numActiveObjects();
 
@@ -28,8 +31,8 @@ private:
 	void destroy(GameObjectID id);
 
 
-
-	std::vector<GameObject> pool;
+	GameObject * pool;
+	const size_t numPoolElements;
 
 	// Address of first available object for allocation.
 	GameObject * firstAvailable;
@@ -43,7 +46,7 @@ private:
 size_t GameObjectPoolImpl::numActiveObjects()
 {
 	if (firstAvailable == nullptr) {
-		return pool.size();
+		return numPoolElements;
 	}
 	else {
 		return size_t(firstAvailable - &pool[0]);
@@ -53,21 +56,23 @@ size_t GameObjectPoolImpl::numActiveObjects()
 //---------------------------------------------------------------------------------------
 // Constructor
 GameObjectPoolImpl::GameObjectPoolImpl(
+	GameObject * pool,
 	size_t numElements
 )
-	: pool(numElements)
+	: pool(pool),
+	  numPoolElements(numElements)
 {
 	firstAvailable = &pool[0];
 
 	// Set each T object equal memory address to next T object
 	FreeList * freeList;
-	size_t lastPoolIndex = pool.size() - 1;
+	size_t lastPoolIndex = numPoolElements - 1;
 	for (size_t i(0); i < lastPoolIndex; ++i) {
 		freeList = reinterpret_cast<FreeList *>(&pool[i]);
 		freeList->next = &pool[i + 1];
 	}
 	// Last T object points to nullptr.
-	freeList = reinterpret_cast<FreeList *>(&pool.end());
+	freeList = reinterpret_cast<FreeList *>(&pool[lastPoolIndex]);
 	freeList->next = nullptr;
 }
 
@@ -76,7 +81,8 @@ GameObjectPool::GameObjectPool(
 	size_t numElements
 )
 {
-	impl = new GameObjectPoolImpl(numElements);
+	GameObject * pool = new GameObject[numElements];
+	impl = new GameObjectPoolImpl(pool, numElements);
 }
 
 //---------------------------------------------------------------------------------------
@@ -87,7 +93,7 @@ GameObjectPool::~GameObjectPool()
 }
 
 //---------------------------------------------------------------------------------------
-GameObject * GameObjectPoolImpl::create(
+GameObject * GameObjectPoolImpl::create (
 	GameObjectID id
 )
 {
@@ -96,23 +102,17 @@ GameObject * GameObjectPoolImpl::create(
 		throw;
 	}
 
-	GameObject * nextAvailable = reinterpret_cast<FreeList *>(firstAvailable)->next;
-
-	// Place object at firstAvailable and call constructor.
-	GameObject * newObject = new (firstAvailable)GameObject();
-	// Mark it's GameObjectID field
-	newObject->id = id;
-
-	firstAvailable = nextAvailable;
+	GameObject * result = firstAvailable;
+	firstAvailable = reinterpret_cast<FreeList *>(firstAvailable)->next;
 
 	// Update idPointerMap
-	idPointerMap[id] = newObject;
+	idPointerMap[id] = result;
 
-	return newObject;
+	return result;
 }
 
 //---------------------------------------------------------------------------------------
-void GameObjectPoolImpl::destroy(
+void GameObjectPoolImpl::destroy (
 	GameObjectID id
 )
 {
@@ -149,11 +149,19 @@ void GameObjectPoolImpl::destroy(
 }
 
 //---------------------------------------------------------------------------------------
-GameObject * GameObjectPool::create(
+GameObject * GameObjectPool::create (
 	GameObjectID id
-)
-{
-	return impl->create(id);
+) {
+	GameObject * location = impl->create(id);
+
+	// Place object at location and call constructor.
+	GameObject * newObject = new (location) GameObject();
+
+	// Update GameObjectID fields
+	newObject->id = id;
+	newObject->residentPool = this;
+
+	return newObject;
 }
 
 //---------------------------------------------------------------------------------------
@@ -175,7 +183,7 @@ GameObject * GameObjectPool::getObject(
 //---------------------------------------------------------------------------------------
 GameObject * GameObjectPool::begin() const
 {
-	return impl->pool.data();
+	return impl->pool;
 }
 
 //---------------------------------------------------------------------------------------
@@ -183,7 +191,3 @@ size_t GameObjectPool::numActive() const
 {
 	return impl->numActiveObjects();
 }
-
-
-
-

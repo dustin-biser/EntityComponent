@@ -3,10 +3,8 @@
 //
 #include "GameObject.hpp"
 
-GameObjectID GameObject::nextID = 0;
-
 //---------------------------------------------------------------------------------------
-GameObject::GameObject()
+GameObject::GameObject () 
 {
 
 }
@@ -14,5 +12,6 @@ GameObject::GameObject()
 //---------------------------------------------------------------------------------------
 GameObjectID GameObject::generateID()
 {
+	static GameObjectID nextID = 0;
 	return nextID++;
 }

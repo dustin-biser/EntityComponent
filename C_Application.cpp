@@ -151,15 +151,15 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 			&meshAssetDirectory.at("ClockBase")
 		);
 
-		GameObject * hourHand = new GameObject();
+		GameObject * hourHand = childGameObjectPool->create(GameObject::generateID());
 		hourHand->graphics = hourHandGraphicsComponent;
 		hourHand->transform.rotationAngle = k_PI * 0.1f;
 
-		GameObject * minuteHand = new GameObject();
+		GameObject * minuteHand = childGameObjectPool->create(GameObject::generateID());
 		minuteHand->graphics = minuteHandGraphicsComponent;
 		minuteHand->transform.rotationAngle = k_PI * 0.2f;
 
-		GameObject * secondHand = new GameObject();
+		GameObject * secondHand = childGameObjectPool->create(GameObject::generateID());
 		secondHand->graphics = secondHandGraphicsComponent;
 		secondHand->transform.rotationAngle = k_PI * 0.3f;
 

@@ -1,7 +1,6 @@
 //
 // GameObjectPool.hpp
 //
-#pragma once
 
 #include "GameObject.hpp"
 

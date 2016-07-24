@@ -6,11 +6,13 @@
 #include <vector>
 #include "TransformComponent.hpp"
 
+
 // Forward declare
 class InputComponent;
 class MotionComponent;
 class GraphicsComponent;
 class PhysicsComponent;
+class GameObjectPool;
 
 
 typedef unsigned long GameObjectID;
@@ -18,7 +20,7 @@ typedef unsigned long GameObjectID;
 
 class GameObject {
 public:
-	GameObject();
+	static GameObjectID generateID();
 
 	GameObjectID id;
 	TransformComponent transform;
@@ -31,9 +33,10 @@ public:
 	std::vector<GameObject *> childObjects;
 
 
-	static GameObjectID generateID();
-
 private:
-	static GameObjectID nextID;
+	// Game Objects can only be created using GameObjectPools.
+	friend class GameObjectPool;
+	GameObject();
 
+	const GameObjectPool * residentPool;
 };
