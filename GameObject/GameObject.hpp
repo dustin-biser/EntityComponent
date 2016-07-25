@@ -42,7 +42,9 @@ public:
 	// Returns the pool where this GameObject resides.
 	GameObjectPool * getPool () const;
 
-	void clone(const GameObject & other);
+	void clone (const GameObject & other);
+
+	void destroy();
 
 	struct ChildGameObject {
 		GameObjectID id;

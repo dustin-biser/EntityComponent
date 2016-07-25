@@ -119,3 +119,9 @@ void GameObject::clone (
 		this->childObjects[i] = ChildGameObject {newChild->id, newChild->residentPool};
 	}
 }
+
+//---------------------------------------------------------------------------------------
+void GameObject::destroy()
+{
+	residentPool->destroy(id);
+}

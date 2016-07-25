@@ -11,5 +11,4 @@ public:
 	virtual ~PhysicsComponent();
 
 	PhysicsComponent * clone() const;
-
 };
