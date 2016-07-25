@@ -48,7 +48,7 @@ GameObjectReplicator::~GameObjectReplicator()
 }
 
 //---------------------------------------------------------------------------------------
-GameObject * GameObjectReplicator::replicateInto (
+GameObject * GameObjectReplicator::replicateTo (
 	GameObjectPool * allocationPool
 ) {
 	GameObject * newObject = allocationPool->create(GameObject::generateID());

@@ -23,6 +23,7 @@ using std::unordered_map;
 #include "GameObjectReplicator.hpp"
 #include "GraphicsSystem.hpp"
 #include "GraphicsComponent.hpp"
+#include "MotionComponent.hpp"
 
 
 static const float k_PI = 3.1415926536f;
@@ -247,10 +248,10 @@ void C_ApplicationImpl::loadGameObjects()
 
 	// Load 2 Clocks in random positions
 	{
-		GameObject * clock1 = clockReplicator->replicateInto(gameObjectPool);
+		GameObject * clock1 = clockReplicator->replicateTo(gameObjectPool);
 		clock1->transform.position = randomPositionBetween(vec2(-0.7f, 0.0f), vec2(-0.2f, 0.8f));
 
-		GameObject * clock2 = clockReplicator->replicateInto(gameObjectPool);
+		GameObject * clock2 = clockReplicator->replicateTo(gameObjectPool);
 		clock2->transform.position = randomPositionBetween(vec2(0.2f, 0.0f), vec2(0.7f, 0.8f));
 	}
 }
@@ -294,26 +295,28 @@ void C_ApplicationImpl::handleInput (
 	}
 
 	if (pressedKeys & C_Application::s_KeySpace) {
-		//-- Position projectiles to be at tip of cannon.
+		// Update projectile prototype to spawn at tip of cannon.
 		{
 			GameObject * projectilePrototype = projectileReplicator->getPrototype();
 			GameObject * cannon = gameObjectPool->getObject(cannon_id);
 
+			// Get vertex at tip of cannon.
 			Vertex vertex = cannon->graphics->mesh->vertexList[2];
 			Transform cannonTransform = cannon->transform;
 			vertex = GraphicsSystem::transformVertex(vertex, cannonTransform);
 
+			// Update projectile's position and orientation
 			projectilePrototype->transform.position = vertex;
 			projectilePrototype->transform.rotationAngle = cannonTransform.rotationAngle;
 
-			// Update velocity direction of projectile.
-			//vec2 direction = normalize(vertex - cannon->transform.position);
-			//vec2 vel = projectilePrototype->motion.velocity;
-			//projectilePrototype->motion.velocity = direction * length(vel);
+			// Update projectile's velocity direction.
+			vec2 direction = normalize(vertex - cannon->transform.position);
+			vec2 vel = projectilePrototype->motion->velocity;
+			projectilePrototype->motion->velocity = direction * length(vel);
 		}
 
 		// Generate projectile
-		projectileReplicator->replicateInto(gameObjectPool);
+		projectileReplicator->replicateTo(gameObjectPool);
 	}
 }
 

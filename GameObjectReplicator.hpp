@@ -21,7 +21,7 @@ public:
 
 	~GameObjectReplicator();
 
-	GameObject * replicateInto(GameObjectPool * allocationPool);
+	GameObject * replicateTo(GameObjectPool * allocationPool);
 
 	void setPrototype(GameObject * prototype);
 

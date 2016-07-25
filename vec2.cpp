@@ -3,6 +3,9 @@
 //
 #include "vec2.hpp"
 
+#include <cmath>
+using std::sqrt;
+
 //---------------------------------------------------------------------------------------
 vec2::vec2()
 	: x(0.0f),
@@ -20,11 +23,11 @@ vec2::vec2 (float x, float y)
 }
 
 //---------------------------------------------------------------------------------------
-vec2::vec2 (const vec2 & other)
-	: x(other.x),
-	  y(other.y)
+vec2 vec2::operator * (float x)
 {
-
+	this->x *= x;
+	this->y *= x;
+	return *this;
 }
 
 //---------------------------------------------------------------------------------------
@@ -40,7 +43,7 @@ vec2 operator + (const vec2 & v1, const vec2 & v2)
 }
 
 //---------------------------------------------------------------------------------------
-vec2 operator-(const vec2 & v1, const vec2 & v2)
+vec2 operator - (const vec2 & v1, const vec2 & v2)
 {
 	return vec2(v1.x - v2.x, v1.y - v2.y);
 }
@@ -51,4 +54,21 @@ vec2 operator * (const vec2 & v1, const vec2 & v2)
 	return vec2 ( v1.x * v2.x, v1.y * v2.y );
 }
 
+//---------------------------------------------------------------------------------------
+vec2 normalize(const vec2 & v)
+{
+	float x = v.x;
+	float y = v.y;
+	float inv_sqrt = 1.0f / sqrt(x*x + y*y);
+
+	return vec2(x * inv_sqrt, y * inv_sqrt);
+}
+
+//---------------------------------------------------------------------------------------
+float length(const vec2 & v)
+{
+	float x = v.x;
+	float y = v.y;
+	return sqrt(x*x + y*y);
+}
 
