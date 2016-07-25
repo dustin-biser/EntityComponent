@@ -294,6 +294,26 @@ void C_ApplicationImpl::handleInput (
 	}
 
 	if (pressedKeys & C_Application::s_KeySpace) {
+		//-- Position projectiles to be at tip of cannon.
+		{
+			GameObject * projectilePrototype = projectileReplicator->getPrototype();
+			GameObject * cannon = gameObjectPool->getObject(cannon_id);
+
+			Vertex vertex = cannon->graphics->mesh->vertexList[2];
+			Transform cannonTransform = cannon->transform;
+			vertex = GraphicsSystem::transformVertex(vertex, cannonTransform);
+
+			projectilePrototype->transform.position = vertex;
+			projectilePrototype->transform.rotationAngle = cannonTransform.rotationAngle;
+
+			// Update velocity direction of projectile.
+			//vec2 direction = normalize(vertex - cannon->transform.position);
+			//vec2 vel = projectilePrototype->motion.velocity;
+			//projectilePrototype->motion.velocity = direction * length(vel);
+		}
+
+		// Generate projectile
+		projectileReplicator->replicateInto(gameObjectPool);
 	}
 }
 

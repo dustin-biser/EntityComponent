@@ -2,11 +2,11 @@
 // GraphicsSystem.cpp
 //
 #include "GraphicsSystem.hpp"
-#include "Mesh2d.hpp"
 #include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
 #include "GameObjectPool.hpp"
 #include "graphics.h"
+#include "Transform.hpp"
 
 #include <cmath>
 
@@ -16,11 +16,6 @@
 static inline Transform multiplyTransforms(
 	const Transform & tA,
 	const Transform & tB
-);
-
-static inline Vertex transformVertex (
-	const Vertex & vertex,
-	const Transform & transform
 );
 
 
@@ -139,12 +134,12 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 		const Index indexV1 = mesh->edgeIndexList[index+1];
 
 		// Transform vertices from model space to world space.
-		Vertex v0 = transformVertex(vertexList[indexV0], transform);
-		Vertex v1 = transformVertex(vertexList[indexV1], transform);
+		Vertex v0 = GraphicsSystem::transformVertex(vertexList[indexV0], transform);
+		Vertex v1 = GraphicsSystem::transformVertex(vertexList[indexV1], transform);
 
 		// Transform vertices to window coordinate space.
-		v0 = transformVertex(v0, viewportTransform);
-		v1 = transformVertex(v1, viewportTransform);
+		v0 = GraphicsSystem::transformVertex(v0, viewportTransform);
+		v1 = GraphicsSystem::transformVertex(v1, viewportTransform);
 
 		lineList[numLines] = Line {v0, v1, gameObject.graphics->color};
 		++numLines;
@@ -188,7 +183,7 @@ static inline Transform multiplyTransforms (
 }
 
 //---------------------------------------------------------------------------------------
-static inline Vertex transformVertex (
+Vertex GraphicsSystem::transformVertex (
 	const Vertex & vertex,
 	const Transform & transform
 ) {

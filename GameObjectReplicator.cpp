@@ -60,3 +60,10 @@ GameObject * GameObjectReplicator::replicateInto (
 	return newObject;
 }
 
+//---------------------------------------------------------------------------------------
+GameObject * GameObjectReplicator::getPrototype() const
+{
+	GameObjectPool * prototypePool = impl->prototypePool;
+	return prototypePool->getObject(impl->prototypeId);
+}
+

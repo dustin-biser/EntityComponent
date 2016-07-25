@@ -3,9 +3,12 @@
 //
 #pragma once
 
+#include "Mesh2d.hpp"
+
 // Forward declare.
 class GraphicsSystemImpl;
 class GameObject;
+struct Transform;
 
 
 class GraphicsSystem {
@@ -30,6 +33,11 @@ public:
 		int screenWidth,
 		int screenHeight
 	) const;
+
+	static Vertex transformVertex (
+		const Vertex & vertex,
+		const Transform & transform
+	);
 
 
 private:

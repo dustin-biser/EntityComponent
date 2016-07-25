@@ -21,10 +21,11 @@ public:
 
 	~GameObjectReplicator();
 
-
 	GameObject * replicateInto(GameObjectPool * allocationPool);
 
 	void setPrototype(GameObject * prototype);
+
+	GameObject * getPrototype() const;
 
 
 private:
