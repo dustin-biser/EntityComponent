@@ -21,3 +21,15 @@ GraphicsComponent::GraphicsComponent (
 {
 
 }
+
+//---------------------------------------------------------------------------------------
+GraphicsComponent * GraphicsComponent::clone() const
+{
+	return new GraphicsComponent(*this);
+}
+
+//---------------------------------------------------------------------------------------
+GraphicsComponent::~GraphicsComponent()
+{
+
+}

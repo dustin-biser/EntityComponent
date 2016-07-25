@@ -1,5 +1,8 @@
 #include "C_Application.h"
 
+#include <cstdlib>
+using std::rand;
+
 #include <string>
 using std::string;
 
@@ -43,16 +46,18 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
+	// Allocation Pools
 	GameObjectPool * gameObjectPool;
 	GameObjectPool * childGameObjectPool;
 	GameObjectPool * prototypePool;
 
 	GameObjectID cannon_id;
 
-	GameObjectID clockPrototype_id;
-	GameObjectID projectilePrototype_id;
+	GameObjectReplicator * clockReplicator;
+	GameObjectReplicator * projectileReplicator;
 
 
+	// Subsystems
 	GraphicsSystem * graphicsSystem;
 
 	C_ApplicationImpl (
@@ -64,7 +69,7 @@ private:
 
 	void initGameObjectPools();
 
-	void initGameObjectPrototypes();
+	void initGameObjectReplicators();
 
 	void initSubSystems();
 
@@ -94,7 +99,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 
 	initGameObjectPools();
 
-	initGameObjectPrototypes();
+	initGameObjectReplicators();
 
 	initSubSystems();
 
@@ -130,9 +135,9 @@ void C_ApplicationImpl::initGameObjectPools()
 }
 
 //---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initGameObjectPrototypes()
+void C_ApplicationImpl::initGameObjectReplicators()
 {
-	// Construct Clock Prototype
+	// Initialize clock replicator
 	{
 		GraphicsComponent * hourHandGraphicsComponent = new GraphicsComponent(
 			Color{ 1.0f, 1.0f, 1.0f },
@@ -156,49 +161,45 @@ void C_ApplicationImpl::initGameObjectPrototypes()
 
 		GameObject * hourHand = childGameObjectPool->create(GameObject::generateID());
 		hourHand->graphics = hourHandGraphicsComponent;
-		hourHand->transform.rotationAngle = k_PI * 0.1f;
 
 		GameObject * minuteHand = childGameObjectPool->create(GameObject::generateID());
 		minuteHand->graphics = minuteHandGraphicsComponent;
-		minuteHand->transform.rotationAngle = k_PI * 0.2f;
 
 		GameObject * secondHand = childGameObjectPool->create(GameObject::generateID());
 		secondHand->graphics = secondHandGraphicsComponent;
-		secondHand->transform.rotationAngle = k_PI * 0.3f;
 
 
-		clockPrototype_id = GameObject::generateID();
-		prototypePool->create(clockPrototype_id);
-		prototypePool->destroy(clockPrototype_id);
-		GameObject * clock = prototypePool->create(clockPrototype_id);
+		GameObject * clockPrototype = prototypePool->create(GameObject::generateID());
 
+		clockPrototype->addChild(hourHand);
+		clockPrototype->addChild(minuteHand);
+		clockPrototype->addChild(secondHand);
 
-		clock->graphics = clockGraphicsComponent;
-
-		clock->addChild(hourHand);
-		clock->addChild(minuteHand);
-		clock->addChild(secondHand);
+		clockPrototype->graphics = clockGraphicsComponent;
 
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
-		clock->transform.scale = vec2(scale_x, scale_y);
+		clockPrototype->transform.scale = vec2(scale_x, scale_y);
+
+		clockReplicator = new GameObjectReplicator(clockPrototype);
 	}
 
-	// Construct Projectile Prototype
+	// Initialize projectile replicator
 	{
 		GraphicsComponent * projectileGraphicsComponent = new GraphicsComponent (
 			Color{ 1.0f, 1.0f, 1.0f },
 			&meshAssetDirectory.at("Projectile")
 		);
 
-		projectilePrototype_id = GameObject::generateID();
-		GameObject * projectile = prototypePool->create(projectilePrototype_id);
-		projectile->graphics = projectileGraphicsComponent;
+		GameObject * projectilePrototype = prototypePool->create(GameObject::generateID());
+		projectilePrototype->graphics = projectileGraphicsComponent;
 
 		float scale_x = (30.0f / m_ScreenWidth);
 		float scale_y = (30.0f / m_ScreenHeight);
-		projectile->transform.scale = vec2(scale_x, scale_y);
-		projectile->transform.position = vec2(-0.8f, 0.0f);
+		projectilePrototype->transform.scale = vec2(scale_x, scale_y);
+		projectilePrototype->transform.position = vec2(-0.8f, 0.0f);
+
+		projectileReplicator = new GameObjectReplicator(projectilePrototype);
 	}
 }
 
@@ -210,20 +211,47 @@ void C_ApplicationImpl::initSubSystems()
 }
 
 //---------------------------------------------------------------------------------------
+static vec2 randomPositionBetween (
+	vec2 min,
+	vec2 max
+) {
+	float t0 = rand() / static_cast<float>(RAND_MAX);
+	float t1 = rand() / static_cast<float>(RAND_MAX);
+
+	float x = (1.0f - t0) * min.x + t0 * max.x;
+	float y = (1.0f - t1) * min.y + t1 * max.y;
+
+	return vec2(x, y);
+}
+
+//---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()
 {
-	// Create Cannon
+	// Load Cannon
 	{
-		cannon_id = GameObject::generateID();
+		// Keep track of cannon for later use.
+		this->cannon_id = GameObject::generateID();
+
 		GameObject * cannon = gameObjectPool->create(cannon_id);
-		cannon->graphics = new GraphicsComponent(
+		cannon->graphics = new GraphicsComponent (
 			Color{ 0.2f, 0.2f, 1.0f },
 			&meshAssetDirectory.at("Cannon")
 		);
 		float scale_x = (60.0f / m_ScreenWidth);
 		float scale_y = (60.0f / m_ScreenHeight);
 		cannon->transform.scale = vec2(scale_x, scale_y);
+
+		// Place cannon near bottom of screen.
 		cannon->transform.position = vec2(0.0f, -0.8f);
+	}
+
+	// Load 2 Clocks in random positions
+	{
+		GameObject * clock1 = clockReplicator->replicateInto(gameObjectPool);
+		clock1->transform.position = randomPositionBetween(vec2(-0.7f, 0.0f), vec2(-0.2f, 0.8f));
+
+		GameObject * clock2 = clockReplicator->replicateInto(gameObjectPool);
+		clock2->transform.position = randomPositionBetween(vec2(0.2f, 0.0f), vec2(0.7f, 0.8f));
 	}
 }
 
@@ -235,9 +263,6 @@ void C_ApplicationImpl::Tick (
 
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
 	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
-	graphicsSystem->drawGameObjects(prototypePool->begin(), prototypePool->numActive());
-
-
 }
 
 //---------------------------------------------------------------------------------------

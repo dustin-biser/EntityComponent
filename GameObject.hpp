@@ -42,6 +42,8 @@ public:
 	// Returns the pool where this GameObject resides.
 	GameObjectPool * getPool () const;
 
+	void clone(const GameObject & other);
+
 	struct ChildGameObject {
 		GameObjectID id;
 		GameObjectPool * residentPool;
@@ -50,8 +52,9 @@ public:
 
 
 private:
-	// Game Objects can only be created using GameObjectPools.
+	// GameObjects can only be created through these classes: 
 	friend class GameObjectPool;
+	friend class GameObjectReplicator;
 	GameObject();
 
 	void init (

@@ -17,10 +17,14 @@ class GraphicsComponent {
 public:
 	GraphicsComponent();
 
+	virtual ~GraphicsComponent();
+
 	GraphicsComponent (
 		const Color & color,
 		const Mesh2d * mesh
 	);
+
+	virtual GraphicsComponent * clone() const;
 
 	Color color;
 	const Mesh2d * mesh;

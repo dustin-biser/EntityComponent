@@ -83,3 +83,39 @@ GameObjectPool * GameObject::getPool() const
 {
 	return this->residentPool;
 }
+
+//---------------------------------------------------------------------------------------
+void GameObject::clone (
+	const GameObject & other
+) {
+	this->transform = other.transform;
+
+	// Clone components, which copies and creates new copies on the heap.
+	this->graphics = other.graphics->clone();
+	this->motion = other.motion->clone();
+	this->physics = other.physics->clone();
+
+	// Destroy current child objects
+	for (auto & child : this->childObjects) {
+		child.residentPool->destroy(child.id);
+	}
+
+	// Resize current childObjects list.
+	const size_t numChildren = other.childObjects.size();
+	this->childObjects.resize(numChildren);
+
+	// Clone other's child objects:
+	for (size_t i(0); i < numChildren; ++i) {
+		ChildGameObject child = other.childObjects[i];
+
+		// Create a new child in the same pool as other's child.
+		GameObject * newChild = child.residentPool->create(GameObject::generateID());
+
+		// Clone child
+		GameObject * otherChild = child.residentPool->getObject(child.id);
+		newChild->clone(*otherChild);
+
+		// Add newChild to list of child objects for current GameObject.
+		this->childObjects[i] = ChildGameObject {newChild->id, newChild->residentPool};
+	}
+}

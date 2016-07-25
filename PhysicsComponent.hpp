@@ -8,4 +8,8 @@ class PhysicsComponent {
 public:
 	PhysicsComponent();
 
+	virtual ~PhysicsComponent();
+
+	PhysicsComponent * clone() const;
+
 };
