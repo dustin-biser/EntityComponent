@@ -105,6 +105,7 @@
     <ClCompile Include="Motion\MotionComponent.cpp" />
     <ClCompile Include="Motion\MotionSystem.cpp" />
     <ClCompile Include="Physics\PhysicsComponent.cpp" />
+    <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Physics\ProjectileCollisionObserver.cpp" />
     <ClCompile Include="Core\time.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="Motion\MotionSystem.hpp" />
     <ClInclude Include="Physics\PhysicsEventObserver.hpp" />
     <ClInclude Include="Physics\PhysicsComponent.hpp" />
+    <ClInclude Include="Physics\PhysicsSystem.hpp" />
     <ClInclude Include="Physics\ProjectileCollisionObserver.hpp" />
     <ClInclude Include="Core\time.h" />
     <ClInclude Include="Core\Transform.hpp" />

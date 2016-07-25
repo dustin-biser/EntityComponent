@@ -13,12 +13,6 @@
 #define MAX_LINES_DRAWN 1024
 
 
-static inline Transform multiplyTransforms(
-	const Transform & tA,
-	const Transform & tB
-);
-
-
 class GraphicsSystemImpl {
 private:
 	friend class GraphicsSystem;
@@ -125,7 +119,7 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 	size_t & numLines,
 	const Transform & parentTransform
 ) {
-	Transform transform = multiplyTransforms(gameObject.transform, parentTransform);
+	Transform transform = gameObject.transform * parentTransform;
 	const Mesh2d * mesh = gameObject.graphics->mesh;
 	const auto vertexList = mesh->vertexList;
 
@@ -134,12 +128,12 @@ void GraphicsSystemImpl::buildLinesFromGameObject (
 		const Index indexV1 = mesh->edgeIndexList[index+1];
 
 		// Transform vertices from model space to world space.
-		Vertex v0 = GraphicsSystem::transformVertex(vertexList[indexV0], transform);
-		Vertex v1 = GraphicsSystem::transformVertex(vertexList[indexV1], transform);
+		Vertex v0 = transform * vertexList[indexV0];
+		Vertex v1 = transform * vertexList[indexV1];
 
 		// Transform vertices to window coordinate space.
-		v0 = GraphicsSystem::transformVertex(v0, viewportTransform);
-		v1 = GraphicsSystem::transformVertex(v1, viewportTransform);
+		v0 = viewportTransform * v0;
+		v1 = viewportTransform * v1;
 
 		lineList[numLines] = Line {v0, v1, gameObject.graphics->color};
 		++numLines;
@@ -167,48 +161,4 @@ void GraphicsSystemImpl::drawLine(const Line & line)
 		static_cast<int>(line.end.y),
 		GetRGB(red, green, blue)
 	);
-}
-
-//---------------------------------------------------------------------------------------
-static inline Transform multiplyTransforms (
-	const Transform & tA,
-	const Transform & tB
-) {
-	Transform result;
-	result.position = tA.position + tB.position;
-	result.scale = tA.scale * tB.scale;
-	result.rotationAngle = tA.rotationAngle + tB.rotationAngle;
-
-	return result;
-}
-
-//---------------------------------------------------------------------------------------
-Vertex GraphicsSystem::transformVertex (
-	const Vertex & vertex,
-	const Transform & transform
-) {
-	float x = vertex.x;
-	float y = vertex.y;
-
-	// Scale
-	x = x * transform.scale.x;
-	y = y * transform.scale.y;
-
-	// Rotate
-	const float angle = transform.rotationAngle;
-	if (std::fabs(angle) > 1.0e-6) {
-		const float sinAngle = std::sin(angle);
-		const float cosAngle = std::cos(angle);
-		float x_new = cosAngle * x - sinAngle * y;
-		float y_new = sinAngle * x + cosAngle * y;
-
-		x = x_new;
-		y = y_new;
-	}
-
-	// Translate
-	x += transform.position.x;
-	y += transform.position.y;
-
-	return Vertex {x, y};
 }

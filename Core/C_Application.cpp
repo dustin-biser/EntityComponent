@@ -15,22 +15,26 @@ using std::unordered_map;
 #include "graphics.h"
 #include "time.h"
 
-#include "GameConstants.hpp"
-#include "Assets\AssetDefinitions.hpp"
-#include "AssetLoader.hpp"
-#include "Mesh2d.hpp"
+#include "Core/GameConstants.hpp"
+#include "Core/Transform.hpp"
 
-#include "GameObject.hpp"
-#include "GameObjectPool.hpp"
-#include "GameObjectReplicator.hpp"
+#include "Assets/AssetDefinitions.hpp"
+#include "Assets/AssetLoader.hpp"
+#include "Assets/Mesh2d.hpp"
 
-#include "GraphicsComponent.hpp"
-#include "MotionComponent.hpp"
-#include "ClockHandMotionComponent.hpp"
-#include "PhysicsComponent.hpp"
+#include "GameObject/GameObject.hpp"
+#include "GameObject/GameObjectPool.hpp"
+#include "GameObject/GameObjectReplicator.hpp"
 
-#include "GraphicsSystem.hpp"
-#include "MotionSystem.hpp"
+#include "Graphics/GraphicsComponent.hpp"
+#include "Graphics/GraphicsSystem.hpp"
+
+#include "Motion/MotionComponent.hpp"
+#include "Motion/ClockHandMotionComponent.hpp"
+#include "Motion/MotionSystem.hpp"
+
+#include "Physics/PhysicsComponent.hpp"
+
 
 
 static vec2 randomPositionBetween ( vec2 min, vec2 max); 
@@ -321,7 +325,7 @@ void C_ApplicationImpl::handleInput (
 			// Get vertex at tip of cannon.
 			Vertex vertex = cannon->graphics->mesh->vertexList[2];
 			Transform cannonTransform = cannon->transform;
-			vertex = GraphicsSystem::transformVertex(vertex, cannonTransform);
+			vertex = cannonTransform * vertex;
 
 			// Update projectile's position and orientation
 			projectilePrototype->transform.position = vertex;

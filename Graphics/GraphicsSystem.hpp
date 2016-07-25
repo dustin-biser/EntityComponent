@@ -34,11 +34,6 @@ public:
 		int screenHeight
 	) const;
 
-	static Vertex transformVertex (
-		const Vertex & vertex,
-		const Transform & transform
-	);
-
 
 private:
 	GraphicsSystemImpl * impl;
