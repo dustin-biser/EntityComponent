@@ -26,10 +26,15 @@ using std::unordered_map;
 
 #include "GraphicsComponent.hpp"
 #include "MotionComponent.hpp"
+#include "ClockHandMotionComponent.hpp"
 #include "PhysicsComponent.hpp"
 
 #include "GraphicsSystem.hpp"
 #include "MotionSystem.hpp"
+
+
+static vec2 randomPositionBetween ( vec2 min, vec2 max); 
+
 
 
 class C_ApplicationImpl {
@@ -139,34 +144,39 @@ void C_ApplicationImpl::initGameObjectReplicators()
 {
 	// Initialize clock replicator
 	{
-		GraphicsComponent * hourHandGraphicsComponent = new GraphicsComponent(
+		GraphicsComponent * hourHandGraphics = new GraphicsComponent(
 			Color{ 1.0f, 1.0f, 1.0f },
 			&meshAssetDirectory.at("HourHand")
 		);
 
-		GraphicsComponent * minuteHandGraphicsComponent = new GraphicsComponent(
+		GraphicsComponent * minuteHandGraphics = new GraphicsComponent(
 			Color{ 1.0f, 0.3f, 0.3f },
 			&meshAssetDirectory.at("MinuteHand")
 		);
 
-		GraphicsComponent * secondHandGraphicsComponent = new GraphicsComponent(
+		GraphicsComponent * secondHandGraphics = new GraphicsComponent(
 			Color{ 0.8f, 0.8f, 0.2f },
 			&meshAssetDirectory.at("SecondHand")
 		);
 
-		GraphicsComponent * clockGraphicsComponent = new GraphicsComponent(
+		GraphicsComponent * clockBaseGraphics = new GraphicsComponent(
 			Color{ 0.8f, 0.2f, 0.2f },
 			&meshAssetDirectory.at("ClockBase")
 		);
 
+		MotionComponent * clockHandMotion = new ClockHandMotionComponent();
+
 		GameObject * hourHand = childGameObjectPool->create(GameObject::generateID());
-		hourHand->graphics = hourHandGraphicsComponent;
+		hourHand->graphics = hourHandGraphics;
+		hourHand->motion = clockHandMotion;
 
 		GameObject * minuteHand = childGameObjectPool->create(GameObject::generateID());
-		minuteHand->graphics = minuteHandGraphicsComponent;
+		minuteHand->graphics = minuteHandGraphics;
+		minuteHand->motion = clockHandMotion;
 
 		GameObject * secondHand = childGameObjectPool->create(GameObject::generateID());
-		secondHand->graphics = secondHandGraphicsComponent;
+		secondHand->graphics = secondHandGraphics;
+		secondHand->motion = clockHandMotion;
 
 
 		GameObject * clockPrototype = prototypePool->create(GameObject::generateID());
@@ -175,7 +185,7 @@ void C_ApplicationImpl::initGameObjectReplicators()
 		clockPrototype->addChild(minuteHand);
 		clockPrototype->addChild(secondHand);
 
-		clockPrototype->graphics = clockGraphicsComponent;
+		clockPrototype->graphics = clockBaseGraphics;
 
 		float scale_x = (100.0f / m_ScreenWidth);
 		float scale_y = (100.0f / m_ScreenHeight);
@@ -252,9 +262,12 @@ void C_ApplicationImpl::loadGameObjects()
 	{
 		GameObject * clock1 = clockReplicator->replicateTo(gameObjectPool);
 		clock1->transform.position = randomPositionBetween(vec2(-0.7f, 0.0f), vec2(-0.2f, 0.8f));
+		clock1->motion->velocity = randomPositionBetween(vec2(-0.05f, -0.05f), vec2(0.05f, 0.05f));
+
 
 		GameObject * clock2 = clockReplicator->replicateTo(gameObjectPool);
 		clock2->transform.position = randomPositionBetween(vec2(0.2f, 0.0f), vec2(0.7f, 0.8f));
+		clock2->motion->velocity = randomPositionBetween(vec2(-0.05f, -0.05f), vec2(0.05f, 0.05f));
 	}
 }
 

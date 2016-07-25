@@ -15,6 +15,6 @@ public:
 
 	virtual void update (
 		GameObject * gameObject,
-		double elapsedTime
+		float elapsedTime
 	);
 };

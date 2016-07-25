@@ -18,9 +18,9 @@ MotionComponent * ClockHandMotionComponent::clone() const
 }
 
 //---------------------------------------------------------------------------------------
-void ClockHandMotionComponent::update(
+void ClockHandMotionComponent::update (
 	GameObject * gameObject,
-	double elapsedTime
+	float elapsedTime
 ) {
 
 	MeshId meshId = gameObject->graphics->mesh->meshId;

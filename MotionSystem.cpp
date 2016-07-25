@@ -48,12 +48,12 @@ void MotionSystemImpl::update (
 	GameObject * gameObject = gameObjectPool->begin();
 	for (size_t i(0); i < gameObjectPool->numActive(); ++i) {
 		gameObject[i].motion->update(&gameObject[i], ellapsedTimeInSeconds);
-	}
 
-	// Update motion for each child of gameObject
-	for (auto & child : gameObject->childObjects) {
-		GameObject * childGameObject = child.residentPool->getObject(child.id);
-		childGameObject->motion->update(childGameObject, ellapsedTimeInSeconds);
+		// Update motion for each child of gameObject
+		for (auto & child : gameObject[i].childObjects) {
+			GameObject * childGameObject = child.residentPool->getObject(child.id);
+			childGameObject->motion->update(childGameObject, ellapsedTimeInSeconds);
+		}
 	}
 }
 
