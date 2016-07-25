@@ -91,6 +91,8 @@
   <ItemGroup>
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
+    <ClCompile Include="Backup\UnusedCode.cpp" />
+    <ClCompile Include="ClockHandMotionComponent.cpp" />
     <ClCompile Include="C_Application.cpp" />
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="GameObjectReplicator.cpp" />
@@ -100,6 +102,7 @@
     <ClCompile Include="GraphicsSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MotionComponent.cpp" />
+    <ClCompile Include="MotionSystem.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -108,7 +111,9 @@
   <ItemGroup>
     <ClInclude Include="AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="ClockHandMotionComponent.hpp" />
     <ClInclude Include="C_Application.h" />
+    <ClInclude Include="GameConstants.hpp" />
     <ClInclude Include="GameObjectReplicator.hpp" />
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="graphics.h" />
@@ -117,6 +122,7 @@
     <ClInclude Include="Mesh2d.hpp" />
     <ClInclude Include="GameObjectPool.hpp" />
     <ClInclude Include="MotionComponent.hpp" />
+    <ClInclude Include="MotionSystem.hpp" />
     <ClInclude Include="PhysicsComponent.hpp" />
     <ClInclude Include="time.h" />
     <ClInclude Include="Transform.hpp" />

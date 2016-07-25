@@ -15,23 +15,21 @@ using std::unordered_map;
 #include "graphics.h"
 #include "time.h"
 
+#include "GameConstants.hpp"
 #include "Assets\AssetDefinitions.hpp"
 #include "AssetLoader.hpp"
 #include "Mesh2d.hpp"
+
 #include "GameObject.hpp"
 #include "GameObjectPool.hpp"
 #include "GameObjectReplicator.hpp"
-#include "GraphicsSystem.hpp"
+
 #include "GraphicsComponent.hpp"
 #include "MotionComponent.hpp"
+#include "PhysicsComponent.hpp"
 
-
-static const float k_PI = 3.1415926536f;
-
-static const size_t MAX_GAME_OBJECTS       = 1024;
-static const size_t MAX_CHILD_GAME_OBJECTS = 1024;
-static const size_t MAX_PROTOTYPE_OBJECTS  = 3;
-
+#include "GraphicsSystem.hpp"
+#include "MotionSystem.hpp"
 
 
 class C_ApplicationImpl {
@@ -60,6 +58,7 @@ private:
 
 	// Subsystems
 	GraphicsSystem * graphicsSystem;
+	MotionSystem * motionSystem;
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -194,6 +193,7 @@ void C_ApplicationImpl::initGameObjectReplicators()
 
 		GameObject * projectilePrototype = prototypePool->create(GameObject::generateID());
 		projectilePrototype->graphics = projectileGraphicsComponent;
+		projectilePrototype->motion->velocity = vec2(0.0f, 1.5f);
 
 		float scale_x = (30.0f / m_ScreenWidth);
 		float scale_y = (30.0f / m_ScreenHeight);
@@ -209,6 +209,8 @@ void C_ApplicationImpl::initSubSystems()
 {
 	graphicsSystem = new GraphicsSystem();
 	graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+
+	motionSystem = new MotionSystem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -261,6 +263,9 @@ void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
 	handleInput(pressedKeys);
+
+	float ellapsedTimeInSconds = 1.0f / 50.0f;
+	motionSystem->update(gameObjectPool, ellapsedTimeInSconds);
 
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
 	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
