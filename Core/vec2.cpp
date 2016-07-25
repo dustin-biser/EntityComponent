@@ -23,35 +23,57 @@ vec2::vec2 (float x, float y)
 }
 
 //---------------------------------------------------------------------------------------
-vec2 vec2::operator * (float x)
+vec2::vec2(float x)
+	: x(x),
+	  y(x)
 {
-	this->x *= x;
-	this->y *= x;
-	return *this;
+
 }
 
 //---------------------------------------------------------------------------------------
-bool vec2::operator == (const vec2 & other)
+vec2 vec2::operator * (float x) const
+{
+	vec2 result(*this);
+	result.x *= x;
+	result.y *= x;
+
+	return result;
+}
+
+//---------------------------------------------------------------------------------------
+bool vec2::operator == (const vec2 & other) const
 {
 	return (this->x == other.x) && (this->y == other.y);
 }
 
 //---------------------------------------------------------------------------------------
-vec2 operator + (const vec2 & v1, const vec2 & v2)
+vec2 vec2::operator + (const vec2 & other) const
 {
-	return vec2(v1.x + v2.x, v1.y + v2.y);
+	vec2 result(*this);
+	result.x += other.x;
+	result.y += other.y;
+
+	return result;
 }
 
 //---------------------------------------------------------------------------------------
-vec2 operator - (const vec2 & v1, const vec2 & v2)
+vec2 vec2::operator - (const vec2 & other) const
 {
-	return vec2(v1.x - v2.x, v1.y - v2.y);
+	vec2 result(*this);
+	result.x -= other.x;
+	result.y -= other.y;
+
+	return result;
 }
 
 //---------------------------------------------------------------------------------------
-vec2 operator * (const vec2 & v1, const vec2 & v2)
+vec2 vec2::operator * (const vec2 & other) const
 {
-	return vec2 ( v1.x * v2.x, v1.y * v2.y );
+	vec2 result(*this);
+	result.x *= other.x;
+	result.y *= other.y;
+
+	return result;
 }
 
 //---------------------------------------------------------------------------------------

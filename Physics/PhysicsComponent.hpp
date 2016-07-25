@@ -3,8 +3,14 @@
 //
 #pragma once
 
-
 #include "vec2.hpp"
+
+
+struct BoundingBox {
+	vec2 min;
+	vec2 max;
+};
+
 
 class PhysicsComponent {
 public:
@@ -14,8 +20,5 @@ public:
 
 	PhysicsComponent * clone() const;
 
-	struct BoundingBox {
-		vec2 min;
-		vec2 max;
-	} boundingBox;
+	BoundingBox boundingBox;
 };
