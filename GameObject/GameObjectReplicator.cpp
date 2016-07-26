@@ -36,7 +36,7 @@ GameObjectReplicator::GameObjectReplicator (
 	GameObject * prototype
 ) {
 	impl = new GameObjectReplicatorImpl (
-		prototype->id, prototype->residentPool
+		prototype->id, prototype->getPool()
 	);
 }
 

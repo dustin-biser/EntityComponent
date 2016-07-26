@@ -114,8 +114,7 @@ GameObject * GameObjectPoolImpl::create (
 //---------------------------------------------------------------------------------------
 void GameObjectPoolImpl::destroy (
 	GameObjectID id
-)
-{
+) {
 	size_t numActive = numActiveObjects();
 	if (numActive == 0) {
 		// No objects left to destroy.

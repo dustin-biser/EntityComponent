@@ -54,9 +54,8 @@ public:
 
 
 private:
-	// GameObjects can only be created through these classes: 
+	// GameObjects can only be created through GameObjectPools:
 	friend class GameObjectPool;
-	friend class GameObjectReplicator;
 	GameObject();
 
 	void init (
