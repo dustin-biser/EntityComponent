@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#if false
+
 #include "Mesh2d.hpp"
 
 // Forward declare.
@@ -39,3 +41,5 @@ private:
 	GraphicsSystemImpl * impl;
 };
 
+
+#endif

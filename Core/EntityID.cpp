@@ -1,28 +1,32 @@
 //
-// PhysicsComponent.cpp
+// EntityID.cpp
 //
-#if false
+#include "EntityID.hpp"
 
-#include "PhysicsComponent.hpp"
-
-#include "PhysicsSystem.hpp"
+EntityID::id_value EntityID::currentId = 0;
 
 //---------------------------------------------------------------------------------------
-PhysicsComponent::PhysicsComponent () 
+EntityID::EntityID (
+	id_value value
+) 
+	: value(value)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-PhysicsComponent::~PhysicsComponent()
+EntityID::EntityID (
+	const EntityID & other
+)
+	: value(other.value)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-PhysicsComponent * PhysicsComponent::clone() const
+EntityID::id_value EntityID::generateID()
 {
-	return new PhysicsComponent(*this);
+	return currentId++;
 }
 
-#endif
+

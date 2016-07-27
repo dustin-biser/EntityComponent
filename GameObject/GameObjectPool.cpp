@@ -1,6 +1,8 @@
 //
 // GameObjectPool.cpp
 //
+#if false
+
 #include "GameObjectPool.hpp"
 
 #include <unordered_map>
@@ -190,3 +192,5 @@ size_t GameObjectPool::numActive() const
 {
 	return impl->numActiveObjects();
 }
+
+#endif

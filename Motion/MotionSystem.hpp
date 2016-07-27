@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#if false
+
 // Forward declare.
 class GameObjectPool;
 class MotionSystemImpl;
@@ -20,3 +22,5 @@ public:
 private:
 	MotionSystemImpl * impl;
 };
+
+#endif

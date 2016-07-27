@@ -24,7 +24,6 @@ using std::unordered_map;
 
 #include "GameObject/GameObject.hpp"
 #include "GameObject/GameObjectPool.hpp"
-#include "GameObject/GameObjectReplicator.hpp"
 
 #include "Graphics/GraphicsComponent.hpp"
 #include "Graphics/GraphicsSystem.hpp"
@@ -37,7 +36,7 @@ using std::unordered_map;
 
 
 
-static vec2 randomPositionBetween ( vec2 min, vec2 max); 
+static vec2 randomPositionBetween (vec2 min, vec2 max); 
 
 
 
@@ -54,6 +53,7 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
+#if false
 	// Allocation Pools
 	GameObjectPool * gameObjectPool;
 	GameObjectPool * childGameObjectPool;
@@ -68,6 +68,7 @@ private:
 	// Subsystems
 	GraphicsSystem * graphicsSystem;
 	MotionSystem * motionSystem;
+#endif
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -106,6 +107,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 {
 	buildMeshAssetDirectory();
 
+#if false
 	initGameObjectPools();
 
 	initGameObjectReplicators();
@@ -113,6 +115,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 	initSubSystems();
 
 	loadGameObjects();
+#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -138,14 +141,18 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::initGameObjectPools()
 {
+#if false
 	gameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
 	childGameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
 	prototypePool = new GameObjectPool(MAX_PROTOTYPE_OBJECTS);
+#endif
 }
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::initGameObjectReplicators()
 {
+#if false
+
 	// Initialize clock replicator
 	{
 		GraphicsComponent * hourHandGraphics = new GraphicsComponent(
@@ -216,15 +223,18 @@ void C_ApplicationImpl::initGameObjectReplicators()
 
 		projectileReplicator = new GameObjectReplicator(projectilePrototype);
 	}
+#endif
 }
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::initSubSystems()
 {
+#if false
 	graphicsSystem = new GraphicsSystem();
 	graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 
 	motionSystem = new MotionSystem();
+#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -244,6 +254,7 @@ static vec2 randomPositionBetween (
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()
 {
+#if false
 	// Load Cannon
 	{
 		// Keep track of cannon for later use.
@@ -273,12 +284,14 @@ void C_ApplicationImpl::loadGameObjects()
 		clock2->transform.position = randomPositionBetween(vec2(0.2f, 0.0f), vec2(0.7f, 0.8f));
 		clock2->motion->velocity = randomPositionBetween(vec2(-0.05f, -0.05f), vec2(0.05f, 0.05f));
 	}
+#endif
 }
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
+#if false
 	handleInput(pressedKeys);
 
 	float ellapsedTimeInSconds = 1.0f / 50.0f;
@@ -286,12 +299,14 @@ void C_ApplicationImpl::Tick (
 
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
 	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
+#endif
 }
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::handleInput (
 	C_Application::T_PressedKey pressedKeys
 ) {
+#if false
 	const float deltaAngle = 0.1f;
 	const float maxAngle = k_PI * 0.5f;
 	const float minAngle = -maxAngle;
@@ -340,6 +355,7 @@ void C_ApplicationImpl::handleInput (
 		// Generate projectile
 		projectileReplicator->replicateTo(gameObjectPool);
 	}
+#endif
 }
 
 //---------------------------------------------------------------------------------------

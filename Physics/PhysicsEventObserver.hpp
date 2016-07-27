@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#if false
+
 // Forward declare
 class GameObject;
 class PhysicsEvent;
@@ -18,3 +20,5 @@ public:
 		PhysicsEvent * physicsEvent
 	) = 0;
 };
+
+#endif

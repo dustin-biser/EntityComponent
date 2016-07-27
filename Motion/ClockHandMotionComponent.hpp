@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#if false
+
 #include "MotionComponent.hpp"
 
 // Forward declare.
@@ -18,3 +20,5 @@ public:
 		float elapsedTime
 	);
 };
+
+#endif

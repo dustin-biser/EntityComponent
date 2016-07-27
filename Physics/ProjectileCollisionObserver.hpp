@@ -2,6 +2,8 @@
 // ProjectileCollisionObsever.hpp
 //
 
+#if false
+
 #include "PhysicsEventObserver.hpp"
 
 // Forward declare.
@@ -17,3 +19,5 @@ public:
 	) override;
 
 };
+
+#endif

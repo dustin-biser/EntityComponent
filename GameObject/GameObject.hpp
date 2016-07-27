@@ -3,66 +3,28 @@
 //
 #pragma once
 
-#include <vector>
-#include "Transform.hpp"
+#include <string>
 
-
-// Forward declare
-class MotionComponent;
-class GraphicsComponent;
-class PhysicsComponent;
-class GameObjectPool;
-
-
-typedef unsigned long GameObjectID;
+#include "Core/EntityID.hpp"
+#include "Core/SmartPointer.hpp"
 
 
 class GameObject {
 public:
-	~GameObject();
-
-	// Returns a globally unique GameObjectID.
-	static GameObjectID generateID();
-
-	GameObjectID id;
-	Transform transform;
-
-	MotionComponent * motion;
-	GraphicsComponent * graphics;
-	PhysicsComponent * physics;
-
-	void addChild (
-		GameObject * child
+	GameObject (
+		const std::string & name
 	);
 
-	GameObject * getChild (
-		GameObjectID childID
-	) const;
+	template <class T>
+	void addComponent();
 
-	// Returns the pool where this GameObject resides.
-	GameObjectPool * getPool () const;
-
-	void clone (const GameObject & other);
-
-	void destroy();
-
-	struct ChildGameObject {
-		GameObjectID id;
-		GameObjectPool * residentPool;
-	};
-	std::vector<ChildGameObject> childObjects;
-
+	template <class T>
+	SmartPointer<T> getComponent();
 
 private:
-	// GameObjects can only be created through GameObjectPools:
-	friend class GameObjectPool;
-	GameObject();
-
-	void init (
-		GameObjectID id,
-		GameObjectPool * residentPool
-	);
-
-	// Pool where this GameObject is stored.
-	GameObjectPool * residentPool;  
+	EntityID id;
+	std::string name;
 };
+
+
+#include "GameObject.inl"

@@ -1,6 +1,8 @@
 //
 // GraphicsSystem.cpp
 //
+#if false
+
 #include "GraphicsSystem.hpp"
 #include "GraphicsComponent.hpp"
 #include "GameObject.hpp"
@@ -162,3 +164,4 @@ void GraphicsSystemImpl::drawLine(const Line & line)
 		GetRGB(red, green, blue)
 	);
 }
+#endif

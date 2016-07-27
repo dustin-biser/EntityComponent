@@ -1,6 +1,8 @@
 //
 // MotionComponent.cpp
 //
+#if false
+
 #include "MotionComponent.hpp"
 #include "GameObject.hpp"
 
@@ -36,3 +38,5 @@ void MotionComponent::update (
 
 	gameObject->transform.position = pos;
 }
+
+#endif

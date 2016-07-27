@@ -1,6 +1,8 @@
 //
 // MotionSystem.cpp
 //
+#if false
+
 #include "MotionSystem.hpp"
 #include "GameObjectPool.hpp"
 #include "GameObject.hpp"
@@ -57,3 +59,4 @@ void MotionSystemImpl::update (
 	}
 }
 
+#endif

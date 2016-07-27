@@ -5,7 +5,9 @@
 
 #include "vec2.hpp"
 
-struct Transform {
+#include "Core/Component.hpp"
+
+class Transform : public Component {
 	Transform();
 
 	vec2 position;

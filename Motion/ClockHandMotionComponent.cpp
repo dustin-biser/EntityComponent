@@ -2,6 +2,8 @@
 // ClockHandMotionComponent.cpp
 //
 
+#if false
+
 #include "ClockHandMotionComponent.hpp"
 #include "GameObject.hpp"
 #include "GraphicsComponent.hpp"
@@ -43,3 +45,5 @@ void ClockHandMotionComponent::update (
 
 	gameObject->transform.rotationAngle = rotationAngle;
 }
+
+#endif

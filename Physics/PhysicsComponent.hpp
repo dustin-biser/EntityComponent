@@ -3,7 +3,14 @@
 //
 #pragma once
 
+#if false
+
 #include "vec2.hpp"
+
+#include "GameObject.hpp"
+
+// Forward declare.
+class PhysicsSystem;
 
 
 struct BoundingBox {
@@ -22,3 +29,5 @@ public:
 
 	BoundingBox boundingBox;
 };
+
+#endif

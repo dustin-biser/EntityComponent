@@ -93,10 +93,11 @@
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="Assets\AssetLoader.cpp" />
     <ClCompile Include="Backup\UnusedCode.cpp" />
+    <ClCompile Include="Core\ComponentSystemLocator.inl" />
+    <ClCompile Include="Core\EntityID.cpp" />
     <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
     <ClCompile Include="GameObject\GameObjectPool.cpp" />
-    <ClCompile Include="GameObject\GameObjectReplicator.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Graphics\graphics.cpp" />
     <ClCompile Include="Graphics\GraphicsComponent.cpp" />
@@ -114,10 +115,14 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="Core\Component.hpp" />
+    <ClInclude Include="Core\ComponentSystem.hpp" />
+    <ClInclude Include="Core\ComponentSystemLocator.hpp" />
+    <ClInclude Include="Core\EntityID.hpp" />
+    <ClInclude Include="Core\SmartPointer.hpp" />
     <ClInclude Include="Motion\ClockHandMotionComponent.hpp" />
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
-    <ClInclude Include="GameObject\GameObjectReplicator.hpp" />
     <ClInclude Include="GameObject\GameObject.hpp" />
     <ClInclude Include="Graphics\graphics.h" />
     <ClInclude Include="Graphics\GraphicsComponent.hpp" />
@@ -136,6 +141,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="Core\ComponentSystem.inl" />
+    <None Include="GameObject\GameObject.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,9 @@
 //
 // ProjectileCollisionObsever.cpp
 //
+
+#if false
+
 #include "ProjectileCollisionObserver.hpp"
 
 #include "GameObject.hpp"
@@ -14,3 +17,5 @@ void ProjectileCollisionObserver::onNotify (
 	//	gameObject->destroy();
 	//}
 }
+
+#endif

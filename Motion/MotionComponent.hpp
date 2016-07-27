@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#if false
+
 #include "vec2.hpp"
 
 class GameObject;
@@ -23,3 +25,5 @@ public:
 
 	vec2 velocity;
 };
+
+#endif

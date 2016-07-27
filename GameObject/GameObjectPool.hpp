@@ -1,6 +1,7 @@
 //
 // GameObjectPool.hpp
 //
+#if false
 
 #include "GameObject.hpp"
 
@@ -34,3 +35,5 @@ public:
 private:
 	GameObjectPoolImpl * impl;
 };
+
+#endif
