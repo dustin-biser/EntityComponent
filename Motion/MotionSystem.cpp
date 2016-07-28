@@ -4,7 +4,7 @@
 #if false
 
 #include "MotionSystem.hpp"
-#include "GameObjectPool.hpp"
+#include "ComponentPool.hpp"
 #include "GameObject.hpp"
 #include "MotionComponent.hpp"
 
@@ -15,7 +15,7 @@ private:
 	friend class MotionSystem;
 
 	void update (
-		GameObjectPool * gameObjectPool,
+		ComponentPool * gameObjectPool,
 		float ellapsedTimeInSeconds
 	);
 };
@@ -35,7 +35,7 @@ MotionSystem::~MotionSystem()
 
 //---------------------------------------------------------------------------------------
 void MotionSystem::update (
-	GameObjectPool * gameObjectPool,
+	ComponentPool * gameObjectPool,
 	float ellapsedTimeInSeconds
 ) {
 	impl->update(gameObjectPool, ellapsedTimeInSeconds);
@@ -43,11 +43,11 @@ void MotionSystem::update (
 
 //---------------------------------------------------------------------------------------
 void MotionSystemImpl::update (
-	GameObjectPool * gameObjectPool,
+	ComponentPool * gameObjectPool,
 	float ellapsedTimeInSeconds
 ) {
 	// Update motion for each gameObject
-	GameObject * gameObject = gameObjectPool->begin();
+	GameObject * gameObject = gameObjectPool->beginActive();
 	for (size_t i(0); i < gameObjectPool->numActive(); ++i) {
 		gameObject[i].motion->update(&gameObject[i], ellapsedTimeInSeconds);
 

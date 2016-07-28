@@ -12,12 +12,12 @@ using std::min;
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/PhysicsComponent.hpp"
 
-#include "GameObject/GameObjectPool.hpp"
+#include "GameObject/ComponentPool.hpp"
 #include "GameObject/GameObject.hpp"
 
 #include "Assets/Mesh2d.hpp"
 
-#include "Graphics/GraphicsComponent.hpp"
+#include "Graphics/Rendering.hpp"
 
 #include <list>
 using std::list;
@@ -44,7 +44,7 @@ private:
 	friend class PhysicsSystem;
 
 	void update (
-		GameObjectPool * gameObjectPool
+		ComponentPool * gameObjectPool
 	);
 
 	void computeBoundingBoxFor(GameObject & gameObject);
@@ -71,7 +71,7 @@ PhysicsSystem::~PhysicsSystem()
 
 //---------------------------------------------------------------------------------------
 void PhysicsSystemImpl::update (
-	GameObjectPool * gameObjectPool
+	ComponentPool * gameObjectPool
 ) {
 	activeList.clear();
 
@@ -80,7 +80,7 @@ void PhysicsSystemImpl::update (
 
 
 	// Compute BoundingBox for each GameObject
-	GameObject * gameObject = gameObjectPool->begin();
+	GameObject * gameObject = gameObjectPool->beginActive();
 	for (size_t i(0); i < gameObjectPool->numActive(); ++i) {
 		computeBoundingBoxFor(gameObject[i]);
 	}
@@ -117,7 +117,7 @@ void PhysicsSystemImpl::computeBoundingBoxFor (
 
 //---------------------------------------------------------------------------------------
 void PhysicsSystem::update(
-	GameObjectPool * gameObjectPool
+	ComponentPool * gameObjectPool
 )
 {
 	impl->update(gameObjectPool);

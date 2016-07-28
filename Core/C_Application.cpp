@@ -16,23 +16,14 @@ using std::unordered_map;
 #include "time.h"
 
 #include "Core/GameConstants.hpp"
-#include "Core/Transform.hpp"
 
 #include "Assets/AssetDefinitions.hpp"
 #include "Assets/AssetLoader.hpp"
 #include "Assets/Mesh2d.hpp"
 
 #include "GameObject/GameObject.hpp"
-#include "GameObject/GameObjectPool.hpp"
 
-#include "Graphics/GraphicsComponent.hpp"
-#include "Graphics/GraphicsSystem.hpp"
-
-#include "Motion/MotionComponent.hpp"
-#include "Motion/ClockHandMotionComponent.hpp"
-#include "Motion/MotionSystem.hpp"
-
-#include "Physics/PhysicsComponent.hpp"
+#include "Graphics/Rendering.hpp"
 
 
 
@@ -53,11 +44,15 @@ private:
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
+	GameObject * cannon;
+	GameObject * projectilePrototype;
+	GameObject * clockPrototype;
+
 #if false
 	// Allocation Pools
-	GameObjectPool * gameObjectPool;
-	GameObjectPool * childGameObjectPool;
-	GameObjectPool * prototypePool;
+	ComponentPool * gameObjectPool;
+	ComponentPool * childGameObjectPool;
+	ComponentPool * prototypePool;
 
 	GameObjectID cannon_id;
 
@@ -76,12 +71,6 @@ private:
 	);
 
 	void buildMeshAssetDirectory();
-
-	void initGameObjectPools();
-
-	void initGameObjectReplicators();
-
-	void initSubSystems();
 
 	void loadGameObjects();
 
@@ -108,8 +97,6 @@ C_ApplicationImpl::C_ApplicationImpl(
 	buildMeshAssetDirectory();
 
 #if false
-	initGameObjectPools();
-
 	initGameObjectReplicators();
 
 	initSubSystems();
@@ -139,38 +126,28 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 
 
 //---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initGameObjectPools()
-{
-#if false
-	gameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
-	childGameObjectPool = new GameObjectPool(MAX_GAME_OBJECTS);
-	prototypePool = new GameObjectPool(MAX_PROTOTYPE_OBJECTS);
-#endif
-}
-
-//---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initGameObjectReplicators()
-{
+//void C_ApplicationImpl::initGameObjectReplicators()
+//{
 #if false
 
 	// Initialize clock replicator
 	{
-		GraphicsComponent * hourHandGraphics = new GraphicsComponent(
+		Rendering * hourHandGraphics = new Rendering(
 			Color{ 1.0f, 1.0f, 1.0f },
 			&meshAssetDirectory.at("HourHand")
 		);
 
-		GraphicsComponent * minuteHandGraphics = new GraphicsComponent(
+		Rendering * minuteHandGraphics = new Rendering(
 			Color{ 1.0f, 0.3f, 0.3f },
 			&meshAssetDirectory.at("MinuteHand")
 		);
 
-		GraphicsComponent * secondHandGraphics = new GraphicsComponent(
+		Rendering * secondHandGraphics = new Rendering(
 			Color{ 0.8f, 0.8f, 0.2f },
 			&meshAssetDirectory.at("SecondHand")
 		);
 
-		GraphicsComponent * clockBaseGraphics = new GraphicsComponent(
+		Rendering * clockBaseGraphics = new Rendering(
 			Color{ 0.8f, 0.2f, 0.2f },
 			&meshAssetDirectory.at("ClockBase")
 		);
@@ -207,7 +184,7 @@ void C_ApplicationImpl::initGameObjectReplicators()
 
 	// Initialize projectile replicator
 	{
-		GraphicsComponent * projectileGraphicsComponent = new GraphicsComponent (
+		Rendering * projectileGraphicsComponent = new Rendering (
 			Color{ 1.0f, 1.0f, 1.0f },
 			&meshAssetDirectory.at("Projectile")
 		);
@@ -224,18 +201,8 @@ void C_ApplicationImpl::initGameObjectReplicators()
 		projectileReplicator = new GameObjectReplicator(projectilePrototype);
 	}
 #endif
-}
+//}
 
-//---------------------------------------------------------------------------------------
-void C_ApplicationImpl::initSubSystems()
-{
-#if false
-	graphicsSystem = new GraphicsSystem();
-	graphicsSystem->setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
-
-	motionSystem = new MotionSystem();
-#endif
-}
 
 //---------------------------------------------------------------------------------------
 static vec2 randomPositionBetween (
@@ -254,14 +221,27 @@ static vec2 randomPositionBetween (
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()
 {
+	cannon = new GameObject("Cannon");
+	Rendering * renderingComponent = cannon->addComponent<Rendering>();
+	renderingComponent->mesh = &meshAssetDirectory.at("Cannon");
+	renderingComponent->color = Color { 0.2f, 0.2f, 1.0f };
+
+	float scale_x = (60.0f / m_ScreenWidth);
+	float scale_y = (60.0f / m_ScreenHeight);
+	cannon->transform->scale = vec2(scale_x, scale_y);
+
+	// Place cannon near bottom of screen.
+	cannon->transform->position = vec2(0.0f, -0.8f);
+
+
 #if false
 	// Load Cannon
 	{
 		// Keep track of cannon for later use.
 		this->cannon_id = GameObject::generateID();
 
-		GameObject * cannon = gameObjectPool->create(cannon_id);
-		cannon->graphics = new GraphicsComponent (
+		GameObject * cannon = gameObjectPool->createComponent(cannon_id);
+		cannon->graphics = new Rendering (
 			Color{ 0.2f, 0.2f, 1.0f },
 			&meshAssetDirectory.at("Cannon")
 		);
@@ -291,6 +271,7 @@ void C_ApplicationImpl::loadGameObjects()
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
+
 #if false
 	handleInput(pressedKeys);
 
@@ -298,7 +279,7 @@ void C_ApplicationImpl::Tick (
 	motionSystem->update(gameObjectPool, ellapsedTimeInSconds);
 
 	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
-	graphicsSystem->drawGameObjects(gameObjectPool->begin(), gameObjectPool->numActive());
+	graphicsSystem->drawGameObjects(gameObjectPool->beginActive(), gameObjectPool->numActive());
 #endif
 }
 
@@ -312,14 +293,14 @@ void C_ApplicationImpl::handleInput (
 	const float minAngle = -maxAngle;
 
 	if (pressedKeys & C_Application::s_KeyLeft) {
-		GameObject * cannon = gameObjectPool->getObject(cannon_id);
+		GameObject * cannon = gameObjectPool->getComponent(cannon_id);
 		float & rotationAngle = cannon->transform.rotationAngle;
 		rotationAngle += deltaAngle;
 		rotationAngle = min(maxAngle, rotationAngle);
 	}
 	
 	if (pressedKeys & C_Application::s_KeyRight) {
-		GameObject * cannon = gameObjectPool->getObject(cannon_id);
+		GameObject * cannon = gameObjectPool->getComponent(cannon_id);
 		float & rotationAngle = cannon->transform.rotationAngle;
 		rotationAngle -= deltaAngle;
 		rotationAngle = max(minAngle, rotationAngle);
@@ -335,7 +316,7 @@ void C_ApplicationImpl::handleInput (
 		// Update projectile prototype to spawn at tip of cannon.
 		{
 			GameObject * projectilePrototype = projectileReplicator->getPrototype();
-			GameObject * cannon = gameObjectPool->getObject(cannon_id);
+			GameObject * cannon = gameObjectPool->getComponent(cannon_id);
 
 			// Get vertex at tip of cannon.
 			Vertex vertex = cannon->graphics->mesh->vertexList[2];

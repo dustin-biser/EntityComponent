@@ -4,9 +4,9 @@
 #if false
 
 #include "GraphicsSystem.hpp"
-#include "GraphicsComponent.hpp"
+#include "Rendering.hpp"
 #include "GameObject.hpp"
-#include "GameObjectPool.hpp"
+#include "ComponentPool.hpp"
 #include "graphics.h"
 #include "Transform.hpp"
 

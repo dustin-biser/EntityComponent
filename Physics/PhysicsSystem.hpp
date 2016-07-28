@@ -6,7 +6,7 @@
 #if false
 
 // Forward declare.
-class GameObjectPool;
+class ComponentPool;
 class PhysicsSystemImpl;
 
 
@@ -17,7 +17,7 @@ public:
 
 
 	void update (
-		GameObjectPool * gameObjectPool
+		ComponentPool * gameObjectPool
 	);
 
 private:

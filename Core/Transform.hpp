@@ -8,13 +8,18 @@
 #include "Core/Component.hpp"
 
 class Transform : public Component {
-	Transform();
+public:
+	Transform ( 
+		EntityID id,
+		GameObject & gameObject
+	);
 
 	vec2 position;
 	vec2 scale;
 	float rotationAngle;
 
-	Transform operator * (const Transform & other) const;
+	// TODO - Is Transform operator * still needed?
+	//Transform operator * (const Transform & other) const;
 
 	vec2 operator * ( const vec2 & vertex );
 };

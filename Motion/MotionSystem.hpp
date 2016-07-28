@@ -6,7 +6,7 @@
 #if false
 
 // Forward declare.
-class GameObjectPool;
+class ComponentPool;
 class MotionSystemImpl;
 
 class MotionSystem {
@@ -15,7 +15,7 @@ public:
 	~MotionSystem();
 
 	void update (
-		GameObjectPool * gameObjectPool,
+		ComponentPool * gameObjectPool,
 		float ellapsedTimeInSeconds
 	);
 

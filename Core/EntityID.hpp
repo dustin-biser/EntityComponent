@@ -5,21 +5,22 @@
 
 class EntityID {
 public:
-	typedef unsigned long id_value;
+	typedef unsigned long id_type;
 
-	explicit EntityID (id_value value);
+	explicit EntityID (id_type value);
 
 	EntityID (const EntityID & other);
 
 
-	static id_value generateID();
+	// Generates a new globally unique EntityID.
+	static EntityID generateID();
 
 
 	EntityID & operator = (const EntityID & other) = delete;
 	EntityID & operator = (const EntityID && other) = delete;
 
-	id_value value;
+	id_type value;
 
 private:
-	static id_value currentId;
+	static id_type currentId;
 };

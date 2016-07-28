@@ -5,22 +5,33 @@
 #define _GAME_OBJECT_INL_
 
 #include "GameObject.hpp"
+#include "Core/ComponentPoolLocator.hpp"
+#include "Core/ComponentPool.hpp"
+#include "Core/Transform.hpp"
 
 
 //---------------------------------------------------------------------------------------
 template <class T>
-void GameObject::addComponent()
+T * GameObject::addComponent()
 {
-	ComponentSystem<T> * system = ComponentSystemLocator<T>::getSystem();
-	system->createComponent(id);
+	// Compile-time check
+	static_assert(std::is_base_of<Component, T>::value,
+		"T must be a type derived from class Component");
+
+	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
+	return componentPool->createComponent(id, *this);
 }
 
 //---------------------------------------------------------------------------------------
 template <class T>
-SmartPointer<T> GameObject::getComponent()
+T * GameObject::getComponent()
 {
-	ComponentSystem<T> * system = ComponentSystemLocator<T>::getSystem();
-	return system->getComponent(id);
+	// Compile-time check
+	static_assert(std::is_base_of<Component, T>::value,
+		"T must be a type derived from class Component");
+
+	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
+	return componentPool->getComponent(id);
 }
 
 #endif //_GAME_OBJECT_INL_

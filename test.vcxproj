@@ -93,21 +93,22 @@
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="Assets\AssetLoader.cpp" />
     <ClCompile Include="Backup\UnusedCode.cpp" />
-    <ClCompile Include="Core\ComponentSystemLocator.inl" />
+    <ClCompile Include="Core\Component.cpp" />
+    <ClCompile Include="Core\ComponentPoolLocator.inl" />
+    <ClCompile Include="Core\Entity.cpp" />
     <ClCompile Include="Core\EntityID.cpp" />
     <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
-    <ClCompile Include="GameObject\GameObjectPool.cpp" />
+    <ClCompile Include="Core\ComponentPool.inl" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Graphics\graphics.cpp" />
-    <ClCompile Include="Graphics\GraphicsComponent.cpp" />
+    <ClCompile Include="Graphics\Rendering.cpp" />
     <ClCompile Include="Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="Core\main.cpp" />
     <ClCompile Include="Motion\MotionComponent.cpp" />
     <ClCompile Include="Motion\MotionSystem.cpp" />
     <ClCompile Include="Physics\PhysicsComponent.cpp" />
     <ClCompile Include="Physics\PhysicsSystem.cpp" />
-    <ClCompile Include="Physics\ProjectileCollisionObserver.cpp" />
     <ClCompile Include="Core\time.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="Core\vec2.cpp" />
@@ -115,33 +116,30 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="Config\EngineSettings.hpp" />
     <ClInclude Include="Core\Component.hpp" />
-    <ClInclude Include="Core\ComponentSystem.hpp" />
-    <ClInclude Include="Core\ComponentSystemLocator.hpp" />
+    <ClInclude Include="Core\ComponentPoolLocator.hpp" />
+    <ClInclude Include="Core\Entity.hpp" />
     <ClInclude Include="Core\EntityID.hpp" />
-    <ClInclude Include="Core\SmartPointer.hpp" />
     <ClInclude Include="Motion\ClockHandMotionComponent.hpp" />
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
     <ClInclude Include="GameObject\GameObject.hpp" />
     <ClInclude Include="Graphics\graphics.h" />
-    <ClInclude Include="Graphics\GraphicsComponent.hpp" />
+    <ClInclude Include="Graphics\Rendering.hpp" />
     <ClInclude Include="Graphics\GraphicsSystem.hpp" />
     <ClInclude Include="Assets\Mesh2d.hpp" />
-    <ClInclude Include="GameObject\GameObjectPool.hpp" />
+    <ClInclude Include="Core\ComponentPool.hpp" />
     <ClInclude Include="Motion\MotionComponent.hpp" />
     <ClInclude Include="Motion\MotionSystem.hpp" />
-    <ClInclude Include="Physics\PhysicsEventObserver.hpp" />
     <ClInclude Include="Physics\PhysicsComponent.hpp" />
     <ClInclude Include="Physics\PhysicsSystem.hpp" />
-    <ClInclude Include="Physics\ProjectileCollisionObserver.hpp" />
     <ClInclude Include="Core\time.h" />
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\vec2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="Core\ComponentSystem.inl" />
     <None Include="GameObject\GameObject.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

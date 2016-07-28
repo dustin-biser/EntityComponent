@@ -3,14 +3,16 @@
 //
 #include "GameObject.hpp"
 
-#include "Core/ComponentSystemLocator.hpp"
-#include "Core/ComponentSystem.hpp"
+#include "Core/ComponentPoolLocator.hpp"
+#include "Core/ComponentPool.hpp"
 #include "Core/Transform.hpp"
 
+
+//---------------------------------------------------------------------------------------
 GameObject::GameObject(const std::string & name)
-	: id(EntityID::generateID()),
+	: Entity(EntityID::generateID()),
 	  name(name)
 {
-	ComponentSystem<Transform> * transformSystem = ComponentSystemLocator<Transform>::getSystem();
-	transformSystem->createComponent(id);
+	ComponentPool<Transform> * transformPool = ComponentPoolLocator<Transform>::getPool();
+	transform = transformPool->createComponent(this->id, *this);
 }

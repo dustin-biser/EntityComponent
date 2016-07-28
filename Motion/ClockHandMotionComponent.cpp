@@ -6,7 +6,7 @@
 
 #include "ClockHandMotionComponent.hpp"
 #include "GameObject.hpp"
-#include "GraphicsComponent.hpp"
+#include "Rendering.hpp"
 #include "Mesh2d.hpp"
 #include "GameConstants.hpp"
 

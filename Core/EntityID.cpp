@@ -3,11 +3,11 @@
 //
 #include "EntityID.hpp"
 
-EntityID::id_value EntityID::currentId = 0;
+EntityID::id_type EntityID::currentId = 0;
 
 //---------------------------------------------------------------------------------------
 EntityID::EntityID (
-	id_value value
+	id_type value
 ) 
 	: value(value)
 {
@@ -24,9 +24,10 @@ EntityID::EntityID (
 }
 
 //---------------------------------------------------------------------------------------
-EntityID::id_value EntityID::generateID()
+EntityID EntityID::generateID()
 {
-	return currentId++;
+	// Generate a new EntitID object and return it.
+	return EntityID(EntityID::currentId++);
 }
 
 

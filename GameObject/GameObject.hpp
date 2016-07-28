@@ -5,25 +5,29 @@
 
 #include <string>
 
-#include "Core/EntityID.hpp"
-#include "Core/SmartPointer.hpp"
+#include "Core/Entity.hpp"
+
+// Forward declare.
+class Transform;
 
 
-class GameObject {
+// Base class for all game related objects.
+// Every GameObject includes a name and a transform.
+class GameObject : public Entity {
 public:
-	GameObject (
-		const std::string & name
-	);
+	GameObject (const std::string & name);
 
+	// Creates a new Component of type T and returns a pointer to it.
 	template <class T>
-	void addComponent();
+	T * addComponent();
 
+	// Returns a pointer to an existing Component of type T.
 	template <class T>
-	SmartPointer<T> getComponent();
+	T * getComponent();
 
-private:
-	EntityID id;
-	std::string name;
+	const std::string name;
+
+	Transform * transform;
 };
 
 
