@@ -16,16 +16,19 @@
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T * GameObject::addComponent()
+T & GameObject::addComponent()
 {
 	assertIsDerivedFromComponent<T>();
 
 	if (std::is_base_of<Script, T>::value) {
-		Script * pScript = reinterpret_cast<Script *>(new T (this->id, *this));
+		T * pDerivedScript = new T (this->id, *this);
 
 		ComponentPool<Script> * componentPool = ComponentPoolLocator<Script>::getPool();
-		Script * derivedScript = componentPool->createComponent(id, *this);
-		derivedScript->scriptBehavior = pScript;
+		Script & script = componentPool->createComponent(id, *this);
+		// Required for compilation of all types T.
+		script.scriptBehavior = reinterpret_cast<Script *>(pDerivedScript);
+
+		return *pDerivedScript;
 	}
 	else {
 		ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
@@ -35,7 +38,7 @@ T * GameObject::addComponent()
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T * GameObject::getComponent()
+T & GameObject::getComponent()
 {
 	assertIsDerivedFromComponent<T>();
 

@@ -8,11 +8,14 @@
 
 // Forward declare
 class GameObject;
+class Transform;
 
 
 // Base class for all Component types.
 class Component : public Entity {
 public:
+	Component();
+
 	Component (
 		EntityID id,
 		GameObject & gameObject
@@ -21,6 +24,8 @@ public:
 	virtual ~Component();
 
 	GameObject & gameObject() const;
+
+	Transform & transform() const;
 
 
 private:

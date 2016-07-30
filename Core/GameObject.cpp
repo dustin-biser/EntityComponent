@@ -33,10 +33,9 @@ void GameObject::setActive (
 }
 
 //---------------------------------------------------------------------------------------
-Transform * GameObject::transform ()
+Transform & GameObject::transform ()
 {
-	ComponentPool<Transform> * transformPool = ComponentPoolLocator<Transform>::getPool();
-	return transformPool->getComponent (this->id);
+	return ComponentPoolLocator<Transform>::getPool()->getComponent(this->id);
 }
 
 //---------------------------------------------------------------------------------------

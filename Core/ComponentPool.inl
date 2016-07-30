@@ -204,13 +204,13 @@ void ComponentPoolImpl<T>::destroyComponent (
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T * ComponentPool<T>::createComponent (
+T & ComponentPool<T>::createComponent (
 	EntityID id,
 	GameObject & gameObject
 ) {
 	if (impl->m_idToComponentMap.count(id.value) > 0) {
 		// Component already exists, so return it.
-		return impl->m_idToComponentMap.at(id.value);
+		return *impl->m_idToComponentMap.at(id.value);
 	}
 
 	T * location = impl->createComponent(id);
@@ -218,7 +218,7 @@ T * ComponentPool<T>::createComponent (
 	// Place object at location and call constructor.
 	T * newObject(new (location) T(id, gameObject));
 
-	return newObject;
+	return *newObject;
 }
 
 //---------------------------------------------------------------------------------------
@@ -231,10 +231,10 @@ void ComponentPool<T>::destroyComponent (
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T * ComponentPool<T>::getComponent (
+T & ComponentPool<T>::getComponent (
 	EntityID id
 ) {
-	return impl->m_idToComponentMap.at(id.value);
+	return *impl->m_idToComponentMap.at(id.value);
 }
 
 //---------------------------------------------------------------------------------------

@@ -24,12 +24,7 @@ using std::unordered_map;
 #include "Core/GameObject.hpp"
 
 #include "Rendering/Rendering.hpp"
-
-
-
-// TODO - Remove after testing...
-#include "Core/ComponentPool.hpp"
-#include "Core/ComponentPoolLocator.hpp"
+#include "Rendering/RenderingSystem.hpp"
 
 
 
@@ -44,32 +39,7 @@ private:
 	const int m_ScreenWidth;
 	const int m_ScreenHeight;
 
-	// TODO - Move these into Cannon GameObject
-	int	m_CannonX;
-	int	m_CannonY;
-
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
-
-	GameObject * cannon;
-	GameObject * projectilePrototype;
-	GameObject * clockPrototype;
-
-#if false
-	// Allocation Pools
-	ComponentPool * gameObjectPool;
-	ComponentPool * childGameObjectPool;
-	ComponentPool * prototypePool;
-
-	GameObjectID cannon_id;
-
-	GameObjectReplicator * clockReplicator;
-	GameObjectReplicator * projectileReplicator;
-
-
-	// Subsystems
-	RenderingSystem * graphicsSystem;
-	MotionSystem * motionSystem;
-#endif
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -96,10 +66,10 @@ C_ApplicationImpl::C_ApplicationImpl(
 	int screenHeight
 ) 
 	: m_ScreenWidth(screenWidth),
-	  m_ScreenHeight(screenHeight),
-	  m_CannonX(m_ScreenWidth / 2),
-	  m_CannonY(m_ScreenHeight / 2)
+	  m_ScreenHeight(screenHeight)
 {
+	RenderingSystem::setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+
 	buildMeshAssetDirectory();
 
 	loadGameObjects();
@@ -221,34 +191,17 @@ static vec2 randomPositionBetween (
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()
 {
-	cannon = new GameObject("Cannon");
-	Rendering * renderingComponent = cannon->addComponent<Rendering>();
-	renderingComponent->mesh = &meshAssetDirectory.at("Cannon");
-	renderingComponent->color = Color { 0.2f, 0.2f, 1.0f };
+	GameObject * cannon = new GameObject("Cannon");
+	Rendering & renderingComponent = cannon->addComponent<Rendering>();
+	renderingComponent.mesh = &meshAssetDirectory.at("Cannon");
+	renderingComponent.color = Color { 0.2f, 0.2f, 1.0f };
 
 	float scale_x = (60.0f / m_ScreenWidth);
 	float scale_y = (60.0f / m_ScreenHeight);
-	cannon->transform()->scale = vec2(scale_x, scale_y);
+	cannon->transform().scale = vec2(scale_x, scale_y);
 
 	// Place cannon near bottom of screen.
-	cannon->transform()->position = vec2(0.0f, -0.8f);
-
-
-	// TODO - Test creating + destroying components
-	{
-		GameObject * gameObject[30];
-		for (int i (0); i < 10; ++i) {
-			int index;
-			for (int j(0); j < 3; ++j) {
-				index = 3*i + j;
-				char buffer[32];
-				sprintf_s(buffer, "GameObject %d", index);
-				gameObject[index] = new GameObject(buffer);
-				gameObject[index]->transform ()->position = vec2 (float(i));
-			}
-			gameObject[index]->setActive(false);
-		}
-	}
+	cannon->transform().position = vec2(0.0f, -0.8f);
 
 #if false
 	// Load Cannon
@@ -288,15 +241,9 @@ void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
 
-#if false
-	handleInput(pressedKeys);
+	// TODO - Update Input class regarding pressedKeys.
 
-	float ellapsedTimeInSconds = 1.0f / 50.0f;
-	motionSystem->update(gameObjectPool, ellapsedTimeInSconds);
-
-	graphicsSystem->clearScreen(m_ScreenWidth, m_ScreenHeight);
-	graphicsSystem->drawGameObjects(gameObjectPool->beginActive(), gameObjectPool->numActive());
-#endif
+	RenderingSystem::renderScene();
 }
 
 //---------------------------------------------------------------------------------------

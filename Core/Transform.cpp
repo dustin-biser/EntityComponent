@@ -18,18 +18,26 @@ Transform::Transform (
 
 }
 
+//---------------------------------------------------------------------------------------
+Transform::Transform()
+	: position(0.0f, 0.0f),
+	  scale(1.0f, 1.0f),
+	  rotationAngle(0.0f)
+{
+
+}
 
 //---------------------------------------------------------------------------------------
-//Transform Transform::operator * (
-//	const Transform & other
-//) const {
-//	Transform result;
-//	result.position = position + other.position;
-//	result.scale = scale * other.scale;
-//	result.rotationAngle = rotationAngle + other.rotationAngle;
-//
-//	return result;
-//}
+Transform Transform::operator * (
+	const Transform & other
+) const {
+	Transform result;
+	result.position = position + other.position;
+	result.scale = scale * other.scale;
+	result.rotationAngle = rotationAngle + other.rotationAngle;
+
+	return result;
+}
 
 //---------------------------------------------------------------------------------------
 vec2 Transform::operator * (const vec2 & vertex)

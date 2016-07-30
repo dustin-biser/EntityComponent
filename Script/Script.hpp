@@ -19,7 +19,9 @@ public:
 
 	virtual ~Script();
 
-	virtual void onUpdate();
+	virtual void init();
+
+	virtual void update();
 
 	virtual void onCollision();
 

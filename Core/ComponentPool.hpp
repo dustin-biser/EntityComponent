@@ -21,7 +21,7 @@ public:
 	ComponentPool();
 	~ComponentPool();
 
-	T * createComponent (
+	T & createComponent (
 		EntityID id,
 		GameObject & gameObject
 	);
@@ -30,7 +30,7 @@ public:
 		EntityID id
 	);
 
-	T * getComponent (
+	T & getComponent (
 		EntityID id
 	);
 

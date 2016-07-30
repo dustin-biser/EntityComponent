@@ -9,13 +9,14 @@
 
 class Transform final : public Component {
 public:
+	Transform();
+
 	Transform ( 
 		EntityID id,
 		GameObject & gameObject
 	);
 
-	// TODO - Is Transform operator * still needed?
-	//Transform operator * (const Transform & other) const;
+	Transform operator * (const Transform & other) const;
 
 	vec2 operator * ( const vec2 & vertex );
 

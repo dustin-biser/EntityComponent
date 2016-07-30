@@ -3,43 +3,22 @@
 //
 #pragma once
 
-#if false
-
-#include "Mesh2d.hpp"
 
 // Forward declare.
-class GraphicsSystemImpl;
-class GameObject;
-struct Transform;
+class RenderingSystemImpl;
 
 
 class RenderingSystem {
 public:
-	RenderingSystem();
-
-	~RenderingSystem();
-
-	// Adjusts viewport transformation for drawn scene.
+	// Adjusts Viewport transformation for drawn scene.
 	// Arguments given in screen pixels.
-	void setViewport (
+	static void setViewport (
 		int x, int y,
 		int width, int height
 	);
 
-	void drawGameObjects (
-		GameObject * gameObjects,
-		size_t numGameObjects
-	);
-
-	void clearScreen (
-		int screenWidth,
-		int screenHeight
-	) const;
-
+	static void renderScene();
 
 private:
-	GraphicsSystemImpl * impl;
+	static RenderingSystemImpl * impl;
 };
-
-
-#endif

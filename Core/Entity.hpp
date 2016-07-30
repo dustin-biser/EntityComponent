@@ -10,6 +10,8 @@
 class Entity {
 public:
 
+	Entity();
+
 	Entity(EntityID id);
 
 	EntityID getEntityID() const;
