@@ -24,7 +24,15 @@ public:
 
 
 private:
-	GameObject * m_gameObject;
+	template <class T>
+	friend class ComponentPoolImpl;
+
+	union {
+		GameObject * m_gameObject;
+
+		// For use to form FreeList within ComponentPool.
+		Component * next;
+	};
 };
 
 

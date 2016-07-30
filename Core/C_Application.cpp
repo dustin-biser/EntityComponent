@@ -233,18 +233,6 @@ void C_ApplicationImpl::loadGameObjects()
 	// Place cannon near bottom of screen.
 	cannon->transform()->position = vec2(0.0f, -0.8f);
 
-
-	// TODO - Test creating + destroying components
-	{
-		GameObject * gameObject[4];
-		for (int i (0); i < 4; ++i) {
-			gameObject[i] = new GameObject("GameObject" + i);
-			gameObject[i]->transform ()->position = vec2 (i);
-		}
-		//gameObject[2].destroy();
-		
-	}
-
 #if false
 	// Load Cannon
 	{

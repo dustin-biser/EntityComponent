@@ -1,7 +1,6 @@
 //
 // ComponentPool.inl
 //
-
 #ifndef _COMPONENT_POOL_INL_
 #define _COMPONENT_POOL_INL_
 
@@ -13,13 +12,6 @@ using std::unordered_map;
 #include "Config/EngineSettings.hpp"
 
 #include "Core/Component.hpp"
-
-
-
-template <class T>
-struct FreeList {
-	T * next;
-};
 
 
 template <class T>
@@ -67,14 +59,14 @@ ComponentPoolImpl<T>::ComponentPoolImpl()
 	m_firstAvailable = m_pool;
 
 	// Create FreeList, so that each T object points to next T object in pool.
-	FreeList<T> * freeList;
+	T * freeList;
 	size_t lastPoolIndex = m_numPoolElements - 1;
 	for (size_t i(0); i < lastPoolIndex; ++i) {
-		freeList = reinterpret_cast<FreeList<T> *>(&m_pool[i]);
+		freeList = &m_pool[i];
 		freeList->next = &m_pool[i + 1];
 	}
 	// Last T object points to nullptr.
-	freeList = reinterpret_cast<FreeList<T> *>(&m_pool[lastPoolIndex]);
+	freeList = &m_pool[lastPoolIndex];
 	freeList->next = nullptr;
 
 	m_lastAvailable = &m_pool[lastPoolIndex];
@@ -134,7 +126,7 @@ T * ComponentPoolImpl<T>::createComponent (
 	}
 
 	T * result = m_firstAvailable;
-	m_firstAvailable = reinterpret_cast<FreeList<T> *>(m_firstAvailable)->next;
+	m_firstAvailable = reinterpret_cast<T *>(m_firstAvailable->next);
 
 	// Update idPointerMap
 	m_idToComponentMap[id.value] = result;
@@ -147,12 +139,7 @@ template <class T>
 void ComponentPoolImpl<T>::destroyComponent (
 	EntityID id
 ) {
-	size_t numActive = numActiveObjects();
-	if (numActive == 0) {
-		// No objects left to destroy.
-		throw;
-	}
-	else if (m_idToComponentMap.count(id.value) < 1) {
+	if (m_idToComponentMap.count(id.value) < 1) {
 		// No Component in this pool with EntityID.
 		return;
 	}
@@ -167,7 +154,7 @@ void ComponentPoolImpl<T>::destroyComponent (
 
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
-	T * pLastActive = &m_pool[numActive - 1];
+	T * pLastActive = &m_pool[numActiveObjects() - 1];
 	if (pLastActive != pObject) {
 		// Register new address for EntityID
 		m_idToComponentMap[pLastActive->getEntityID().value] = pObject;
@@ -182,7 +169,7 @@ void ComponentPoolImpl<T>::destroyComponent (
 	}
 
 	// Make pObject.next point to first available object on FreeList.
-	reinterpret_cast<FreeList<T> *>(pObject)->next = m_firstAvailable;
+	pObject->next = m_firstAvailable;
 
 	// pObject is now the firstAvailable.
 	m_firstAvailable = pObject;
