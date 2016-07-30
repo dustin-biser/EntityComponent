@@ -7,19 +7,20 @@
 
 #include "Core/Component.hpp"
 
-class Transform : public Component {
+class Transform final : public Component {
 public:
 	Transform ( 
 		EntityID id,
 		GameObject & gameObject
 	);
 
-	vec2 position;
-	vec2 scale;
-	float rotationAngle;
-
 	// TODO - Is Transform operator * still needed?
 	//Transform operator * (const Transform & other) const;
 
 	vec2 operator * ( const vec2 & vertex );
+
+
+	vec2 position;
+	vec2 scale;
+	float rotationAngle;
 };

@@ -14,7 +14,7 @@
 
 
 //---------------------------------------------------------------------------------------
-MotionComponent * ClockHandMotionComponent::clone() const
+Motion * ClockHandMotionComponent::clone() const
 {
 	return new ClockHandMotionComponent(*this);
 }

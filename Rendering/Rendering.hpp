@@ -15,16 +15,12 @@ struct Color {
 	float blue;
 };
 
-class Rendering : public Component {
+class Rendering final : public Component {
 public:
 	Rendering (
 		EntityID id,
 		GameObject & gameObject
 	);
-
-	virtual ~Rendering();
-
-	virtual Rendering * clone() const;
 
 	Color color;
 	const Mesh2d * mesh;

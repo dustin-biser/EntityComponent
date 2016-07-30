@@ -12,6 +12,8 @@ using std::unordered_map;
 
 #include "Config/EngineSettings.hpp"
 
+#include "Core/Component.hpp"
+
 
 
 template <class T>
@@ -39,16 +41,17 @@ private:
 	);
 
 
-	T * pool;
-	const size_t m_numPoolElements = MAX_COMPONENTS_PER_TYPE;
+	T * m_pool;
+	const size_t m_numPoolElements = EngineSettings::MAX_COMPONENTS_PER_TYPE;
 
 	// Address of first available object for allocation.
 	T * m_firstAvailable;
 
-	// Address of lasst available object for allocation.
+	// Address of last available object for allocation.
 	T * m_lastAvailable;
 
-	// Up-to-date mapping from EntityID to memory address of Component object.
+	// Up-to-date mapping from EntityID to memory address of Component object within pool.
+	// Allows O(1) for retrieval.
 	std::unordered_map<EntityID::id_type, T *> m_idToComponentMap;
 };
 
@@ -59,22 +62,22 @@ template <class T>
 ComponentPoolImpl<T>::ComponentPoolImpl()
 {
 	// Allocate enough bytes to hold m_numPoolElements of T objects.
-	T * pool = reinterpret_cast<T *>(new char[sizeof(T) * m_numPoolElements]);
+	m_pool = reinterpret_cast<T *>(new char[sizeof(T) * m_numPoolElements]);
 
-	m_firstAvailable = pool;
+	m_firstAvailable = m_pool;
 
 	// Create FreeList, so that each T object points to next T object in pool.
 	FreeList<T> * freeList;
 	size_t lastPoolIndex = m_numPoolElements - 1;
 	for (size_t i(0); i < lastPoolIndex; ++i) {
-		freeList = reinterpret_cast<FreeList<T> *>(&pool[i]);
-		freeList->next = &pool[i + 1];
+		freeList = reinterpret_cast<FreeList<T> *>(&m_pool[i]);
+		freeList->next = &m_pool[i + 1];
 	}
 	// Last T object points to nullptr.
-	freeList = reinterpret_cast<FreeList<T> *>(&pool[lastPoolIndex]);
+	freeList = reinterpret_cast<FreeList<T> *>(&m_pool[lastPoolIndex]);
 	freeList->next = nullptr;
 
-	m_lastAvailable = &pool[lastPoolIndex];
+	m_lastAvailable = &m_pool[lastPoolIndex];
 }
 
 
@@ -85,7 +88,7 @@ ComponentPoolImpl<T>::~ComponentPoolImpl()
 {
 	// Free pool resources.
 	// Calls destructor on all T objects.
-	delete[] pool;
+	delete[] m_pool;
 }
 
 //---------------------------------------------------------------------------------------
@@ -93,9 +96,7 @@ ComponentPoolImpl<T>::~ComponentPoolImpl()
 template <class T>
 ComponentPool<T>::ComponentPool () 
 {
-	// Compile-time check
-	static_assert(std::is_base_of<Component, T>::value,
-		"T must be a type derived from class Component");
+	assertIsDerivedFromComponent<T> ();
 
 	impl = new ComponentPoolImpl<T>();
 }
@@ -117,7 +118,7 @@ size_t ComponentPoolImpl<T>::numActiveObjects() const
 		return m_numPoolElements;
 	}
 	else {
-		return size_t(m_firstAvailable - &pool[0]);
+		return size_t(m_firstAvailable - &m_pool[0]);
 	}
 }
 
@@ -151,32 +152,39 @@ void ComponentPoolImpl<T>::destroyComponent (
 		// No objects left to destroy.
 		throw;
 	}
+	else if (m_idToComponentMap.count(id.value) < 1) {
+		// No Component in this pool with EntityID.
+		return;
+	}
 
-	T * pObject = m_idToComponentMap.at(id);
+	T * pObject = m_idToComponentMap.at(id.value);
 
-	// Call destructor T
+	// Call destructor for T
 	pObject->~T();
 
-	// Remove unused id
-	m_idToComponentMap.erase(id);
+	// Remove unused id in map.
+	m_idToComponentMap.erase(id.value);
 
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
-	T * pLastActive = &pool[numActive - 1];
+	T * pLastActive = &m_pool[numActive - 1];
 	if (pLastActive != pObject) {
-		// Update idPointerMap to moved destination
-		m_idToComponentMap[pLastActive->id] = pObject;
+		// Register new address for EntityID
+		m_idToComponentMap[pLastActive->getEntityID().value] = pObject;
 
 		std::swap(*pObject, *pLastActive);
-
+		
 		// Point to new location
 		pObject = pLastActive;
+
+		// TODO - Need to check child status, and move parent + children together.
+		// For Transform Components only.
 	}
 
-	// Set obj.next = firstAvailable.next
-	reinterpret_cast<FreeList *>(pObject)->next = m_firstAvailable;
+	// Make pObject.next point to first available object on FreeList.
+	reinterpret_cast<FreeList<T> *>(pObject)->next = m_firstAvailable;
 
-	// obj is now the firstAvailable.
+	// pObject is now the firstAvailable.
 	m_firstAvailable = pObject;
 }
 
@@ -186,20 +194,25 @@ T * ComponentPool<T>::createComponent (
 	EntityID id,
 	GameObject & gameObject
 ) {
+	if (impl->m_idToComponentMap.count(id.value) > 0) {
+		// Component already exists, so return it.
+		return impl->m_idToComponentMap.at(id.value);
+	}
+
 	T * location = impl->createComponent(id);
 
 	// Place object at location and call constructor.
-	T * newObject = new (location) T(id, gameObject);
+	T * newObject(new (location) T(id, gameObject));
 
 	return newObject;
 }
 
 //---------------------------------------------------------------------------------------
 template <class T>
-void ComponentPool<T>::destroyComponent(
+void ComponentPool<T>::destroyComponent (
 	EntityID id
 ) {
-	impl->destroy(id);
+	impl->destroyComponent(id);
 }
 
 //---------------------------------------------------------------------------------------
@@ -207,14 +220,14 @@ template <class T>
 T * ComponentPool<T>::getComponent (
 	EntityID id
 ) {
-	return impl->m_idToComponentMap.at(id);
+	return impl->m_idToComponentMap.at(id.value);
 }
 
 //---------------------------------------------------------------------------------------
 template <class T>
 T * ComponentPool<T>::beginActive() const
 {
-	return impl->pool;
+	return impl->m_pool;
 }
 
 //---------------------------------------------------------------------------------------

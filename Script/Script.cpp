@@ -1,28 +1,34 @@
 //
-// Material.cpp
+// Script.cpp
 //
-#include "Rendering.hpp"
+#include "Script.hpp"
+
 
 //---------------------------------------------------------------------------------------
-Rendering::Rendering (
+Script::Script (
 	EntityID id,
 	GameObject & gameObject
 )
-	: Component (id, gameObject),
-	  color {0.0f, 0.0f, 0.0f},
-	  mesh (nullptr)
+	: Component(id, gameObject),
+	  scriptBehavior(nullptr)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-Rendering * Rendering::clone() const
+Script::~Script()
 {
-	return new Rendering(*this);
+	delete scriptBehavior;
 }
 
 //---------------------------------------------------------------------------------------
-Rendering::~Rendering()
+void Script::onUpdate()
+{
+
+}
+
+//---------------------------------------------------------------------------------------
+void Script::onCollision()
 {
 
 }

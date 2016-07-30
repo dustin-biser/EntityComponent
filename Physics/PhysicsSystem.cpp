@@ -10,7 +10,7 @@
 using std::min;
 
 #include "Physics/PhysicsSystem.hpp"
-#include "Physics/PhysicsComponent.hpp"
+#include "Physics/Physics.hpp"
 
 #include "GameObject/ComponentPool.hpp"
 #include "GameObject/GameObject.hpp"

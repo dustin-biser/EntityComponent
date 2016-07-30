@@ -21,9 +21,15 @@ using std::unordered_map;
 #include "Assets/AssetLoader.hpp"
 #include "Assets/Mesh2d.hpp"
 
-#include "GameObject/GameObject.hpp"
+#include "Core/GameObject.hpp"
 
-#include "Graphics/Rendering.hpp"
+#include "Rendering/Rendering.hpp"
+
+
+
+// TODO - Remove after testing...
+#include "Core/ComponentPool.hpp"
+#include "Core/ComponentPoolLocator.hpp"
 
 
 
@@ -61,7 +67,7 @@ private:
 
 
 	// Subsystems
-	GraphicsSystem * graphicsSystem;
+	RenderingSystem * graphicsSystem;
 	MotionSystem * motionSystem;
 #endif
 
@@ -96,13 +102,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 {
 	buildMeshAssetDirectory();
 
-#if false
-	initGameObjectReplicators();
-
-	initSubSystems();
-
 	loadGameObjects();
-#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 			&meshAssetDirectory.at("ClockBase")
 		);
 
-		MotionComponent * clockHandMotion = new ClockHandMotionComponent();
+		Motion * clockHandMotion = new ClockHandMotionComponent();
 
 		GameObject * hourHand = childGameObjectPool->create(GameObject::generateID());
 		hourHand->graphics = hourHandGraphics;
@@ -228,11 +228,22 @@ void C_ApplicationImpl::loadGameObjects()
 
 	float scale_x = (60.0f / m_ScreenWidth);
 	float scale_y = (60.0f / m_ScreenHeight);
-	cannon->transform->scale = vec2(scale_x, scale_y);
+	cannon->transform()->scale = vec2(scale_x, scale_y);
 
 	// Place cannon near bottom of screen.
-	cannon->transform->position = vec2(0.0f, -0.8f);
+	cannon->transform()->position = vec2(0.0f, -0.8f);
 
+
+	// TODO - Test creating + destroying components
+	{
+		GameObject * gameObject[4];
+		for (int i (0); i < 4; ++i) {
+			gameObject[i] = new GameObject("GameObject" + i);
+			gameObject[i]->transform ()->position = vec2 (i);
+		}
+		//gameObject[2].destroy();
+		
+	}
 
 #if false
 	// Load Cannon

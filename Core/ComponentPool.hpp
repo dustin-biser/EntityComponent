@@ -12,10 +12,9 @@ class ComponentPoolImpl;
 class GameObject;
 
 
-
 // Memory pool that manages both an active-list and an inactive-list 
-// of objects of type T.  Objects are guaranteed to be tightly packed
-// towards the beginning of their active/inactive lists.
+// of Components of type T.  Component objects are guaranteed to be tightly
+// packed towards the beginning of their active/inactive lists.
 template <class T>
 class ComponentPool {
 public:

@@ -6,7 +6,7 @@
 #include "MotionSystem.hpp"
 #include "ComponentPool.hpp"
 #include "GameObject.hpp"
-#include "MotionComponent.hpp"
+#include "Motion.hpp"
 
 #include "time.h"
 

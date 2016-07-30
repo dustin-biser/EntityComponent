@@ -5,15 +5,15 @@
 
 #if false
 
-#include "MotionComponent.hpp"
+#include "Motion.hpp"
 
 // Forward declare.
 class GameObject;
 
 
-class ClockHandMotionComponent : public MotionComponent {
+class ClockHandMotionComponent : public Motion {
 public:
-	virtual MotionComponent * clone() const;
+	virtual Motion * clone() const;
 
 	virtual void update (
 		GameObject * gameObject,

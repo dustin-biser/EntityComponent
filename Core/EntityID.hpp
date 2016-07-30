@@ -16,10 +16,8 @@ public:
 	static EntityID generateID();
 
 
-	EntityID & operator = (const EntityID & other) = delete;
-	EntityID & operator = (const EntityID && other) = delete;
-
 	id_type value;
+
 
 private:
 	static id_type currentId;

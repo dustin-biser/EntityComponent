@@ -5,11 +5,9 @@
 
 #include "Core/Entity.hpp"
 
+
 // Forward declare
 class GameObject;
-template <class T>
-class ComponentPool;
-
 
 
 // Base class for all Component types.
@@ -22,21 +20,22 @@ public:
 
 	virtual ~Component();
 
-	Component * operator -> () const;
-
-	Component & operator * () const;
-
-	GameObject & gameObject;
-
+	GameObject & gameObject() const;
 
 
 private:
-	template <class T>
-	friend class ComponentPool;
-
-	void updatePointerTableEntry (
-		Component * newAddress
-	);
-
-	size_t pointerTableIndex;
+	GameObject * m_gameObject;
 };
+
+
+
+#include <type_traits>
+
+template <class T>
+void assertIsDerivedFromComponent ()
+{
+	// Compile-time check
+	static_assert(std::is_base_of<Component, T>::value,
+		"T must be a type derived from class Component");
+}
+

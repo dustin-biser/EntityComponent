@@ -1,9 +1,9 @@
 //
-// GraphicsSystem.cpp
+// RenderingSystem.cpp
 //
 #if false
 
-#include "GraphicsSystem.hpp"
+#include "RenderingSystem.hpp"
 #include "Rendering.hpp"
 #include "GameObject.hpp"
 #include "ComponentPool.hpp"
@@ -17,7 +17,7 @@
 
 class GraphicsSystemImpl {
 private:
-	friend class GraphicsSystem;
+	friend class RenderingSystem;
 	GraphicsSystemImpl();
 
 	struct Line {
@@ -54,21 +54,21 @@ GraphicsSystemImpl::GraphicsSystemImpl()
 }
 
 //---------------------------------------------------------------------------------------
-GraphicsSystem::GraphicsSystem()
+RenderingSystem::RenderingSystem()
 	: impl(new GraphicsSystemImpl())
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-GraphicsSystem::~GraphicsSystem()
+RenderingSystem::~RenderingSystem()
 {
 	delete impl;
 	impl = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicsSystem::setViewport (
+void RenderingSystem::setViewport (
 	int x, int y,
 	int width, int height
 ) {
@@ -81,7 +81,7 @@ void GraphicsSystem::setViewport (
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicsSystem::drawGameObjects (
+void RenderingSystem::drawGameObjects (
 	GameObject * gameObjects,
 	size_t numGameObjects
 ) {
@@ -89,7 +89,7 @@ void GraphicsSystem::drawGameObjects (
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicsSystem::clearScreen (
+void RenderingSystem::clearScreen (
 	int screenWidth,
 	int screenHeight
 ) const {

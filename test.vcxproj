@@ -45,7 +45,7 @@
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>Build\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)GameObject;$(SolutionDir)Core;$(SolutionDir)Physics;$(SolutionDir)Graphics;$(SolutionDir)Motion;$(SolutionDir);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameObject;$(SolutionDir)Core;$(SolutionDir)Physics;$(SolutionDir)Rendering;$(SolutionDir)Motion;$(SolutionDir);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Assets;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -100,18 +100,19 @@
     <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
     <ClCompile Include="Core\ComponentPool.inl" />
-    <ClCompile Include="GameObject\GameObject.cpp" />
-    <ClCompile Include="Graphics\graphics.cpp" />
-    <ClCompile Include="Graphics\Rendering.cpp" />
-    <ClCompile Include="Graphics\GraphicsSystem.cpp" />
+    <ClCompile Include="Core\GameObject.cpp" />
+    <ClCompile Include="Rendering\graphics.cpp" />
+    <ClCompile Include="Rendering\Rendering.cpp" />
+    <ClCompile Include="Rendering\RenderingSystem.cpp" />
     <ClCompile Include="Core\main.cpp" />
-    <ClCompile Include="Motion\MotionComponent.cpp" />
+    <ClCompile Include="Motion\Motion.cpp" />
     <ClCompile Include="Motion\MotionSystem.cpp" />
-    <ClCompile Include="Physics\PhysicsComponent.cpp" />
+    <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Core\time.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="Core\vec2.cpp" />
+    <ClCompile Include="Script\Script.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\AssetLoader.hpp" />
@@ -124,23 +125,24 @@
     <ClInclude Include="Motion\ClockHandMotionComponent.hpp" />
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
-    <ClInclude Include="GameObject\GameObject.hpp" />
-    <ClInclude Include="Graphics\graphics.h" />
-    <ClInclude Include="Graphics\Rendering.hpp" />
-    <ClInclude Include="Graphics\GraphicsSystem.hpp" />
+    <ClInclude Include="Core\GameObject.hpp" />
+    <ClInclude Include="Rendering\graphics.h" />
+    <ClInclude Include="Rendering\Rendering.hpp" />
+    <ClInclude Include="Rendering\RenderingSystem.hpp" />
     <ClInclude Include="Assets\Mesh2d.hpp" />
     <ClInclude Include="Core\ComponentPool.hpp" />
-    <ClInclude Include="Motion\MotionComponent.hpp" />
+    <ClInclude Include="Motion\Motion.hpp" />
     <ClInclude Include="Motion\MotionSystem.hpp" />
-    <ClInclude Include="Physics\PhysicsComponent.hpp" />
+    <ClInclude Include="Physics\Physics.hpp" />
     <ClInclude Include="Physics\PhysicsSystem.hpp" />
     <ClInclude Include="Core\time.h" />
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\vec2.hpp" />
+    <ClInclude Include="Script\Script.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="GameObject\GameObject.inl" />
+    <None Include="Core\GameObject.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

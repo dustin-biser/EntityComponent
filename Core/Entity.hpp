@@ -16,5 +16,5 @@ public:
 
 
 protected:
-	const EntityID id;
+	EntityID id;
 };

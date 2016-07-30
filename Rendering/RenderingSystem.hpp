@@ -1,5 +1,5 @@
 //
-// GraphicsSystem.hpp
+// RenderingSystem.hpp
 //
 #pragma once
 
@@ -13,11 +13,11 @@ class GameObject;
 struct Transform;
 
 
-class GraphicsSystem {
+class RenderingSystem {
 public:
-	GraphicsSystem();
+	RenderingSystem();
 
-	~GraphicsSystem();
+	~RenderingSystem();
 
 	// Adjusts viewport transformation for drawn scene.
 	// Arguments given in screen pixels.
