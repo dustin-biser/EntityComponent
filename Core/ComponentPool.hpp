@@ -34,6 +34,11 @@ public:
 		EntityID id
 	);
 
+	void setComponentActive (
+		EntityID id,
+		bool activate
+	);
+
 	// Returns pointer to first element in the pool's active list.
 	T * beginActive() const;
 

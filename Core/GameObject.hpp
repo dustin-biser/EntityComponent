@@ -34,6 +34,9 @@ public:
 	T * getComponent();
 
 
+	void setActive(bool status);
+
+
 	// Convenience method to retrieve the GameObject's Transform Component.
 	Transform * transform ();
 

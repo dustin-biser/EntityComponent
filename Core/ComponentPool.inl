@@ -6,6 +6,9 @@
 
 #include "ComponentPool.hpp"
 
+#include <cstring>
+using std::memmove;
+
 #include <unordered_map>
 using std::unordered_map;
 
@@ -19,6 +22,7 @@ class ComponentPoolImpl {
 private:
 	friend class ComponentPool<T>;
 
+// Methods:
 	ComponentPoolImpl();
 	~ComponentPoolImpl();
 
@@ -32,7 +36,26 @@ private:
 		EntityID id
 	);
 
+	void activateComponent (
+		EntityID id
+	);
 
+	void deactivateComponent (
+		EntityID id
+	);
+
+	bool isActive (
+		EntityID id
+	);
+
+	void moveObjects (
+		T * dest,
+		T * source,
+		size_t numObjects
+	);
+
+
+// Members:
 	T * m_pool;
 	const size_t m_numPoolElements = EngineSettings::MAX_COMPONENTS_PER_TYPE;
 
@@ -43,10 +66,13 @@ private:
 	T * m_lastAvailable;
 
 	// Up-to-date mapping from EntityID to memory address of Component object within pool.
-	// Allows O(1) for retrieval.
+	// Allows for O(1) retrieval.
 	std::unordered_map<EntityID::id_type, T *> m_idToComponentMap;
-};
 
+	// Deactivated components are listed here.
+	// Allows for O(1) retrieval.
+	std::unordered_map<EntityID::id_type, bool> m_idToActiveStatusMap;
+};
 
 //---------------------------------------------------------------------------------------
 // Constructor
@@ -66,10 +92,8 @@ ComponentPoolImpl<T>::ComponentPoolImpl()
 		freeList->next = &m_pool[i + 1];
 	}
 	// Last T object points to nullptr.
-	freeList = &m_pool[lastPoolIndex];
-	freeList->next = nullptr;
-
 	m_lastAvailable = &m_pool[lastPoolIndex];
+	m_lastAvailable->next = nullptr;
 }
 
 
@@ -128,8 +152,11 @@ T * ComponentPoolImpl<T>::createComponent (
 	T * result = m_firstAvailable;
 	m_firstAvailable = reinterpret_cast<T *>(m_firstAvailable->next);
 
-	// Update idPointerMap
+	// Update pointer map
 	m_idToComponentMap[id.value] = result;
+
+	// Update active status
+	m_idToActiveStatusMap[id.value] = true;
 
 	return result;
 }
@@ -223,6 +250,118 @@ size_t ComponentPool<T>::numActive() const
 {
 	return impl->numActiveObjects();
 }
+
+//---------------------------------------------------------------------------------------
+template <class T>
+bool ComponentPoolImpl<T>::isActive (
+	EntityID id
+) {
+	return m_idToActiveStatusMap.at(id.value);
+}
+
+
+//---------------------------------------------------------------------------------------
+template <class T>
+void ComponentPool<T>::setComponentActive (
+	EntityID id,
+	bool activate
+) {
+	if (impl->m_idToComponentMap.count(id.value) > 0) {
+		// Component with EntityID exists.
+
+		if ((activate) && !impl->isActive(id)) {
+			impl->activateComponent(id);
+		}
+		else if ((!activate) && impl->isActive(id)) {
+			impl->deactivateComponent(id);
+		}
+	}
+}
+
+//---------------------------------------------------------------------------------------
+template <class T>
+void ComponentPoolImpl<T>::moveObjects (
+	T * dest,
+	T * source,
+	size_t numObjects
+) {
+	memmove(dest, source, sizeof(T) * numObjects);
+
+	// For each object moved, update its pointer map location.
+	T * pMovedObject = dest;
+	for (size_t i(0); i < numObjects; ++i) {
+		m_idToComponentMap.at(pMovedObject->getEntityID().value) = pMovedObject;
+		++pMovedObject;
+	}
+}
+
+//---------------------------------------------------------------------------------------
+template <class T>
+void ComponentPoolImpl<T>::deactivateComponent (
+	EntityID id
+) {
+	// Locate object from id.
+	T * pObject = m_idToComponentMap.at(id.value);
+
+	// Place object at m_lastAvailable location.
+	std::memmove(m_lastAvailable, pObject, sizeof(T));
+
+	// Update pointer map
+	m_idToComponentMap.at(id.value) = m_lastAvailable;
+
+	// Update active status
+	m_idToActiveStatusMap.at(id.value) = false;
+
+	// Move all Active Components following pObject forward one spot
+	// toward front of pool.
+	size_t numObjectsToMove = static_cast<size_t>(m_firstAvailable - pObject - 1);
+	this->moveObjects(pObject, pObject + 1, numObjectsToMove);
+
+	// Update last available object on free list
+	--m_lastAvailable;
+
+	// Update first available object on free list
+	--m_firstAvailable;
+
+	if (m_lastAvailable != m_firstAvailable) {
+		m_firstAvailable->next = m_firstAvailable + 1;
+	}
+	else {
+		m_firstAvailable->next = nullptr;
+	}
+}
+
+//---------------------------------------------------------------------------------------
+template <class T>
+void ComponentPoolImpl<T>::activateComponent (
+	EntityID id
+) {
+	// Locate object from id.
+	T * pObject = m_idToComponentMap.at(id.value);
+
+	// Place object at m_firstAvailable location.
+	std::memmove(m_firstAvailable, pObject, sizeof(T));
+
+	// Update pointer map
+	m_idToComponentMap.at(id.value) = m_firstAvailable;
+
+	// Update active status
+	m_idToActiveStatusMap.at(id.value) = true;
+
+	// Move all Inactive Components in front of pObject backward one spot toward
+	// end of pool.
+	size_t numObjectsToMove = pObject - m_lastAvailable - 1;
+	this->moveObjects(pObject, m_lastAvailable + 1, numObjectsToMove);
+
+	++m_firstAvailable;
+	++m_lastAvailable;
+	if (m_firstAvailable != m_lastAvailable) {
+		m_firstAvailable->next = m_firstAvailable + 1;
+	}
+}
+
+
+
 
 
 #endif //_COMPONENT_POOL_INL_

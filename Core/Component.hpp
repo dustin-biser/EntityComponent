@@ -30,7 +30,7 @@ private:
 	union {
 		GameObject * m_gameObject;
 
-		// For use to form FreeList within ComponentPool.
+		// For use in forming a free list within ComponentPool.
 		Component * next;
 	};
 };

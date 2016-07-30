@@ -99,7 +99,6 @@
     <ClCompile Include="Core\EntityID.cpp" />
     <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
-    <ClCompile Include="Core\ComponentPool.inl" />
     <ClCompile Include="Core\GameObject.cpp" />
     <ClCompile Include="Rendering\graphics.cpp" />
     <ClCompile Include="Rendering\Rendering.cpp" />
@@ -142,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="Core\ComponentPool.inl" />
     <None Include="Core\GameObject.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

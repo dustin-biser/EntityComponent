@@ -21,6 +21,18 @@ GameObject::GameObject(const std::string & name)
 }
 
 //---------------------------------------------------------------------------------------
+void GameObject::setActive (
+	bool status
+) {
+	//-- Notify ComponentPools to deactivate Components associated with EnityID:
+	ComponentPoolLocator<Transform>::getPool()->setComponentActive(this->id, status);
+	ComponentPoolLocator<Rendering>::getPool()->setComponentActive(this->id , status);
+	ComponentPoolLocator<Motion>::getPool()->setComponentActive(this->id, status);
+	ComponentPoolLocator<Physics>::getPool()->setComponentActive(this->id, status);
+	ComponentPoolLocator<Script>::getPool()->setComponentActive(this->id, status);
+}
+
+//---------------------------------------------------------------------------------------
 Transform * GameObject::transform ()
 {
 	ComponentPool<Transform> * transformPool = ComponentPoolLocator<Transform>::getPool();
@@ -30,7 +42,7 @@ Transform * GameObject::transform ()
 //---------------------------------------------------------------------------------------
 void GameObject::destroy()
 {
-	//-- Notify all ComponentPools to destroy Components associated with EnityID:
+	//-- Notify ComponentPools to destroy Components associated with EnityID:
 	ComponentPoolLocator<Transform>::getPool()->destroyComponent(this->id);
 	ComponentPoolLocator<Rendering>::getPool()->destroyComponent(this->id);
 	ComponentPoolLocator<Motion>::getPool()->destroyComponent(this->id);
