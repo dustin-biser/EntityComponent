@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClCompile Include="Assets\AssetDefinitions.cpp" />
     <ClCompile Include="Assets\AssetLoader.cpp" />
+    <ClCompile Include="Assets\MeshDirectory.cpp" />
     <ClCompile Include="Backup\UnusedCode.cpp" />
     <ClCompile Include="Core\Component.cpp" />
     <ClCompile Include="Core\ComponentPoolLocator.inl" />
@@ -119,6 +120,7 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="Assets\MeshDirectory.hpp" />
     <ClInclude Include="Config\EngineSettings.hpp" />
     <ClInclude Include="Core\Component.hpp" />
     <ClInclude Include="Core\ComponentPoolLocator.hpp" />

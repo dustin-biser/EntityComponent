@@ -34,6 +34,7 @@ typename std::enable_if<
 T &>::type
 GameObject::addComponent()
 {
+	// Don't force derived script to implement a constructor, so use default one.
 	T * pDerivedScript = new T ();
 	pDerivedScript->id = getEntityID();
 	pDerivedScript->m_gameObject = this;

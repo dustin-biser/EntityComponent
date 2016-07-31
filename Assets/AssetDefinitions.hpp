@@ -3,16 +3,13 @@
 //
 #pragma once
 
-namespace Asset
-{
-	typedef const char * const Definition;
+#include <vector>
 
-	extern Asset::Definition Cannon;
 
-	extern Asset::Definition Projectile;
+// For holding all Asset Definitions accessible during run-time.
+class Asset {
+public:
+	typedef const char * Definition;
 
-	extern Asset::Definition ClockBase;
-	extern Asset::Definition HourHand;
-	extern Asset::Definition MinuteHand;
-	extern Asset::Definition SecondHand;
-}
+	static std::vector<Definition> assetDefinitions;
+};

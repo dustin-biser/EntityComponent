@@ -40,7 +40,7 @@ class C_ApplicationImpl {
 private:
 	friend class C_Application;
 
-	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
+	std::unordered_map<MeshID, Mesh2d> meshAssetDirectory;
 
 	C_ApplicationImpl (
 		int screenWidth,
@@ -81,20 +81,6 @@ C_ApplicationImpl::C_ApplicationImpl(
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::buildMeshAssetDirectory()
 {
-	Asset::Definition assetDefinitions[] = {
-		Asset::Cannon,
-		Asset::Projectile,
-		Asset::ClockBase,
-		Asset::HourHand,
-		Asset::MinuteHand,
-		Asset::SecondHand
-	};
-
-	for (auto asset : assetDefinitions) {
-		Mesh2d mesh;
-		AssetLoader::decodeMesh(asset, mesh);
-		meshAssetDirectory[mesh.meshId] = std::move(mesh);
-	}
 }
 
 

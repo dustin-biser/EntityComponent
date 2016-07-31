@@ -33,7 +33,7 @@ void AssetLoader::decodeMesh (
 
 			// Get MeshId
 			std::istringstream inStream(currentLine.substr(3));
-			MeshId meshId;
+			MeshID meshId;
 			inStream >> std::skipws >> meshId;
 
 			if (numIds == 1) {

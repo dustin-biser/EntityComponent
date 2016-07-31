@@ -9,10 +9,10 @@
 
 typedef vec2 Vertex;
 typedef unsigned int Index;
-typedef std::string MeshId;
+typedef std::string MeshID;
 
 struct Mesh2d {
-	MeshId meshId;
+	MeshID meshId;
 	std::vector<Vertex> vertexList;
 	std::vector<Index> edgeIndexList;
 };

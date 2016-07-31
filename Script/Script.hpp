@@ -37,6 +37,7 @@ private:
 
 
 // All includes a Script may need.
+#include "Assets/MeshDirectory.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Transform.hpp"
 #include "Core/Screen.hpp"

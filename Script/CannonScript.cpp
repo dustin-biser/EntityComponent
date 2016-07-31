@@ -10,7 +10,7 @@ void CannonScript::init()
 	m_cannon = &gameObject();
 
 	Rendering & rendering = m_cannon->addComponent<Rendering>();
-	//rendering.mesh = MeshDirectory::getMesh("Cannon");
+	rendering.mesh = MeshDirectory::getMesh("Cannon");
 	rendering.color = Color {0.2f, 0.2f, 1.0f};
 
 	float scale_x = (60.0f / Screen::width);

@@ -25,7 +25,7 @@ void ClockHandMotionComponent::update (
 	float elapsedTime
 ) {
 
-	MeshId meshId = gameObject->graphics->mesh->meshId;
+	MeshID meshId = gameObject->graphics->mesh->meshId;
 
 	int hour, minute, second;
 	GetTime(hour, minute, second);
