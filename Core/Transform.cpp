@@ -48,10 +48,6 @@ vec2 Transform::operator * (const vec2 & vertex) const
 	float x = vertex.x;
 	float y = vertex.y;
 
-	// Scale
-	x = x * scale.x;
-	y = y * scale.y;
-
 	// Rotate
 	const float angle = rotationAngle;
 	if (std::fabs(angle) > 1.0e-6) {
@@ -63,6 +59,11 @@ vec2 Transform::operator * (const vec2 & vertex) const
 		x = x_new;
 		y = y_new;
 	}
+
+	// Scale
+	x = x * scale.x;
+	y = y * scale.y;
+
 
 	// Translate
 	x += position.x;

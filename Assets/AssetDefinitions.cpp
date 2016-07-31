@@ -42,7 +42,6 @@ vert 0.0 0.45
 edge 0 1
 )",
 
-
 R"(
 id MinuteHand
 vert 0.0 0.0
@@ -53,7 +52,7 @@ edge 0 1
 R"("
 id SecondHand
 vert 0.0 0.0
-vert 0.0 0.85
+vert 0.0 0.9
 edge 0 1
 )"
 
