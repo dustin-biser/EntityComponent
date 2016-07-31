@@ -10,7 +10,7 @@ Rendering::Rendering (
 )
 	: Component (id, gameObject),
 	  color {0.0f, 0.0f, 0.0f},
-	  mesh (nullptr)
+	  mesh (&defaultMesh)
 {
 
 }
@@ -18,7 +18,7 @@ Rendering::Rendering (
 //---------------------------------------------------------------------------------------
 Rendering::Rendering()
 	: color {0.0f, 0.0f, 0.0f},
-	  mesh(nullptr)
+	  mesh(&defaultMesh)
 {
 
 }

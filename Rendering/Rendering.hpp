@@ -3,7 +3,9 @@
 //
 #pragma once
 
+#include "Assets/Mesh2d.hpp"
 #include "Core/Component.hpp"
+
 
 // Forward declare
 struct Mesh2d;
@@ -26,4 +28,8 @@ public:
 
 	Color color;
 	const Mesh2d * mesh;
+
+
+private:
+	Mesh2d defaultMesh;
 };

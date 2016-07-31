@@ -206,7 +206,7 @@ void C_ApplicationImpl::Tick (
 	// TODO - Update Input class regarding pressedKeys.
 	ScriptSystem::update();
 
-	//RenderingSystem::renderScene();
+	RenderingSystem::renderScene();
 }
 
 //---------------------------------------------------------------------------------------
