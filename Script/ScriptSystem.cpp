@@ -28,7 +28,7 @@ void ScriptSystem::update()
 {
 	Script * script = m_scriptPool->beginActive();
 	for (size_t i(0); i < m_scriptPool->numActive(); ++i) {
-		script->update();
+		script->m_script->update();
 	}
 }
 

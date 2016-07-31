@@ -21,6 +21,7 @@ using std::unordered_map;
 
 #include "Core/GameConstants.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Input.hpp"
 #include "Core/Screen.hpp"
 
 #include "Rendering/Rendering.hpp"
@@ -188,6 +189,7 @@ void C_ApplicationImpl::loadGameObjects()
 void C_ApplicationImpl::Tick (
 	C_Application::T_PressedKey pressedKeys
 ) {
+	handleInput(pressedKeys);
 
 	// TODO - Update Input class regarding pressedKeys.
 	ScriptSystem::update();
@@ -199,56 +201,41 @@ void C_ApplicationImpl::Tick (
 void C_ApplicationImpl::handleInput (
 	C_Application::T_PressedKey pressedKeys
 ) {
-#if false
-	const float deltaAngle = 0.1f;
-	const float maxAngle = k_PI * 0.5f;
-	const float minAngle = -maxAngle;
 
 	if (pressedKeys & C_Application::s_KeyLeft) {
-		GameObject * cannon = gameObjectPool->getComponent(cannon_id);
-		float & rotationAngle = cannon->transform.rotationAngle;
-		rotationAngle += deltaAngle;
-		rotationAngle = min(maxAngle, rotationAngle);
+		Input::setKeyDown(KEY::LEFT);
+	}
+	else {
+		Input::setKeyUp(KEY::LEFT);
 	}
 	
 	if (pressedKeys & C_Application::s_KeyRight) {
-		GameObject * cannon = gameObjectPool->getComponent(cannon_id);
-		float & rotationAngle = cannon->transform.rotationAngle;
-		rotationAngle -= deltaAngle;
-		rotationAngle = max(minAngle, rotationAngle);
+		Input::setKeyDown(KEY::RIGHT);
+	}
+	else {
+		Input::setKeyUp(KEY::RIGHT);
 	}
 
 	if (pressedKeys & C_Application::s_KeyUp) {
+		Input::setKeyDown(KEY::UP);
+	}
+	else {
+		Input::setKeyUp(KEY::UP);
 	}
 
 	if (pressedKeys & C_Application::s_KeyDown) {
+		Input::setKeyDown(KEY::DOWN);
+	}
+	else {
+		Input::setKeyUp(KEY::DOWN);
 	}
 
 	if (pressedKeys & C_Application::s_KeySpace) {
-		// Update projectile prototype to spawn at tip of cannon.
-		{
-			GameObject * projectilePrototype = projectileReplicator->getPrototype();
-			GameObject * cannon = gameObjectPool->getComponent(cannon_id);
-
-			// Get vertex at tip of cannon.
-			Vertex vertex = cannon->graphics->mesh->vertexList[2];
-			Transform cannonTransform = cannon->transform;
-			vertex = cannonTransform * vertex;
-
-			// Update projectile's position and orientation
-			projectilePrototype->transform.position = vertex;
-			projectilePrototype->transform.rotationAngle = cannonTransform.rotationAngle;
-
-			// Update projectile's velocity direction.
-			vec2 direction = normalize(vertex - cannon->transform.position);
-			vec2 vel = projectilePrototype->motion->velocity;
-			projectilePrototype->motion->velocity = direction * length(vel);
-		}
-
-		// Generate projectile
-		projectileReplicator->replicateTo(gameObjectPool);
+		Input::setKeyDown(KEY::SPACE);
 	}
-#endif
+	else {
+		Input::setKeyUp(KEY::SPACE);
+	}
 }
 
 //---------------------------------------------------------------------------------------

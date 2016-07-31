@@ -38,7 +38,10 @@ private:
 
 // All includes a Script may need.
 #include "Assets/MeshDirectory.hpp"
+
+#include "Core/GameConstants.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Input.hpp"
 #include "Core/Transform.hpp"
 #include "Core/Screen.hpp"
 

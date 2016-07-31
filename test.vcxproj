@@ -98,8 +98,8 @@
     <ClCompile Include="Core\ComponentPoolLocator.inl" />
     <ClCompile Include="Core\Entity.cpp" />
     <ClCompile Include="Core\EntityID.cpp" />
+    <ClCompile Include="Core\Input.cpp" />
     <ClCompile Include="Core\Screen.cpp" />
-    <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
     <ClCompile Include="Rendering\graphics.cpp" />
@@ -126,8 +126,8 @@
     <ClInclude Include="Core\ComponentPoolLocator.hpp" />
     <ClInclude Include="Core\Entity.hpp" />
     <ClInclude Include="Core\EntityID.hpp" />
+    <ClInclude Include="Core\Input.hpp" />
     <ClInclude Include="Core\Screen.hpp" />
-    <ClInclude Include="Motion\ClockHandMotionComponent.hpp" />
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
     <ClInclude Include="Core\GameObject.hpp" />

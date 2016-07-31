@@ -3,6 +3,9 @@
 //
 #include "CannonScript.hpp"
 
+#include <algorithm>
+using std::max;
+using std::min;
 
 //---------------------------------------------------------------------------------------
 void CannonScript::init()
@@ -25,6 +28,17 @@ void CannonScript::init()
 //---------------------------------------------------------------------------------------
 void CannonScript::update()
 {
+	const float deltaAngle = 0.1f;
+	const float maxAngle = k_PI * 0.5f;
+	float & rotationAngle = m_cannon->transform().rotationAngle;
 
+	if (Input::keyDown(KEY::LEFT)) {
+		rotationAngle += deltaAngle;
+		rotationAngle = std::min(rotationAngle, maxAngle);
+	}
+	else if (Input::keyDown(KEY::RIGHT)) {
+		rotationAngle -= deltaAngle;
+		rotationAngle = std::max(rotationAngle, -maxAngle);
+	}
 }
 
