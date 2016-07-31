@@ -31,6 +31,7 @@ public:
 private:
 	template <class T>
 	friend class ComponentPoolImpl;
+	friend class GameObject;
 
 	union {
 		GameObject * m_gameObject;

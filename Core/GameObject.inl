@@ -16,24 +16,33 @@
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T & GameObject::addComponent()
+typename std::enable_if<
+	std::is_base_of<Component, T>::value &&
+	!std::is_base_of<Script, T>::value, 
+T &>::type
+GameObject::addComponent()
 {
-	assertIsDerivedFromComponent<T>();
+	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
+	return componentPool->createComponent(id, *this);
+}
 
-	if (std::is_base_of<Script, T>::value) {
-		T * pDerivedScript = new T (this->id, *this);
+//---------------------------------------------------------------------------------------
+template <class T>
+typename std::enable_if<
+	std::is_base_of<Component, T>::value &&
+	std::is_base_of<Script, T>::value, 
+T &>::type
+GameObject::addComponent()
+{
+	T * pDerivedScript = new T ();
+	pDerivedScript->id = getEntityID();
+	pDerivedScript->m_gameObject = this;
 
-		ComponentPool<Script> * componentPool = ComponentPoolLocator<Script>::getPool();
-		Script & script = componentPool->createComponent(id, *this);
-		// Required for compilation of all types T.
-		script.scriptBehavior = reinterpret_cast<Script *>(pDerivedScript);
+	ComponentPool<Script> * componentPool = ComponentPoolLocator<Script>::getPool();
+	Script & script = componentPool->createComponent(id, *this);
+	script.m_script = pDerivedScript;
 
-		return *pDerivedScript;
-	}
-	else {
-		ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
-		return componentPool->createComponent(id, *this);
-	}
+	return *pDerivedScript;
 }
 
 //---------------------------------------------------------------------------------------

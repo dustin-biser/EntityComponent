@@ -17,6 +17,8 @@ struct Color {
 
 class Rendering final : public Component {
 public:
+	Rendering();
+
 	Rendering (
 		EntityID id,
 		GameObject & gameObject

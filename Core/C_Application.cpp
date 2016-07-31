@@ -15,16 +15,20 @@ using std::unordered_map;
 #include "graphics.h"
 #include "time.h"
 
-#include "Core/GameConstants.hpp"
-
 #include "Assets/AssetDefinitions.hpp"
 #include "Assets/AssetLoader.hpp"
 #include "Assets/Mesh2d.hpp"
 
+#include "Core/GameConstants.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Screen.hpp"
 
 #include "Rendering/Rendering.hpp"
 #include "Rendering/RenderingSystem.hpp"
+
+#include "Script/Script.hpp"
+#include "Script/ScriptSystem.hpp"
+#include "Script/CannonScript.hpp"
 
 
 
@@ -35,9 +39,6 @@ static vec2 randomPositionBetween (vec2 min, vec2 max);
 class C_ApplicationImpl {
 private:
 	friend class C_Application;
-
-	const int m_ScreenWidth;
-	const int m_ScreenHeight;
 
 	std::unordered_map<MeshId, Mesh2d> meshAssetDirectory;
 
@@ -64,15 +65,17 @@ private:
 C_ApplicationImpl::C_ApplicationImpl(
 	int screenWidth,
 	int screenHeight
-) 
-	: m_ScreenWidth(screenWidth),
-	  m_ScreenHeight(screenHeight)
-{
-	RenderingSystem::setViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+) {
+	Screen::width = screenWidth;
+	Screen::height = screenHeight;
+
+	RenderingSystem::setViewport(0, 0, screenWidth, screenHeight);
 
 	buildMeshAssetDirectory();
 
 	loadGameObjects();
+
+	ScriptSystem::init();
 }
 
 //---------------------------------------------------------------------------------------
@@ -192,48 +195,7 @@ static vec2 randomPositionBetween (
 void C_ApplicationImpl::loadGameObjects()
 {
 	GameObject * cannon = new GameObject("Cannon");
-	Rendering & renderingComponent = cannon->addComponent<Rendering>();
-	renderingComponent.mesh = &meshAssetDirectory.at("Cannon");
-	renderingComponent.color = Color { 0.2f, 0.2f, 1.0f };
-
-	float scale_x = (60.0f / m_ScreenWidth);
-	float scale_y = (60.0f / m_ScreenHeight);
-	cannon->transform().scale = vec2(scale_x, scale_y);
-
-	// Place cannon near bottom of screen.
-	cannon->transform().position = vec2(0.0f, -0.8f);
-
-#if false
-	// Load Cannon
-	{
-		// Keep track of cannon for later use.
-		this->cannon_id = GameObject::generateID();
-
-		GameObject * cannon = gameObjectPool->createComponent(cannon_id);
-		cannon->graphics = new Rendering (
-			Color{ 0.2f, 0.2f, 1.0f },
-			&meshAssetDirectory.at("Cannon")
-		);
-		float scale_x = (60.0f / m_ScreenWidth);
-		float scale_y = (60.0f / m_ScreenHeight);
-		cannon->transform.scale = vec2(scale_x, scale_y);
-
-		// Place cannon near bottom of screen.
-		cannon->transform.position = vec2(0.0f, -0.8f);
-	}
-
-	// Load 2 Clocks in random positions
-	{
-		GameObject * clock1 = clockReplicator->replicateTo(gameObjectPool);
-		clock1->transform.position = randomPositionBetween(vec2(-0.7f, 0.0f), vec2(-0.2f, 0.8f));
-		clock1->motion->velocity = randomPositionBetween(vec2(-0.05f, -0.05f), vec2(0.05f, 0.05f));
-
-
-		GameObject * clock2 = clockReplicator->replicateTo(gameObjectPool);
-		clock2->transform.position = randomPositionBetween(vec2(0.2f, 0.0f), vec2(0.7f, 0.8f));
-		clock2->motion->velocity = randomPositionBetween(vec2(-0.05f, -0.05f), vec2(0.05f, 0.05f));
-	}
-#endif
+	cannon->addComponent<CannonScript>();
 }
 
 //---------------------------------------------------------------------------------------
@@ -242,8 +204,9 @@ void C_ApplicationImpl::Tick (
 ) {
 
 	// TODO - Update Input class regarding pressedKeys.
+	ScriptSystem::update();
 
-	RenderingSystem::renderScene();
+	//RenderingSystem::renderScene();
 }
 
 //---------------------------------------------------------------------------------------

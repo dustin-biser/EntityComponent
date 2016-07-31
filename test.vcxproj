@@ -97,6 +97,7 @@
     <ClCompile Include="Core\ComponentPoolLocator.inl" />
     <ClCompile Include="Core\Entity.cpp" />
     <ClCompile Include="Core\EntityID.cpp" />
+    <ClCompile Include="Core\Screen.cpp" />
     <ClCompile Include="Motion\ClockHandMotionComponent.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
@@ -111,7 +112,9 @@
     <ClCompile Include="Core\time.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="Core\vec2.cpp" />
+    <ClCompile Include="Script\CannonScript.cpp" />
     <ClCompile Include="Script\Script.cpp" />
+    <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\AssetLoader.hpp" />
@@ -121,6 +124,7 @@
     <ClInclude Include="Core\ComponentPoolLocator.hpp" />
     <ClInclude Include="Core\Entity.hpp" />
     <ClInclude Include="Core\EntityID.hpp" />
+    <ClInclude Include="Core\Screen.hpp" />
     <ClInclude Include="Motion\ClockHandMotionComponent.hpp" />
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
@@ -137,7 +141,9 @@
     <ClInclude Include="Core\time.h" />
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\vec2.hpp" />
+    <ClInclude Include="Script\CannonScript.hpp" />
     <ClInclude Include="Script\Script.hpp" />
+    <ClInclude Include="Script\ScriptSystem.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

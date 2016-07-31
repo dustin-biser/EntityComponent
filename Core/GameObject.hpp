@@ -9,20 +9,33 @@
 
 // Forward declare.
 class Transform;
+class Component;
+class Script;
 
 
 // Base class for all game related objects.
-// Every GameObject includes a name and a transform.
+// Every GameObject includes a string name and a Transform Component.
 class GameObject : public Entity {
 public:
 	GameObject (const std::string & name);
 
-	// Adds a new Component of type T to the calling GameObject and 
-	// returns a reference to the Component. If Component of type T already
-	// exists for GameObject, then a reference to it is returned without
-	// adding a new Component.
+	// For adding Non-Script Components.
 	template <class T>
-	T & addComponent();
+	typename std::enable_if<
+		std::is_base_of<Component, T>::value &&
+		!std::is_base_of<Script, T>::value, 
+	T &>::type
+	addComponent();
+
+
+	// For adding Script Components.
+	template <class T>
+	typename std::enable_if<
+		std::is_base_of<Component, T>::value &&
+		std::is_base_of<Script, T>::value, 
+	T &>::type
+	addComponent();
+
 
 	// Removes Component of type T so that it is no longer associated
 	// with this GameObject.

@@ -10,7 +10,14 @@ Script::Script (
 	GameObject & gameObject
 )
 	: Component(id, gameObject),
-	  scriptBehavior(nullptr)
+	  m_script(nullptr)
+{
+
+}
+
+//---------------------------------------------------------------------------------------
+Script::Script()
+	: m_script(nullptr)
 {
 
 }
@@ -18,7 +25,8 @@ Script::Script (
 //---------------------------------------------------------------------------------------
 Script::~Script()
 {
-	delete scriptBehavior;
+	delete m_script;
+	m_script = nullptr;
 }
 
 //---------------------------------------------------------------------------------------

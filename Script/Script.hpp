@@ -5,13 +5,12 @@
 
 #include "Core/Component.hpp"
 
-// Forward declare.
-class ScriptBehavior;
-
 
 // To be derived by subclasses to provide custom behavior for GameObjects.
 class Script : public Component {
 public:
+	Script();
+
 	Script (
 		EntityID id,
 		GameObject & gameObject
@@ -31,6 +30,18 @@ public:
 
 private:
 	friend class GameObject;
+	friend class ScriptSystem;
 
-	Script * scriptBehavior;
+	Script * m_script;
 };
+
+
+// All includes a Script may need.
+#include "Core/GameObject.hpp"
+#include "Core/Transform.hpp"
+#include "Core/Screen.hpp"
+
+#include "Motion/Motion.hpp"
+#include "Physics/Physics.hpp"
+#include "Rendering/Rendering.hpp"
+
