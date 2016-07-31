@@ -35,8 +35,8 @@ private:
 	void buildLinesFromRenderingComponent (
 		const Rendering & rendering,
 		std::vector<Line> & lineList,
-		size_t & numLines
-		//const Transform & parentTransform
+		size_t & numLines,
+		const Transform & parentTransform
 	);
 
 	void renderScene();
@@ -104,9 +104,20 @@ void RenderingSystemImpl::renderScene()
 	ComponentPool<Rendering> * renderingPool = ComponentPoolLocator<Rendering>::getPool();
 	Rendering * rendering = renderingPool->beginActive();
 
-	// Build all wireframe lines from all Rendering components and store in lineList.
+	// Build wire-frame lines from all Rendering components and store in lineList.
 	for (size_t i(0); i < renderingPool->numActive(); ++i) {
-		buildLinesFromRenderingComponent(rendering[i], m_lineList, numLines);
+		Transform transform = rendering[i].transform();
+
+		//-- Apply hierarchical parent transforms
+		Transform * parent = transform.getParent();
+		Transform parentTransforms;
+		while (parent) {
+			parentTransforms = parent->transform() * parentTransforms;
+			parent = parent->getParent();
+		}
+		transform = parentTransforms * transform;
+
+		buildLinesFromRenderingComponent(rendering[i], m_lineList, numLines, transform);
 	}
 
 	// Batch render all lines in lineList.
@@ -119,10 +130,9 @@ void RenderingSystemImpl::renderScene()
 void RenderingSystemImpl::buildLinesFromRenderingComponent (
 	const Rendering & rendering,
 	std::vector<Line> & lineList,
-	size_t & numLines
+	size_t & numLines,
+	const Transform & transform
 ) {
-	Transform transform = rendering.transform();
-
 	const Mesh2d * mesh = rendering.mesh;
 	const auto vertexList = mesh->vertexList;
 
@@ -147,12 +157,6 @@ void RenderingSystemImpl::buildLinesFromRenderingComponent (
 		};
 		++numLines;
 	}
-
-	// Build lines from child gameObjects.
-	//for (auto & child : gameObject.childObjects) {
-	//	GameObject * childGameObject = child.residentPool->getObject(child.id);
-	//	buildLinesFromRenderingComponent(*childGameObject, lineList, numLines, gameObject.transform);
-	//}
 }
 
 //---------------------------------------------------------------------------------------

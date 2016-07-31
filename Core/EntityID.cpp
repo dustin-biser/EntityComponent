@@ -5,6 +5,9 @@
 
 EntityID::id_type EntityID::currentId = 0;
 
+const EntityID EntityID::NO_ENTITY = EntityID(static_cast<id_type>(-1));
+
+
 //---------------------------------------------------------------------------------------
 EntityID::EntityID (
 	id_type value
@@ -24,10 +27,30 @@ EntityID::EntityID (
 }
 
 //---------------------------------------------------------------------------------------
+EntityID::EntityID()
+	: value(-1)
+{
+
+}
+
+//---------------------------------------------------------------------------------------
 EntityID EntityID::generateID()
 {
 	// Generate a new EntitID object and return it.
 	return EntityID(EntityID::currentId++);
 }
 
+//---------------------------------------------------------------------------------------
+bool EntityID::operator != (
+	const EntityID & other
+) const {
+	return this->value != other.value;
+}
+
+//---------------------------------------------------------------------------------------
+bool EntityID::operator == (
+	const EntityID & other
+) const {
+	return this->value == other.value;
+}
 

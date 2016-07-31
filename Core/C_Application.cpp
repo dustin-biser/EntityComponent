@@ -1,25 +1,8 @@
 #include "C_Application.h"
 
-#include <cstdlib>
-using std::rand;
-
-#include <string>
-using std::string;
-
-#include <vector>
-using std::vector;
-
-#include <unordered_map>
-using std::unordered_map;
-
 #include "graphics.h"
 #include "time.h"
 
-#include "Assets/AssetDefinitions.hpp"
-#include "Assets/AssetLoader.hpp"
-#include "Assets/Mesh2d.hpp"
-
-#include "Core/GameConstants.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Input.hpp"
 #include "Core/Screen.hpp"
@@ -34,22 +17,14 @@ using std::unordered_map;
 
 
 
-static vec2 randomPositionBetween (vec2 min, vec2 max); 
-
-
-
 class C_ApplicationImpl {
 private:
 	friend class C_Application;
-
-	std::unordered_map<MeshID, Mesh2d> meshAssetDirectory;
 
 	C_ApplicationImpl (
 		int screenWidth,
 		int screenHeight
 	);
-
-	void buildMeshAssetDirectory();
 
 	void loadGameObjects();
 
@@ -73,18 +48,10 @@ C_ApplicationImpl::C_ApplicationImpl(
 
 	RenderingSystem::setViewport(0, 0, screenWidth, screenHeight);
 
-	buildMeshAssetDirectory();
-
 	loadGameObjects();
 
 	ScriptSystem::init();
 }
-
-//---------------------------------------------------------------------------------------
-void C_ApplicationImpl::buildMeshAssetDirectory()
-{
-}
-
 
 //---------------------------------------------------------------------------------------
 //void C_ApplicationImpl::initGameObjectReplicators()
@@ -164,20 +131,6 @@ void C_ApplicationImpl::buildMeshAssetDirectory()
 #endif
 //}
 
-
-//---------------------------------------------------------------------------------------
-static vec2 randomPositionBetween (
-	vec2 min,
-	vec2 max
-) {
-	float t0 = rand() / static_cast<float>(RAND_MAX);
-	float t1 = rand() / static_cast<float>(RAND_MAX);
-
-	float x = (1.0f - t0) * min.x + t0 * max.x;
-	float y = (1.0f - t1) * min.y + t1 * max.y;
-
-	return vec2(x, y);
-}
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()

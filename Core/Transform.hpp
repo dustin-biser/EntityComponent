@@ -18,10 +18,20 @@ public:
 
 	Transform operator * (const Transform & other) const;
 
-	vec2 operator * ( const vec2 & vertex );
+	vec2 operator * ( const vec2 & vertex ) const;
 
+
+	void setParent(Transform & parent);
+
+	Transform * getParent();
 
 	vec2 position;
 	vec2 scale;
 	float rotationAngle;
+
+
+private:
+	friend class RenderingSystemImpl;
+	
+	EntityID parentId;
 };

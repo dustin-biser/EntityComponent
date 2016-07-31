@@ -42,7 +42,6 @@ private:
 };
 
 
-
 #include <type_traits>
 
 template <class T>

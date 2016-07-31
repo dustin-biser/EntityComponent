@@ -5,6 +5,9 @@
 
 #include <cmath>
 
+#include "ComponentPoolLocator.hpp"
+#include "ComponentPool.hpp"
+
 //---------------------------------------------------------------------------------------
 Transform::Transform (
 	EntityID id,
@@ -40,7 +43,7 @@ Transform Transform::operator * (
 }
 
 //---------------------------------------------------------------------------------------
-vec2 Transform::operator * (const vec2 & vertex)
+vec2 Transform::operator * (const vec2 & vertex) const
 {
 	float x = vertex.x;
 	float y = vertex.y;
@@ -67,4 +70,22 @@ vec2 Transform::operator * (const vec2 & vertex)
 
 	return vec2{ x, y };
 
+}
+
+//---------------------------------------------------------------------------------------
+void Transform::setParent (
+	Transform & parent
+) {
+	parentId = parent.id;
+}
+
+//---------------------------------------------------------------------------------------
+Transform * Transform::getParent()
+{
+	if (parentId != EntityID::NO_ENTITY) {
+		return &ComponentPoolLocator<Transform>::getPool()->getComponent(parentId);
+	}
+	else {
+		return nullptr;
+	}
 }
