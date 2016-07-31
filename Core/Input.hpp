@@ -16,6 +16,8 @@ public:
 
 	static void setKeyDown(KEY key);
 
+	static void setKey(KEY key, bool isDown);
+
 	static void setKeyUp(KEY key);
 	
 

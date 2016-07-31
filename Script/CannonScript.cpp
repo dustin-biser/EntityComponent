@@ -28,7 +28,7 @@ void CannonScript::init()
 //---------------------------------------------------------------------------------------
 void CannonScript::update()
 {
-	const float deltaAngle = 0.1f;
+	const float deltaAngle = 0.04f;
 	const float maxAngle = k_PI * 0.5f;
 	float & rotationAngle = m_cannon->transform().rotationAngle;
 

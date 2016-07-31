@@ -30,6 +30,7 @@ using std::unordered_map;
 #include "Script/Script.hpp"
 #include "Script/ScriptSystem.hpp"
 #include "Script/CannonScript.hpp"
+#include "Script/ClockScript.hpp"
 
 
 
@@ -183,6 +184,9 @@ void C_ApplicationImpl::loadGameObjects()
 {
 	GameObject * cannon = new GameObject("Cannon");
 	cannon->addComponent<CannonScript>();
+
+	GameObject * clock = new GameObject("Clock");
+	clock->addComponent<ClockScript>();
 }
 
 //---------------------------------------------------------------------------------------
@@ -191,7 +195,6 @@ void C_ApplicationImpl::Tick (
 ) {
 	handleInput(pressedKeys);
 
-	// TODO - Update Input class regarding pressedKeys.
 	ScriptSystem::update();
 
 	RenderingSystem::renderScene();
@@ -201,41 +204,11 @@ void C_ApplicationImpl::Tick (
 void C_ApplicationImpl::handleInput (
 	C_Application::T_PressedKey pressedKeys
 ) {
-
-	if (pressedKeys & C_Application::s_KeyLeft) {
-		Input::setKeyDown(KEY::LEFT);
-	}
-	else {
-		Input::setKeyUp(KEY::LEFT);
-	}
-	
-	if (pressedKeys & C_Application::s_KeyRight) {
-		Input::setKeyDown(KEY::RIGHT);
-	}
-	else {
-		Input::setKeyUp(KEY::RIGHT);
-	}
-
-	if (pressedKeys & C_Application::s_KeyUp) {
-		Input::setKeyDown(KEY::UP);
-	}
-	else {
-		Input::setKeyUp(KEY::UP);
-	}
-
-	if (pressedKeys & C_Application::s_KeyDown) {
-		Input::setKeyDown(KEY::DOWN);
-	}
-	else {
-		Input::setKeyUp(KEY::DOWN);
-	}
-
-	if (pressedKeys & C_Application::s_KeySpace) {
-		Input::setKeyDown(KEY::SPACE);
-	}
-	else {
-		Input::setKeyUp(KEY::SPACE);
-	}
+	Input::setKey(KEY::LEFT, (pressedKeys & C_Application::s_KeyLeft) > 0);
+	Input::setKey(KEY::RIGHT, (pressedKeys & C_Application::s_KeyRight) > 0);
+	Input::setKey(KEY::UP, (pressedKeys & C_Application::s_KeyUp) > 0);
+	Input::setKey(KEY::DOWN, (pressedKeys & C_Application::s_KeyDown) > 0);
+	Input::setKey(KEY::SPACE, (pressedKeys & C_Application::s_KeySpace) > 0);
 }
 
 //---------------------------------------------------------------------------------------
@@ -251,7 +224,6 @@ C_Application::C_Application (
 C_Application::~C_Application()
 {
 	delete impl;
-	impl = nullptr;
 }
 
 

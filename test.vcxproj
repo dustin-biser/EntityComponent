@@ -114,6 +114,7 @@
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="Core\vec2.cpp" />
     <ClCompile Include="Script\CannonScript.cpp" />
+    <ClCompile Include="Script\ClockScript.cpp" />
     <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\vec2.hpp" />
     <ClInclude Include="Script\CannonScript.hpp" />
+    <ClInclude Include="Script\ClockScript.hpp" />
     <ClInclude Include="Script\Script.hpp" />
     <ClInclude Include="Script\ScriptSystem.hpp" />
   </ItemGroup>

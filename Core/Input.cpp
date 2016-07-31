@@ -32,6 +32,17 @@ void Input::setKeyDown(KEY key)
 }
 
 //---------------------------------------------------------------------------------------
+void Input::setKey(KEY key, bool isDown)
+{
+	if (isDown) {
+		setKeyDown(key);
+	}
+	else {
+		setKeyUp(key);
+	}
+}
+
+//---------------------------------------------------------------------------------------
 void Input::setKeyUp(KEY key)
 {
 	impl->keyDownSet.erase(key);
