@@ -11,16 +11,9 @@ class GameObject;
 class Transform;
 
 
-// Base class for all Component types.
+// Base class for all Component types
 class Component : public Entity {
 public:
-	Component();
-
-	Component (
-		EntityID id,
-		GameObject & gameObject
-	);
-
 	virtual ~Component();
 
 	GameObject & gameObject() const;
@@ -28,7 +21,17 @@ public:
 	Transform & transform() const;
 
 
+protected:
+	Component();
+
+	Component (
+		const GameObject & gameObject
+	);
+
+
 private:
+	template <class T>
+	friend class ComponentPool;
 	template <class T>
 	friend class ComponentPoolImpl;
 	friend class GameObject;
@@ -45,10 +48,10 @@ private:
 #include <type_traits>
 
 template <class T>
-void assertIsDerivedFromComponent ()
+void assertIsDerivedFromComponent()
 {
 	// Compile-time check
 	static_assert(std::is_base_of<Component, T>::value,
-		"T must be a type derived from class Component");
+		"T must be a type derived from class Component.");
 }
 

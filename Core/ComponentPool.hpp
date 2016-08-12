@@ -3,47 +3,58 @@
 //
 #pragma once
 
-#include "Core/EntityID.hpp"
-
+#include "Core/ComponentPoolBase.hpp"
 
 // Forward declare.
 template <class T>
 class ComponentPoolImpl;
 class GameObject;
+class EntityID;
 
 
 // Memory pool that manages both an active-list and an inactive-list 
 // of Components of type T.  Component objects are guaranteed to be tightly
 // packed towards the beginning of their active/inactive lists.
 template <class T>
-class ComponentPool {
+class ComponentPool : public ComponentPoolBase {
 public:
 	ComponentPool();
 	~ComponentPool();
 
+	T * getComponent (
+		const EntityID & id
+	) const;
+
+	// Allocates Component and returns a pointer to it.
 	T & createComponent (
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
+
+	// Allocates Component.
+	void allocateComponent (
+		const GameObject & gameObject
+	) override;
 
 	void destroyComponent (
-		EntityID id
-	);
-
-	T & getComponent (
-		EntityID id
-	);
+		const EntityID & id
+	) override;
 
 	void setComponentActive (
-		EntityID id,
+		const EntityID & id,
 		bool activate
-	);
+	) override;
+
+	// Returns true if ComponentPool contains a Component with 
+	// the given EntityID.
+	bool hasComponent (
+		const EntityID & id
+	) const override;
 
 	// Returns pointer to first element in the pool's active list.
 	T * beginActive() const;
 
 	// Returns the number of objects in active list.
-	size_t numActive() const;
+	size_t numActive() const override;
 
 
 private:

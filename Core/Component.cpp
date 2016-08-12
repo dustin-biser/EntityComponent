@@ -1,28 +1,26 @@
 //
 // Component.cpp
 //
-
 #include "Component.hpp"
 
-#include "Core/Transform.hpp"
 #include "Core/ComponentPoolLocator.hpp"
 #include "Core/ComponentPool.hpp"
+#include "Core/GameObject.hpp"
 
 
 //---------------------------------------------------------------------------------------
-Component::Component (
-	EntityID id,
-	GameObject & gameObject
-) 
-	: Entity(id),
-	  m_gameObject(&gameObject)
+Component::Component()
+	: m_gameObject(nullptr)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-Component::Component()
-	: m_gameObject(nullptr)
+Component::Component (
+	const GameObject & gameObject
+)
+	: Entity(gameObject.getEntityID(), gameObject.getName()),
+	  m_gameObject(const_cast<GameObject *>(&gameObject))
 {
 
 }
@@ -42,5 +40,5 @@ GameObject & Component::gameObject() const
 //---------------------------------------------------------------------------------------
 Transform & Component::transform() const
 {
-	return ComponentPoolLocator<Transform>::getPool()->getComponent(id);
+	return *ComponentPoolLocator<Transform>::getPool()->getComponent(id);
 }

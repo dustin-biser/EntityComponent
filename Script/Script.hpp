@@ -5,6 +5,11 @@
 
 #include "Core/Component.hpp"
 
+#include <type_traits>
+
+// Forward declare.
+class GameObject;
+
 
 // To be derived by subclasses to provide custom behavior for GameObjects.
 class Script : public Component {
@@ -12,31 +17,33 @@ public:
 	Script();
 
 	Script (
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
+
+	template <class T>
+	static
+	typename std::enable_if<std::is_base_of<Script, T>::value,
+	T &>::type replicate(const T & other);
 
 	virtual ~Script();
 
-	virtual void init();
+	virtual void init() {}
 
-	virtual void update();
+	virtual void update() {}
 
-	virtual void onCollision();
+	virtual void onCollision() {}
 
 
 	// Define more callback methods here ...
 
-
-private:
-	friend class GameObject;
-	friend class ScriptSystem;
-
-	Script * m_script;
 };
 
 
-// All includes a Script may need.
+#include "Script.inl"
+
+
+
+// All includes a derived Script class may need.
 #include "Assets/MeshDirectory.hpp"
 
 #include "Core/GameConstants.hpp"

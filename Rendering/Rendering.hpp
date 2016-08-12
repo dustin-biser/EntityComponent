@@ -17,14 +17,17 @@ struct Color {
 	float blue;
 };
 
+
 class Rendering final : public Component {
 public:
 	Rendering();
 
 	Rendering (
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
+
+	Rendering & operator = (const Rendering & other);
+
 
 	Color color;
 	const Mesh2d * mesh;

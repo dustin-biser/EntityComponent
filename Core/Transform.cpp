@@ -5,15 +5,15 @@
 
 #include <cmath>
 
-#include "ComponentPoolLocator.hpp"
-#include "ComponentPool.hpp"
+#include "Core/ComponentPoolLocator.hpp"
+#include "Core/ComponentPool.hpp"
+#include "Core/GameObject.hpp"
 
 //---------------------------------------------------------------------------------------
 Transform::Transform (
-	EntityID id,
-	GameObject & gameObject
+	const GameObject & gameObject
 )
-	: Component (id, gameObject),
+	: Component (gameObject),
 	  position(0.0f, 0.0f),
 	  scale(1.0f, 1.0f),
 	  rotationAngle(0.0f)
@@ -77,16 +77,75 @@ vec2 Transform::operator * (const vec2 & vertex) const
 void Transform::setParent (
 	Transform & parent
 ) {
-	parentId = parent.id;
+	m_parentId = parent.id;
+	parent.addChild(*this);
 }
 
+
 //---------------------------------------------------------------------------------------
-Transform * Transform::getParent()
+void Transform::addChild (
+	Transform & child
+) {
+	const EntityID childId = child.id;
+
+	// Check that child is not already in child list.
+	for (const auto & entityId : m_childList) {
+		if (entityId == childId) {
+			return;
+		}
+	}
+	m_childList.push_back(childId);
+}
+
+
+//---------------------------------------------------------------------------------------
+Transform * Transform::getParent() const
 {
-	if (parentId != EntityID::NO_ENTITY) {
-		return &ComponentPoolLocator<Transform>::getPool()->getComponent(parentId);
+	if (m_parentId != EntityID::NO_ENTITY) {
+		return ComponentPoolLocator<Transform>::getPool()->getComponent(m_parentId);
 	}
 	else {
 		return nullptr;
 	}
+}
+
+//---------------------------------------------------------------------------------------
+Transform * Transform::childAtIndex (
+	size_t index
+) const {
+	if (m_childList.size() > index) {
+		ComponentPool<Transform> * transformPool = 
+			ComponentPoolLocator<Transform>::getPool();
+		return transformPool->getComponent(m_childList[index]);
+	}
+	else {
+		return nullptr;
+	}
+}
+
+//---------------------------------------------------------------------------------------
+Transform & Transform::operator = (
+	const Transform & other
+) {
+	this->position = other.position;
+	this->scale = other.scale;
+	this->rotationAngle = other.rotationAngle;
+
+	this->m_parentId.clear();
+
+	// Replicate other's child Transforms.
+	ComponentPool<Transform> * componentPool = ComponentPoolLocator<Transform>::getPool();
+	for (auto otherChildID : other.m_childList) {
+		Transform * otherChildTransform = componentPool->getComponent(otherChildID);
+
+		// Create a new GameOjbect with Transform that is a copy of other.
+		GameObject * gameObject = new GameObject(otherChildTransform->gameObject());
+
+		Transform & childTransform = gameObject->transform();
+		childTransform.m_parentId = this->id;
+
+		this->m_childList.push_back(childTransform.id);
+	}
+
+	return *this;
 }

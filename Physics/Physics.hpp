@@ -11,11 +11,13 @@
 
 class Physics final : public Component {
 public:
+	Physics ();
+
 	Physics (
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
 
+	Physics & operator = (const Physics & other);
 
 
 	struct BoundingBox {

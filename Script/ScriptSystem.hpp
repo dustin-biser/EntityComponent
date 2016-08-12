@@ -1,22 +1,31 @@
 //
 // ScriptSystem.hpp
 //
+#pragma once
+
+#include <vector>
 
 // Forward declare.
-template <class T>
-class ComponentPool;
-class Script;
+class ComponentPoolBase;
+class EntityID;
 
 
 class ScriptSystem {
 public:
 
-	// Calls Script::init() on call active Script Components.
+	// Calls Script::init() on all active Script Components.
 	static void init();
 
-	// Calls Script::update() on call active Script Components.
+	// Calls Script::update() on all active Script Components.
 	static void update();
 
+	static void addScriptPool(const ComponentPoolBase * scriptPool);
+
+	static ComponentPoolBase ** getScriptPoolsBegin();
+	
+	static size_t numScriptPools();
+
+
 private:
-	static ComponentPool<Script> * m_scriptPool;
+	static std::vector<ComponentPoolBase *> m_scriptPools;
 };

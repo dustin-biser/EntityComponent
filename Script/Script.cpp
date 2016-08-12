@@ -3,46 +3,26 @@
 //
 #include "Script.hpp"
 
+#include "Core/ComponentPoolLocator.hpp"
+#include "Core/ComponentPool.hpp"
 
 //---------------------------------------------------------------------------------------
-Script::Script (
-	EntityID id,
-	GameObject & gameObject
-)
-	: Component(id, gameObject),
-	  m_script(nullptr)
+Script::Script()
 {
 
 }
 
 //---------------------------------------------------------------------------------------
-Script::Script()
-	: m_script(nullptr)
+Script::Script (
+	const GameObject & gameObject
+)
+	: Component(gameObject)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
 Script::~Script()
-{
-	delete m_script;
-	m_script = nullptr;
-}
-
-//---------------------------------------------------------------------------------------
-void Script::init()
-{
-
-}
-
-//---------------------------------------------------------------------------------------
-void Script::update()
-{
-
-}
-
-//---------------------------------------------------------------------------------------
-void Script::onCollision()
 {
 
 }

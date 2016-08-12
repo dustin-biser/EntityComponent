@@ -5,7 +5,9 @@
 
 EntityID::id_type EntityID::currentId = 0;
 
+
 const EntityID EntityID::NO_ENTITY = EntityID(static_cast<id_type>(-1));
+
 
 
 //---------------------------------------------------------------------------------------
@@ -28,7 +30,7 @@ EntityID::EntityID (
 
 //---------------------------------------------------------------------------------------
 EntityID::EntityID()
-	: value(-1)
+	: value(NO_ENTITY.value)
 {
 
 }
@@ -52,5 +54,11 @@ bool EntityID::operator == (
 	const EntityID & other
 ) const {
 	return this->value == other.value;
+}
+
+//---------------------------------------------------------------------------------------
+void EntityID::clear()
+{
+	this->value = EntityID::NO_ENTITY.value;
 }
 

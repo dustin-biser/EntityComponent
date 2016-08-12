@@ -23,12 +23,14 @@ void CannonScript::init()
 	// Place cannon near bottom of screen.
 	transform.position = vec2(0.0f, -0.8f);
 	transform.scale = vec2(scale_x, scale_y);
+
+	m_cannon->getComponent<Motion>();
 }
 
 //---------------------------------------------------------------------------------------
 void CannonScript::update()
 {
-	const float deltaAngle = 0.04f;
+	const float deltaAngle = 0.05f;
 	const float maxAngle = k_PI * 0.5f;
 	float & rotationAngle = m_cannon->transform().rotationAngle;
 

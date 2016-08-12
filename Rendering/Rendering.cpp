@@ -3,17 +3,8 @@
 //
 #include "Rendering.hpp"
 
-//---------------------------------------------------------------------------------------
-Rendering::Rendering (
-	EntityID id,
-	GameObject & gameObject
-)
-	: Component (id, gameObject),
-	  color {0.0f, 0.0f, 0.0f},
-	  mesh (&defaultMesh)
-{
-
-}
+#include "Core/ComponentPoolLocator.hpp"
+#include "Core/ComponentPool.hpp"
 
 //---------------------------------------------------------------------------------------
 Rendering::Rendering()
@@ -21,5 +12,26 @@ Rendering::Rendering()
 	  mesh(&defaultMesh)
 {
 
+}
+
+//---------------------------------------------------------------------------------------
+Rendering::Rendering (
+	const GameObject & gameObject
+)
+	: Component (gameObject),
+	  color {0.0f, 0.0f, 0.0f},
+	  mesh (&defaultMesh)
+{
+
+}
+
+//---------------------------------------------------------------------------------------
+Rendering & Rendering::operator = (
+	const Rendering & other
+) {
+	this->color = other.color;
+	this->mesh = other.mesh;
+
+	return *this;
 }
 

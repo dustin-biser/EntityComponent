@@ -3,27 +3,41 @@
 //
 #pragma once
 
-#include "vec2.hpp"
+#include <vector>
 
+#include "Core/EntityID.hpp"
 #include "Core/Component.hpp"
+#include "Core/vec2.hpp"
+
+
+// Forward Declare.
+class GameObject;
+
 
 class Transform final : public Component {
 public:
 	Transform();
 
 	Transform ( 
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
+
+	void setParent (Transform & parent);
+
+	Transform * getParent() const;
+
+	Transform * childAtIndex (size_t index) const;
+
+	void addChild(Transform & child);
 
 	Transform operator * (const Transform & other) const;
 
-	vec2 operator * ( const vec2 & vertex ) const;
+	vec2 operator * (const vec2 & vertex) const;
 
+	// Copies other's Transform fields, and clones the child Transforms
+	// of other.
+	Transform & operator = (const Transform & other);
 
-	void setParent(Transform & parent);
-
-	Transform * getParent();
 
 	vec2 position;
 	vec2 scale;
@@ -33,5 +47,6 @@ public:
 private:
 	friend class RenderingSystemImpl;
 	
-	EntityID parentId;
+	EntityID m_parentId;
+	std::vector<EntityID> m_childList;
 };

@@ -8,13 +8,14 @@
 
 #include <cstring>
 using std::memmove;
-
 #include <unordered_map>
 using std::unordered_map;
 
 #include "Config/EngineSettings.hpp"
 
+#include "Core/EntityID.hpp"
 #include "Core/Component.hpp"
+#include "Core/GameObject.hpp"
 
 
 template <class T>
@@ -29,23 +30,23 @@ private:
 	size_t numActiveObjects() const;
 
 	T * createComponent (
-		EntityID id
+		const EntityID & id
 	);
 
 	void destroyComponent (
-		EntityID id
+		const EntityID & id
 	);
 
 	void activateComponent (
-		EntityID id
+		const EntityID & id
 	);
 
 	void deactivateComponent (
-		EntityID id
+		const EntityID & id
 	);
 
 	bool isActive (
-		EntityID id
+		const EntityID & id
 	);
 
 	void moveObjects (
@@ -142,7 +143,7 @@ size_t ComponentPoolImpl<T>::numActiveObjects() const
 //---------------------------------------------------------------------------------------
 template <class T>
 T * ComponentPoolImpl<T>::createComponent (
-	EntityID id
+	const EntityID & id
 ) {
 	if (m_firstAvailable == nullptr) {
 		// No space left in pool for allocation.
@@ -164,7 +165,7 @@ T * ComponentPoolImpl<T>::createComponent (
 //---------------------------------------------------------------------------------------
 template <class T>
 void ComponentPoolImpl<T>::destroyComponent (
-	EntityID id
+	const EntityID & id
 ) {
 	if (m_idToComponentMap.count(id.value) < 1) {
 		// No Component in this pool with EntityID.
@@ -205,9 +206,9 @@ void ComponentPoolImpl<T>::destroyComponent (
 //---------------------------------------------------------------------------------------
 template <class T>
 T & ComponentPool<T>::createComponent (
-	EntityID id,
-	GameObject & gameObject
+	const GameObject & gameObject
 ) {
+	EntityID id = gameObject.getEntityID();
 	if (impl->m_idToComponentMap.count(id.value) > 0) {
 		// Component already exists, so return it.
 		return *impl->m_idToComponentMap.at(id.value);
@@ -215,26 +216,44 @@ T & ComponentPool<T>::createComponent (
 
 	T * location = impl->createComponent(id);
 
-	// Place object at location and call constructor.
-	T * newObject(new (location) T(id, gameObject));
+	// Place Component at location.
+	T * newComponent(new (location) T());
+	// Initialize Component's EntityID and GameObject.
+	newComponent->id = id;
+	newComponent->name = gameObject.getName();
+	newComponent->m_gameObject = const_cast<GameObject *>(&gameObject);
 
-	return *newObject;
+	return *newComponent;
+}
+
+//---------------------------------------------------------------------------------------
+template <class T>
+void ComponentPool<T>::allocateComponent (
+	const GameObject & gameObject
+) {
+	this->createComponent(gameObject);
 }
 
 //---------------------------------------------------------------------------------------
 template <class T>
 void ComponentPool<T>::destroyComponent (
-	EntityID id
+	const EntityID & id
 ) {
 	impl->destroyComponent(id);
 }
 
 //---------------------------------------------------------------------------------------
 template <class T>
-T & ComponentPool<T>::getComponent (
-	EntityID id
-) {
-	return *impl->m_idToComponentMap.at(id.value);
+T * ComponentPool<T>::getComponent (
+	const EntityID & id
+) const
+{
+	if (impl->m_idToComponentMap.count(id.value) > 0) {
+		return impl->m_idToComponentMap.at(id.value);
+	}
+	else {
+		return nullptr;
+	}
 }
 
 //---------------------------------------------------------------------------------------
@@ -254,7 +273,7 @@ size_t ComponentPool<T>::numActive() const
 //---------------------------------------------------------------------------------------
 template <class T>
 bool ComponentPoolImpl<T>::isActive (
-	EntityID id
+	const EntityID & id
 ) {
 	return m_idToActiveStatusMap.at(id.value);
 }
@@ -263,7 +282,7 @@ bool ComponentPoolImpl<T>::isActive (
 //---------------------------------------------------------------------------------------
 template <class T>
 void ComponentPool<T>::setComponentActive (
-	EntityID id,
+	const EntityID & id,
 	bool activate
 ) {
 	if (impl->m_idToComponentMap.count(id.value) > 0) {
@@ -298,7 +317,7 @@ void ComponentPoolImpl<T>::moveObjects (
 //---------------------------------------------------------------------------------------
 template <class T>
 void ComponentPoolImpl<T>::deactivateComponent (
-	EntityID id
+	const EntityID & id
 ) {
 	// Locate object from id.
 	T * pObject = m_idToComponentMap.at(id.value);
@@ -334,7 +353,7 @@ void ComponentPoolImpl<T>::deactivateComponent (
 //---------------------------------------------------------------------------------------
 template <class T>
 void ComponentPoolImpl<T>::activateComponent (
-	EntityID id
+	const EntityID & id
 ) {
 	// Locate object from id.
 	T * pObject = m_idToComponentMap.at(id.value);
@@ -358,6 +377,14 @@ void ComponentPoolImpl<T>::activateComponent (
 	if (m_firstAvailable != m_lastAvailable) {
 		m_firstAvailable->next = m_firstAvailable + 1;
 	}
+}
+
+//---------------------------------------------------------------------------------------
+template <class T>
+bool ComponentPool<T>::hasComponent (
+	const EntityID & id
+) const {
+	return getComponent(id) == nullptr;
 }
 
 

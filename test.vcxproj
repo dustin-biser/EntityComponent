@@ -124,6 +124,7 @@
     <ClInclude Include="Assets\MeshDirectory.hpp" />
     <ClInclude Include="Config\EngineSettings.hpp" />
     <ClInclude Include="Core\Component.hpp" />
+    <ClInclude Include="Core\ComponentPoolBase.hpp" />
     <ClInclude Include="Core\ComponentPoolLocator.hpp" />
     <ClInclude Include="Core\Entity.hpp" />
     <ClInclude Include="Core\EntityID.hpp" />
@@ -152,7 +153,9 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="Core\ComponentPool.inl" />
+    <None Include="Core\Entity.inl" />
     <None Include="Core\GameObject.inl" />
+    <None Include="Script\Script.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

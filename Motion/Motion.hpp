@@ -3,17 +3,20 @@
 //
 #pragma once
 
-#include "vec2.hpp"
-
 #include "Core/Component.hpp"
+#include "Core/vec2.hpp"
 
 
 class Motion final : public Component {
 public:
+	Motion ();
+
 	Motion (
-		EntityID id,
-		GameObject & gameObject
+		const GameObject & gameObject
 	);
+
+	Motion & operator = (const Motion & other);
+
 
 	vec2 velocity;
 };

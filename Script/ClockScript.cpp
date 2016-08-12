@@ -38,14 +38,14 @@ void ClockScript::init()
 		float scale_x = (100.0f / Screen::width);
 		float scale_y = (100.0f / Screen::height);
 		transform.scale = vec2(scale_x, scale_y);
-		transform.position = vec2(0.0f, 0.0f);
+		transform.position = randomPositionBetween(vec2(-0.8f, 0.0f), vec2(0.1f, 0.8f));
 	}
 
 	// Hour Hand
 	{
 		m_hourHand = new GameObject("HourHand");
 		Rendering & rendering = m_hourHand->addComponent<Rendering>();
-		rendering.mesh = MeshDirectory::getMesh(m_hourHand->name);
+		rendering.mesh = MeshDirectory::getMesh(m_hourHand->getName());
 		rendering.color = Color {1.0f, 1.0f, 1.0f};
 
 		m_hourHand->transform().setParent(m_clock->transform());
@@ -55,7 +55,7 @@ void ClockScript::init()
 	{
 		m_minuteHand = new GameObject("MinuteHand");
 		Rendering & rendering = m_minuteHand->addComponent<Rendering>();
-		rendering.mesh = MeshDirectory::getMesh(m_minuteHand->name);
+		rendering.mesh = MeshDirectory::getMesh(m_minuteHand->getName());
 		rendering.color = Color {0.8f, 0.2f, 0.8f};
 
 		m_minuteHand->transform().setParent(m_clock->transform());
@@ -65,7 +65,7 @@ void ClockScript::init()
 	{
 		m_secondHand = new GameObject("SecondHand");
 		Rendering & rendering = m_secondHand->addComponent<Rendering>();
-		rendering.mesh = MeshDirectory::getMesh(m_secondHand->name);
+		rendering.mesh = MeshDirectory::getMesh(m_secondHand->getName());
 		rendering.color = Color{ 0.6f, 0.6f, 0.2f };
 
 		m_secondHand->transform().setParent(m_clock->transform());
@@ -78,11 +78,17 @@ void ClockScript::update()
 	int hour, minute, second;
 	GetTime(hour, minute, second);
 
+	//-- Update clock hand positions based on current time:
 	const float twoPI = 2.0f * k_PI;
-
 	m_hourHand->transform().rotationAngle = -1.0f * (hour / 12.0f) * twoPI;
-
 	m_minuteHand->transform().rotationAngle = -1.0f * (minute / 60.0f) * twoPI;
-
 	m_secondHand->transform().rotationAngle = -1.0f * (second / 60.0f) * twoPI;
+
+	// Replicate ClockScript, which clones it's owning GameObject, and
+	// GameObjects from child Transforms.
+	ClockScript & newClockScript = Entity::replicate<ClockScript>(*this);
+	newClockScript.m_clock = &newClockScript.gameObject();
+	newClockScript.m_hourHand = &newClockScript.transform().childAtIndex(0)->gameObject();
+	newClockScript.m_minuteHand = &newClockScript.transform().childAtIndex(1)->gameObject();
+	newClockScript.m_secondHand = &newClockScript.transform().childAtIndex(2)->gameObject();
 }

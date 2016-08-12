@@ -106,13 +106,14 @@ void RenderingSystemImpl::renderScene()
 
 	// Build wire-frame lines from all Rendering components and store in lineList.
 	for (size_t i(0); i < renderingPool->numActive(); ++i) {
+		// Copy transform in order to modify without affecting Rendering Component.
 		Transform transform = rendering[i].transform();
 
 		//-- Apply hierarchical parent transforms
 		Transform * parent = transform.getParent();
 		Transform parentTransforms;
 		while (parent) {
-			parentTransforms = parent->transform() * parentTransforms;
+			parentTransforms = *parent * parentTransforms;
 			parent = parent->getParent();
 		}
 		transform = parentTransforms * transform;
