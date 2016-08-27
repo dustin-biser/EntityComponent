@@ -119,8 +119,9 @@
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\AssetLoader.hpp" />
     <ClInclude Include="Assets\AssetDefinitions.hpp" />
+    <ClInclude Include="Assets\AssetLoader.hpp" />
+    <ClInclude Include="Assets\Mesh2d.hpp" />
     <ClInclude Include="Assets\MeshDirectory.hpp" />
     <ClInclude Include="Config\EngineSettings.hpp" />
     <ClInclude Include="Core\Component.hpp" />
@@ -133,10 +134,10 @@
     <ClInclude Include="Core\C_Application.h" />
     <ClInclude Include="Core\GameConstants.hpp" />
     <ClInclude Include="Core\GameObject.hpp" />
+    <ClInclude Include="Core\Utils.hpp" />
     <ClInclude Include="Rendering\graphics.h" />
     <ClInclude Include="Rendering\Rendering.hpp" />
     <ClInclude Include="Rendering\RenderingSystem.hpp" />
-    <ClInclude Include="Assets\Mesh2d.hpp" />
     <ClInclude Include="Core\ComponentPool.hpp" />
     <ClInclude Include="Motion\Motion.hpp" />
     <ClInclude Include="Motion\MotionSystem.hpp" />

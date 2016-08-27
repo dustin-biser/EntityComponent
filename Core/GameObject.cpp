@@ -62,7 +62,6 @@ GameObject::GameObject(const GameObject & other)
 	for (size_t i(0); i < ScriptSystem::numScriptPools(); ++i) {
 		if (scriptComponentPool[i]->hasComponent(otherID)) {
 			scriptComponentPool[i]->allocateComponent(*this);
-			break;
 		}
 	}
 
@@ -80,6 +79,13 @@ void GameObject::setActive (
 
 	// TODO - Use ScriptSystem to call setComponentActive from all ScriptPools.
 	ComponentPoolLocator<Script>::getPool()->setComponentActive(this->id, status);
+}
+
+//---------------------------------------------------------------------------------------
+void GameObject::setParent (
+	const GameObject & other
+) {
+	this->transform().setParent(other.transform());
 }
 
 //---------------------------------------------------------------------------------------

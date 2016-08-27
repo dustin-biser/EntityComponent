@@ -16,6 +16,7 @@ using std::unordered_map;
 #include "Core/EntityID.hpp"
 #include "Core/Component.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Utils.hpp"
 
 
 template <class T>
@@ -55,6 +56,8 @@ private:
 		size_t numObjects
 	);
 
+	Component * operator [] (int index) const;
+
 
 // Members:
 	T * m_pool;
@@ -73,7 +76,10 @@ private:
 	// Deactivated components are listed here.
 	// Allows for O(1) retrieval.
 	std::unordered_map<EntityID::id_type, bool> m_idToActiveStatusMap;
+
+	static constexpr size_t sizeOfComponent = sizeof(T);
 };
+
 
 //---------------------------------------------------------------------------------------
 // Constructor
@@ -387,8 +393,30 @@ bool ComponentPool<T>::hasComponent (
 	return getComponent(id) == nullptr;
 }
 
+//---------------------------------------------------------------------------------------
+template <class T>
+Component * ComponentPool<T>::operator [] (
+	int index
+) const {
+	return impl->operator[](index);
+}
 
+//---------------------------------------------------------------------------------------
+template <class T>
+Component * ComponentPoolImpl<T>::operator [] (
+	int index
+) const {
+	ASSERT(index > -1);
+	ASSERT(index < static_cast<int>(numActiveObjects()));
 
+	// The caller could be a pointer to ComponentPool<T>, yet the underlying
+	// Components in pool are derived from T.  Pointer arithmetic such as m_pool + num 
+	// would increment pointer by incorrect amount of bytes if derived Component is
+	// larger than base class Component.
+	
+	char * pByteOffset = reinterpret_cast<char *>(m_pool) + (index * sizeOfComponent);
+	return reinterpret_cast<Component *>(pByteOffset);
+}
 
 
 #endif //_COMPONENT_POOL_INL_

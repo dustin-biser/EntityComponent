@@ -138,8 +138,11 @@ void C_ApplicationImpl::loadGameObjects()
 	GameObject * cannon = new GameObject("Cannon");
 	cannon->addComponent<CannonScript>();
 
-	GameObject * clock = new GameObject("Clock");
-	clock->addComponent<ClockScript>();
+	GameObject * clock1 = new GameObject("Clock1");
+	clock1->addComponent<ClockScript>();
+
+	GameObject * clock2 = new GameObject("Clock2");
+	clock2->addComponent<ClockScript>();
 }
 
 //---------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ Entity::Entity (
 
 //---------------------------------------------------------------------------------------
 Entity::Entity()
-	: id(EntityID::NO_ENTITY)
+	: id(EntityID::NONE)
 {
 
 }

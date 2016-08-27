@@ -10,6 +10,7 @@ template <class T>
 class ComponentPoolImpl;
 class GameObject;
 class EntityID;
+class Component;
 
 
 // Memory pool that manages both an active-list and an inactive-list 
@@ -56,10 +57,11 @@ public:
 	// Returns the number of objects in active list.
 	size_t numActive() const override;
 
+	Component * operator [] (int index) const override;
+
 
 private:
 	ComponentPoolImpl<T> * impl;
 };
-
 
 #include "ComponentPool.inl"

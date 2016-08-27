@@ -38,6 +38,10 @@ public:
 	void setActive(bool status);
 
 
+	// Sets other's Transform as the parent of current GameObject's Transform.
+	void setParent(const GameObject & other);
+
+
 	// Convenience method to retrieve the GameObject's Transform Component.
 	Transform & transform () const;
 

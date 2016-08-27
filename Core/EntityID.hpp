@@ -20,10 +20,8 @@ public:
 
 	bool operator != (const EntityID & other) const;
 
-	static const EntityID NO_ENTITY;
-
-	// Sets value to NO_ENTITY;
-	void clear();
+	// Represents a null EntityID.
+	static const EntityID NONE;
 
 	id_type value;
 

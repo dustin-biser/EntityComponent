@@ -32,11 +32,10 @@ void ClockScript::init()
 		rendering.mesh = MeshDirectory::getMesh("ClockBase");
 		rendering.color = Color {1.0f, 0.3f, 0.3f};
 
-		Transform & transform = m_clock->transform();
-
 		float aspect = static_cast<float>(Screen::width) / Screen::height;
 		float scale_x = (100.0f / Screen::width);
 		float scale_y = (100.0f / Screen::height);
+		Transform & transform = m_clock->transform();
 		transform.scale = vec2(scale_x, scale_y);
 		transform.position = randomPositionBetween(vec2(-0.8f, 0.0f), vec2(0.1f, 0.8f));
 	}
@@ -47,8 +46,6 @@ void ClockScript::init()
 		Rendering & rendering = m_hourHand->addComponent<Rendering>();
 		rendering.mesh = MeshDirectory::getMesh(m_hourHand->getName());
 		rendering.color = Color {1.0f, 1.0f, 1.0f};
-
-		m_hourHand->transform().setParent(m_clock->transform());
 	}
 
 	// Minute Hand
@@ -57,8 +54,6 @@ void ClockScript::init()
 		Rendering & rendering = m_minuteHand->addComponent<Rendering>();
 		rendering.mesh = MeshDirectory::getMesh(m_minuteHand->getName());
 		rendering.color = Color {0.8f, 0.2f, 0.8f};
-
-		m_minuteHand->transform().setParent(m_clock->transform());
 	}
 
 	// Second Hand
@@ -67,9 +62,11 @@ void ClockScript::init()
 		Rendering & rendering = m_secondHand->addComponent<Rendering>();
 		rendering.mesh = MeshDirectory::getMesh(m_secondHand->getName());
 		rendering.color = Color{ 0.6f, 0.6f, 0.2f };
-
-		m_secondHand->transform().setParent(m_clock->transform());
 	}
+
+	m_hourHand->setParent(*m_clock);
+	m_minuteHand->setParent(*m_clock);
+	m_secondHand->setParent(*m_clock);
 }
 
 //---------------------------------------------------------------------------------------
@@ -79,16 +76,20 @@ void ClockScript::update()
 	GetTime(hour, minute, second);
 
 	//-- Update clock hand positions based on current time:
-	const float twoPI = 2.0f * k_PI;
-	m_hourHand->transform().rotationAngle = -1.0f * (hour / 12.0f) * twoPI;
-	m_minuteHand->transform().rotationAngle = -1.0f * (minute / 60.0f) * twoPI;
-	m_secondHand->transform().rotationAngle = -1.0f * (second / 60.0f) * twoPI;
+	{
+		const float twoPI = 2.0f * k_PI;
+		const float secondRatio = (second / 60.0f);
+		const float minuteRatio = (minute / 60.0f);
+		m_hourHand->transform().rotationAngle = -1.0f * ((hour + minuteRatio) / 12.0f) * twoPI;
+		m_minuteHand->transform().rotationAngle = -1.0f * ((minute + secondRatio) / 60.0f) * twoPI;
+		m_secondHand->transform().rotationAngle = -1.0f * secondRatio * twoPI;
+	}
 
-	// Replicate ClockScript, which clones it's owning GameObject, and
-	// GameObjects from child Transforms.
-	ClockScript & newClockScript = Entity::replicate<ClockScript>(*this);
-	newClockScript.m_clock = &newClockScript.gameObject();
-	newClockScript.m_hourHand = &newClockScript.transform().childAtIndex(0)->gameObject();
-	newClockScript.m_minuteHand = &newClockScript.transform().childAtIndex(1)->gameObject();
-	newClockScript.m_secondHand = &newClockScript.transform().childAtIndex(2)->gameObject();
+	//// Replicate ClockScript, which clones it's owning GameObject, and
+	//// GameObjects from child Transforms.
+	//ClockScript & newClockScript = Entity::replicate<ClockScript>(*this);
+	//newClockScript.m_clock = &newClockScript.gameObject();
+	//newClockScript.m_hourHand = &newClockScript.transform().childAtIndex(0)->gameObject();
+	//newClockScript.m_minuteHand = &newClockScript.transform().childAtIndex(1)->gameObject();
+	//newClockScript.m_secondHand = &newClockScript.transform().childAtIndex(2)->gameObject();
 }

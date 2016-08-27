@@ -11,14 +11,16 @@
 // Initialize m_scriptPools
 std::vector<ComponentPoolBase *> ScriptSystem::m_scriptPools;
 
+typedef char byte;
 
 //---------------------------------------------------------------------------------------
 void ScriptSystem::init()
 {
+	Script * script;
 	for (auto scriptPool : m_scriptPools) {
-		Script * script = static_cast<const ComponentPool<Script> *>(scriptPool)->beginActive();
 		for (size_t i(0); i < scriptPool->numActive(); ++i) {
-			script[i].init();
+			script = reinterpret_cast<Script *>((*scriptPool)[i]);
+			script->init();
 		}
 	}
 }
@@ -26,10 +28,11 @@ void ScriptSystem::init()
 //---------------------------------------------------------------------------------------
 void ScriptSystem::update()
 {
+	Script * script;
 	for (auto scriptPool : m_scriptPools) {
-		Script * script = static_cast<const ComponentPool<Script> *>(scriptPool)->beginActive();
 		for (size_t i(0); i < scriptPool->numActive(); ++i) {
-			script[i].update();
+			script = reinterpret_cast<Script *>((*scriptPool)[i]);
+			script->update();
 		}
 	}
 }

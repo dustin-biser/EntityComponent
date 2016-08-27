@@ -7,6 +7,7 @@
 
 #include "Core/ComponentPoolLocator.hpp"
 #include "Core/ComponentPool.hpp"
+#include "Core/EntityID.hpp"
 #include "Core/GameObject.hpp"
 
 //---------------------------------------------------------------------------------------
@@ -101,7 +102,7 @@ void Transform::addChild (
 //---------------------------------------------------------------------------------------
 Transform * Transform::getParent() const
 {
-	if (m_parentId != EntityID::NO_ENTITY) {
+	if (m_parentId != EntityID::NONE) {
 		return ComponentPoolLocator<Transform>::getPool()->getComponent(m_parentId);
 	}
 	else {
@@ -131,7 +132,7 @@ Transform & Transform::operator = (
 	this->scale = other.scale;
 	this->rotationAngle = other.rotationAngle;
 
-	this->m_parentId.clear();
+	this->m_parentId = EntityID::NONE;
 
 	// Replicate other's child Transforms.
 	ComponentPool<Transform> * componentPool = ComponentPoolLocator<Transform>::getPool();
