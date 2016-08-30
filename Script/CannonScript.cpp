@@ -73,9 +73,16 @@ void CannonScript::spawnProjectile()
 	Transform & cannonTransform = m_cannon->transform();
 	Vertex vertex = cannonTransform * m_vertexTipOfCannon;
 
-	// Update projectile's position and orientation
+	// Update projectile's position and orientation to be located at tip of cannon.
 	Transform & transform = projectile.transform();
 	transform.position = vertex;
 	transform.rotationAngle = cannonTransform.rotationAngle;
+
+	// Update projectile's velocity direction.
+	vec2 direction = normalize(vertex - cannonTransform.position);
+	Motion & projectileMotion = *projectile.getComponent<Motion>();
+
+	vec2 vel = projectileMotion.velocity;
+	projectileMotion.velocity = direction * length(vel);
 }
 

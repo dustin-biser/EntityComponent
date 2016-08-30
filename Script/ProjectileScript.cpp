@@ -22,7 +22,7 @@ void ProjectileScript::init()
 	m_projectile = &gameObject();
 	Rendering & rendering = m_projectile->addComponent<Rendering>();
 	rendering.mesh = MeshDirectory::getMesh("Projectile");
-	rendering.color = Color {1.0f, 1.0f, 1.0f};
+	rendering.color = Color {1.0f, 0.0f, 0.0f};
 
 	float scale_x = (50.0f / Screen::width);
 	float scale_y = (50.0f / Screen::height);
@@ -30,6 +30,9 @@ void ProjectileScript::init()
 	Transform & transform = m_projectile->transform();
 	transform.position = vec2(0.0f, 0.0f) + vec2(randFloat(), randFloat());
 	transform.scale = vec2(scale_x, scale_y);
+
+	Motion & motion = m_projectile->addComponent<Motion>();
+	motion.velocity = vec2(0.5f);
 }
 
 //---------------------------------------------------------------------------------------

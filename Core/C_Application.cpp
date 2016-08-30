@@ -7,6 +7,8 @@
 #include "Core/Input.hpp"
 #include "Core/Screen.hpp"
 
+#include "Motion/MotionSystem.hpp"
+
 #include "Rendering/Rendering.hpp"
 #include "Rendering/RenderingSystem.hpp"
 
@@ -71,6 +73,10 @@ void C_ApplicationImpl::Tick (
 	handleInput(pressedKeys);
 
 	ScriptSystem::update();
+
+	// TODO - Replace with actual std::chrono time delta computation.
+	float ellapsedTimeInSeconds = 1.0f / 50.0f;
+	MotionSystem::update(ellapsedTimeInSeconds);
 
 	RenderingSystem::renderScene();
 }
