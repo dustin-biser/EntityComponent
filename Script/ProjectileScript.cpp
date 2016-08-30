@@ -30,6 +30,9 @@ void ProjectileScript::init()
 	Transform & transform = m_projectile->transform();
 	transform.position = vec2(0.0f, 0.0f) + vec2(randFloat(), randFloat());
 	transform.scale = vec2(scale_x, scale_y);
+
+	Motion & motion = m_projectile->addComponent<Motion>();
+	motion.velocity = vec2(0.5f);
 }
 
 //---------------------------------------------------------------------------------------

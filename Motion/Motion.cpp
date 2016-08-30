@@ -22,8 +22,9 @@ Motion::Motion (
 }
 
 //---------------------------------------------------------------------------------------
-Motion & Motion::operator=(const Motion & other)
-{
+Motion & Motion::operator = (
+	const Motion & other
+) {
 	this->velocity = other.velocity;
 
 	return *this;
