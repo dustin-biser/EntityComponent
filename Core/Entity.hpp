@@ -28,6 +28,7 @@ public:
 
 
 	// Replicates a GameObject Entity and returns a reference to the new copy.
+	// All copied components are set to active by default.
 	template <class T>
 	static 
 	typename std::enable_if<std::is_same<GameObject, T>::value,

@@ -21,13 +21,15 @@ T & GameObject::addComponent()
 	assertIsDerivedFromComponent<T>();
 
 	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
+	T * component = &componentPool->createComponent(*this);
 
 	if (std::is_base_of<Script, T>::value) {
-		// Add ComponentPool of derived Script types to ScriptSystem.
-		ScriptSystem::addScriptPool(componentPool);
+		// Register ComponentPool of derived Script types with ScriptSystem.
+		ScriptSystem::addScriptPool(this->id, componentPool);
+		reinterpret_cast<Script *>(component)->init();
 	}
 
-	return componentPool->createComponent(*this);
+	return *component;
 }
 
 //---------------------------------------------------------------------------------------

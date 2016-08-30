@@ -13,19 +13,23 @@ class EntityID;
 class ScriptSystem {
 public:
 
-	// Calls Script::init() on all active Script Components.
-	static void init();
-
 	// Calls Script::update() on all active Script Components.
 	static void update();
 
-	static void addScriptPool(const ComponentPoolBase * scriptPool);
+	static void addScriptPool (
+		const EntityID & id,
+		const ComponentPoolBase * scriptPool
+	);
 
-	static ComponentPoolBase ** getScriptPoolsBegin();
+	// Returns a pointer to ComponentPool containing Script with associated 
+	// EntityID.  Returns nullptr if no Script exists for EntityID.
+	static ComponentPoolBase * getScriptPoolForEntity(const EntityID & id);
 	
 	static size_t numScriptPools();
 
+	static void setActive (
+		const EntityID & id,
+		bool activeStatus
+	);
 
-private:
-	static std::vector<ComponentPoolBase *> m_scriptPools;
 };

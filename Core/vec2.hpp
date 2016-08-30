@@ -23,6 +23,8 @@ struct vec2 {
 
 	vec2 operator * (const vec2 & other) const;
 
+	vec2 & operator += (const vec2 & other);
+
 
 };
 

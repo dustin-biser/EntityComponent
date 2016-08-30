@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <string>
-#include "vec2.hpp"
+#include "Core/vec2.hpp"
 
 typedef vec2 Vertex;
 typedef unsigned int Index;

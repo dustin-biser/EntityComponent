@@ -11,7 +11,8 @@
 class GameObject;
 
 
-// To be derived by subclasses to provide custom behavior for GameObjects.
+// Base class for all custom Scripts. 
+// Script components add behavior to GameObjects.
 class Script : public Component {
 public:
 	Script();
@@ -27,11 +28,11 @@ public:
 
 	virtual ~Script();
 
-	virtual void init() {}
+	virtual void init() {};
 
-	virtual void update() {}
+	virtual void update() {};
 
-	virtual void onCollision() {}
+	virtual void onCollision() {};
 
 
 	// Define more callback methods here ...
@@ -46,6 +47,7 @@ public:
 // All includes a derived Script class may need.
 #include "Assets/MeshDirectory.hpp"
 
+#include "Core/Entity.hpp"
 #include "Core/GameConstants.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Input.hpp"

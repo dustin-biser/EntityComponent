@@ -1,6 +1,8 @@
 //
 // ClockScript.hpp
 //
+#pragma once
+
 #include "Script/Script.hpp"
 
 class ClockScript : public Script {

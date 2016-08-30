@@ -49,88 +49,7 @@ C_ApplicationImpl::C_ApplicationImpl(
 	RenderingSystem::setViewport(0, 0, screenWidth, screenHeight);
 
 	loadGameObjects();
-
-	ScriptSystem::init();
 }
-
-//---------------------------------------------------------------------------------------
-//void C_ApplicationImpl::initGameObjectReplicators()
-//{
-#if false
-
-	// Initialize clock replicator
-	{
-		Rendering * hourHandGraphics = new Rendering(
-			Color{ 1.0f, 1.0f, 1.0f },
-			&meshAssetDirectory.at("HourHand")
-		);
-
-		Rendering * minuteHandGraphics = new Rendering(
-			Color{ 1.0f, 0.3f, 0.3f },
-			&meshAssetDirectory.at("MinuteHand")
-		);
-
-		Rendering * secondHandGraphics = new Rendering(
-			Color{ 0.8f, 0.8f, 0.2f },
-			&meshAssetDirectory.at("SecondHand")
-		);
-
-		Rendering * clockBaseGraphics = new Rendering(
-			Color{ 0.8f, 0.2f, 0.2f },
-			&meshAssetDirectory.at("ClockBase")
-		);
-
-		Motion * clockHandMotion = new ClockHandMotionComponent();
-
-		GameObject * hourHand = childGameObjectPool->create(GameObject::generateID());
-		hourHand->graphics = hourHandGraphics;
-		hourHand->motion = clockHandMotion;
-
-		GameObject * minuteHand = childGameObjectPool->create(GameObject::generateID());
-		minuteHand->graphics = minuteHandGraphics;
-		minuteHand->motion = clockHandMotion;
-
-		GameObject * secondHand = childGameObjectPool->create(GameObject::generateID());
-		secondHand->graphics = secondHandGraphics;
-		secondHand->motion = clockHandMotion;
-
-
-		GameObject * clockPrototype = prototypePool->create(GameObject::generateID());
-
-		clockPrototype->addChild(hourHand);
-		clockPrototype->addChild(minuteHand);
-		clockPrototype->addChild(secondHand);
-
-		clockPrototype->graphics = clockBaseGraphics;
-
-		float scale_x = (100.0f / m_ScreenWidth);
-		float scale_y = (100.0f / m_ScreenHeight);
-		clockPrototype->transform.scale = vec2(scale_x, scale_y);
-
-		clockReplicator = new GameObjectReplicator(clockPrototype);
-	}
-
-	// Initialize projectile replicator
-	{
-		Rendering * projectileGraphicsComponent = new Rendering (
-			Color{ 1.0f, 1.0f, 1.0f },
-			&meshAssetDirectory.at("Projectile")
-		);
-
-		GameObject * projectilePrototype = prototypePool->create(GameObject::generateID());
-		projectilePrototype->graphics = projectileGraphicsComponent;
-		projectilePrototype->motion->velocity = vec2(0.0f, 1.5f);
-
-		float scale_x = (30.0f / m_ScreenWidth);
-		float scale_y = (30.0f / m_ScreenHeight);
-		projectilePrototype->transform.scale = vec2(scale_x, scale_y);
-		projectilePrototype->transform.position = vec2(-0.8f, 0.0f);
-
-		projectileReplicator = new GameObjectReplicator(projectilePrototype);
-	}
-#endif
-//}
-
 
 //---------------------------------------------------------------------------------------
 void C_ApplicationImpl::loadGameObjects()
@@ -160,10 +79,10 @@ void C_ApplicationImpl::Tick (
 void C_ApplicationImpl::handleInput (
 	C_Application::T_PressedKey pressedKeys
 ) {
-	Input::setKey(KEY::LEFT, (pressedKeys & C_Application::s_KeyLeft) > 0);
+	Input::setKey(KEY::LEFT,  (pressedKeys & C_Application::s_KeyLeft)  > 0);
 	Input::setKey(KEY::RIGHT, (pressedKeys & C_Application::s_KeyRight) > 0);
-	Input::setKey(KEY::UP, (pressedKeys & C_Application::s_KeyUp) > 0);
-	Input::setKey(KEY::DOWN, (pressedKeys & C_Application::s_KeyDown) > 0);
+	Input::setKey(KEY::UP,    (pressedKeys & C_Application::s_KeyUp)    > 0);
+	Input::setKey(KEY::DOWN,  (pressedKeys & C_Application::s_KeyDown)  > 0);
 	Input::setKey(KEY::SPACE, (pressedKeys & C_Application::s_KeySpace) > 0);
 }
 

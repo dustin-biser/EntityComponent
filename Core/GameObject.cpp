@@ -58,27 +58,25 @@ GameObject::GameObject(const GameObject & other)
 		newPhysics = *otherPhysics;
 	}
 
-	ComponentPoolBase ** scriptComponentPool = ScriptSystem::getScriptPoolsBegin();
-	for (size_t i(0); i < ScriptSystem::numScriptPools(); ++i) {
-		if (scriptComponentPool[i]->hasComponent(otherID)) {
-			scriptComponentPool[i]->allocateComponent(*this);
-		}
+	ComponentPoolBase * scriptPool = ScriptSystem::getScriptPoolForEntity(otherID);
+	if (scriptPool) {
+		scriptPool->allocateComponent(*this);
 	}
 
 }
 
 //---------------------------------------------------------------------------------------
 void GameObject::setActive (
-	bool status
+	bool activeStatus
 ) {
-	//-- Notify ComponentPools to deactivate Components associated with EnityID:
-	ComponentPoolLocator<Transform>::getPool()->setComponentActive(this->id, status);
-	ComponentPoolLocator<Rendering>::getPool()->setComponentActive(this->id , status);
-	ComponentPoolLocator<Motion>::getPool()->setComponentActive(this->id, status);
-	ComponentPoolLocator<Physics>::getPool()->setComponentActive(this->id, status);
+	// Notify ComponentPools to set active status for Components associated with EnityID:
+	ComponentPoolLocator<Transform>::getPool()->setActive(this->id, activeStatus);
+	ComponentPoolLocator<Rendering>::getPool()->setActive(this->id , activeStatus);
+	ComponentPoolLocator<Motion>::getPool()->setActive(this->id, activeStatus);
+	ComponentPoolLocator<Physics>::getPool()->setActive(this->id, activeStatus);
 
-	// TODO - Use ScriptSystem to call setComponentActive from all ScriptPools.
-	ComponentPoolLocator<Script>::getPool()->setComponentActive(this->id, status);
+	// Set associated Script's status.
+	ScriptSystem::setActive(this->id, activeStatus);
 }
 
 //---------------------------------------------------------------------------------------

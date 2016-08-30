@@ -35,7 +35,7 @@ public:
 
 
 	// Activate/deactivate GameObject.
-	void setActive(bool status);
+	void setActive(bool activeStatus);
 
 
 	// Sets other's Transform as the parent of current GameObject's Transform.

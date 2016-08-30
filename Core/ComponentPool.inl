@@ -76,8 +76,6 @@ private:
 	// Deactivated components are listed here.
 	// Allows for O(1) retrieval.
 	std::unordered_map<EntityID::id_type, bool> m_idToActiveStatusMap;
-
-	static constexpr size_t sizeOfComponent = sizeof(T);
 };
 
 
@@ -287,17 +285,17 @@ bool ComponentPoolImpl<T>::isActive (
 
 //---------------------------------------------------------------------------------------
 template <class T>
-void ComponentPool<T>::setComponentActive (
+void ComponentPool<T>::setActive (
 	const EntityID & id,
-	bool activate
+	bool activeStatus
 ) {
 	if (impl->m_idToComponentMap.count(id.value) > 0) {
 		// Component with EntityID exists.
 
-		if ((activate) && !impl->isActive(id)) {
+		if ((activeStatus) && !impl->isActive(id)) {
 			impl->activateComponent(id);
 		}
-		else if ((!activate) && impl->isActive(id)) {
+		else if ((!activeStatus) && impl->isActive(id)) {
 			impl->deactivateComponent(id);
 		}
 	}
@@ -409,13 +407,7 @@ Component * ComponentPoolImpl<T>::operator [] (
 	ASSERT(index > -1);
 	ASSERT(index < static_cast<int>(numActiveObjects()));
 
-	// The caller could be a pointer to ComponentPool<T>, yet the underlying
-	// Components in pool are derived from T.  Pointer arithmetic such as m_pool + num 
-	// would increment pointer by incorrect amount of bytes if derived Component is
-	// larger than base class Component.
-	
-	char * pByteOffset = reinterpret_cast<char *>(m_pool) + (index * sizeOfComponent);
-	return reinterpret_cast<Component *>(pByteOffset);
+	return reinterpret_cast<Component *>(m_pool + index);
 }
 
 

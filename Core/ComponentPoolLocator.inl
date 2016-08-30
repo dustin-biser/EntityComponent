@@ -6,7 +6,7 @@
 
 #include "ComponentPoolLocator.hpp"
 
-#include <cassert>
+#include "Core/Utils.hpp"
 
 
 // At program startup, determine set of all ComponentPool<T> types needed,
@@ -19,7 +19,7 @@ ComponentPool<T> * ComponentPoolLocator<T>::requestedPool = new ComponentPool<T>
 template <class T>
 ComponentPool<T> * ComponentPoolLocator<T>::getPool()
 {
-	assert(requestedPool);
+	ASSERT(requestedPool);
 	return requestedPool;
 }
 

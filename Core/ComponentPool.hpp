@@ -40,9 +40,9 @@ public:
 		const EntityID & id
 	) override;
 
-	void setComponentActive (
+	void setActive (
 		const EntityID & id,
-		bool activate
+		bool activeStatus
 	) override;
 
 	// Returns true if ComponentPool contains a Component with 

@@ -9,12 +9,11 @@
 
 #include "Core/ComponentPoolLocator.hpp"
 #include "Core/ComponentPool.hpp"
+#include "Config/EngineSettings.hpp"
+#include "Core/graphics.h"
 #include "Core/Transform.hpp"
 
-#include "Config/EngineSettings.hpp"
-
 #include "Rendering/Rendering.hpp"
-#include "Rendering/graphics.h"
 
 
 

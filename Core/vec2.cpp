@@ -41,6 +41,15 @@ vec2 vec2::operator * (float x) const
 }
 
 //---------------------------------------------------------------------------------------
+vec2 & vec2::operator += (const vec2 & other)
+{
+	x += other.x;
+	y += other.y;
+
+	return *this;
+}
+
+//---------------------------------------------------------------------------------------
 bool vec2::operator == (const vec2 & other) const
 {
 	return (this->x == other.x) && (this->y == other.y);

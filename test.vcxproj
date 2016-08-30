@@ -45,13 +45,15 @@
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>Build\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)GameObject;$(SolutionDir)Core;$(SolutionDir)Physics;$(SolutionDir)Rendering;$(SolutionDir)Motion;$(SolutionDir);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core;$(SolutionDir)Physics;$(SolutionDir)Rendering;$(SolutionDir)Motion;$(SolutionDir);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Assets;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Core;$(SolutionDir);$(IncludePath)</IncludePath>
+    <SourcePath>$(SolutionDir)Script;$(SolutionDir)Rendering;$(SolutionDir)Physics;$(SolutionDir)Motion;$(SolutionDir)Core;$(SolutionDir)Config;$(SolutionDir)Assets;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +104,7 @@
     <ClCompile Include="Core\Screen.cpp" />
     <ClCompile Include="Core\C_Application.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
-    <ClCompile Include="Rendering\graphics.cpp" />
+    <ClCompile Include="Core\graphics.cpp" />
     <ClCompile Include="Rendering\Rendering.cpp" />
     <ClCompile Include="Rendering\RenderingSystem.cpp" />
     <ClCompile Include="Core\main.cpp" />
@@ -115,6 +117,7 @@
     <ClCompile Include="Core\vec2.cpp" />
     <ClCompile Include="Script\CannonScript.cpp" />
     <ClCompile Include="Script\ClockScript.cpp" />
+    <ClCompile Include="Script\ProjectileScript.cpp" />
     <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
@@ -135,7 +138,7 @@
     <ClInclude Include="Core\GameConstants.hpp" />
     <ClInclude Include="Core\GameObject.hpp" />
     <ClInclude Include="Core\Utils.hpp" />
-    <ClInclude Include="Rendering\graphics.h" />
+    <ClInclude Include="Core\graphics.h" />
     <ClInclude Include="Rendering\Rendering.hpp" />
     <ClInclude Include="Rendering\RenderingSystem.hpp" />
     <ClInclude Include="Core\ComponentPool.hpp" />
@@ -148,6 +151,7 @@
     <ClInclude Include="Core\vec2.hpp" />
     <ClInclude Include="Script\CannonScript.hpp" />
     <ClInclude Include="Script\ClockScript.hpp" />
+    <ClInclude Include="Script\ProjectileScript.hpp" />
     <ClInclude Include="Script\Script.hpp" />
     <ClInclude Include="Script\ScriptSystem.hpp" />
   </ItemGroup>

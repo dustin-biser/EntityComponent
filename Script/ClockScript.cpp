@@ -3,6 +3,8 @@
 //
 #include "ClockScript.hpp"
 
+#include <cstdlib>
+
 #include "Core/time.h"
 
 
@@ -10,8 +12,7 @@
 static vec2 randomPositionBetween (
 	vec2 min,
 	vec2 max
-)
-{
+) {
 	float t0 = rand() / static_cast<float>(RAND_MAX);
 	float t1 = rand() / static_cast<float>(RAND_MAX);
 

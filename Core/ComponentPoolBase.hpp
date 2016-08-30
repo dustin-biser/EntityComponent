@@ -23,9 +23,9 @@ public:
 		const EntityID & id
 	) = 0;
 
-	virtual void setComponentActive (
+	virtual void setActive (
 		const EntityID & id,
-		bool activate
+		bool activeStatus
 	) = 0;
 
 	virtual bool hasComponent (
