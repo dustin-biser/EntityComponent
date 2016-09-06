@@ -13,8 +13,5 @@ public:
 
 	void update() override;
 
-
-private:
-	GameObject * m_projectile;
 };
 

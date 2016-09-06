@@ -223,8 +223,8 @@ T & ComponentPool<T>::createComponent (
 	// Place Component at location.
 	T * newComponent(new (location) T());
 	// Initialize Component's EntityID and GameObject.
-	newComponent->id = id;
-	newComponent->name = gameObject.getName();
+	newComponent->m_id = id;
+	newComponent->m_name = gameObject.getName();
 	newComponent->m_gameObject = const_cast<GameObject *>(&gameObject);
 
 	return *newComponent;

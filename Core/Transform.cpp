@@ -78,7 +78,7 @@ vec2 Transform::operator * (const vec2 & vertex) const
 void Transform::setParent (
 	Transform & parent
 ) {
-	m_parentId = parent.id;
+	m_parentId = parent.m_id;
 	parent.addChild(*this);
 }
 
@@ -87,7 +87,7 @@ void Transform::setParent (
 void Transform::addChild (
 	Transform & child
 ) {
-	const EntityID childId = child.id;
+	const EntityID childId = child.m_id;
 
 	// Check that child is not already in child list.
 	for (const auto & entityId : m_childList) {
@@ -143,9 +143,9 @@ Transform & Transform::operator = (
 		GameObject * gameObject = new GameObject(otherChildTransform->gameObject());
 
 		Transform & childTransform = gameObject->transform();
-		childTransform.m_parentId = this->id;
+		childTransform.m_parentId = this->m_id;
 
-		this->m_childList.push_back(childTransform.id);
+		this->m_childList.push_back(childTransform.m_id);
 	}
 
 	return *this;

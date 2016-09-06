@@ -23,7 +23,9 @@ public:
 
 	// Returns a pointer to ComponentPool containing Script with associated 
 	// EntityID.  Returns nullptr if no Script exists for EntityID.
-	static ComponentPoolBase * getScriptPoolForEntity(const EntityID & id);
+	static ComponentPoolBase * getScriptPoolForEntity (
+		const EntityID & id
+	);
 	
 	static size_t numScriptPools();
 

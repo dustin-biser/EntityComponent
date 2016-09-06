@@ -40,7 +40,6 @@ void ScriptSystem::addScriptPool (
 	const ComponentPoolBase * scriptPool
 ) {
 	// Check if componentPool of Scripts already exists
-	//for (auto currentScriptPool : m_scriptPools) {
 	int poolIndex(0);
 	const int numPools = m_scriptPools.size();
 	for(; poolIndex < numPools; ++poolIndex) {

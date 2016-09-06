@@ -25,7 +25,7 @@ T & GameObject::addComponent()
 
 	if (std::is_base_of<Script, T>::value) {
 		// Register ComponentPool of derived Script types with ScriptSystem.
-		ScriptSystem::addScriptPool(this->id, componentPool);
+		ScriptSystem::addScriptPool(m_id, componentPool);
 		reinterpret_cast<Script *>(component)->init();
 	}
 
@@ -39,7 +39,7 @@ T * GameObject::getComponent()
 	assertIsDerivedFromComponent<T>();
 
 	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
-	return componentPool->getComponent(id);
+	return componentPool->getComponent(m_id);
 }
 
 //---------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ void GameObject::removeComponent()
 	assertIsDerivedFromComponent<T>();
 
 	ComponentPool<T> * componentPool = ComponentPoolLocator<T>::getPool();
-	componentPool->destroyComponent(this->id);
+	componentPool->destroyComponent(m_id);
 }
 
 

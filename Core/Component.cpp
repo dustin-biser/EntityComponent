@@ -40,5 +40,5 @@ GameObject & Component::gameObject() const
 //---------------------------------------------------------------------------------------
 Transform & Component::transform() const
 {
-	return *ComponentPoolLocator<Transform>::getPool()->getComponent(id);
+	return *ComponentPoolLocator<Transform>::getPool()->getComponent(m_id);
 }

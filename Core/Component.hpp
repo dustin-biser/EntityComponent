@@ -28,6 +28,13 @@ protected:
 		const GameObject & gameObject
 	);
 
+	union {
+		GameObject * m_gameObject;
+
+		// For use in forming a free list within ComponentPool.
+		Component * next;
+	};
+
 
 private:
 	template <class T>
@@ -35,13 +42,6 @@ private:
 	template <class T>
 	friend class ComponentPoolImpl;
 	friend class GameObject;
-
-	union {
-		GameObject * m_gameObject;
-
-		// For use in forming a free list within ComponentPool.
-		Component * next;
-	};
 };
 
 

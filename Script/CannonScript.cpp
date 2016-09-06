@@ -19,29 +19,28 @@ void CannonScript::init()
 {
 	// Initialize Cannon GameObject.
 	{
-		m_cannon = &(this->gameObject());
-		Rendering & rendering = m_cannon->addComponent<Rendering>();
+		Rendering & rendering = m_gameObject->addComponent<Rendering>();
 		rendering.mesh = MeshDirectory::getMesh("Cannon");
 		rendering.color = Color {0.2f, 0.2f, 1.0f};
 
 		float scale_x = (60.0f / Screen::width);
 		float scale_y = (60.0f / Screen::height);
 
-		Transform & transform = m_cannon->transform();
-		// Place m_cannon near bottom of screen.
+		Transform & transform = m_gameObject->transform();
+		// Place m_gameObject near bottom of screen.
 		transform.position = vec2(0.0f, -0.8f);
 		transform.scale = vec2(scale_x, scale_y);
 	}
 
 	// Initialize Projectile prototype. 
 	{
-		m_projectile = new GameObject("Projectile");
-		m_projectile->addComponent<ProjectileScript>();
-		m_projectile->setActive(false);
+		m_projectilePrototype = new GameObject("Projectile");
+		m_projectilePrototype->addComponent<ProjectileScript>();
+		m_projectilePrototype->setActive(false);
 	}
 
 	// Get vertex at tip of cannon.
-	m_vertexTipOfCannon = m_cannon->getComponent<Rendering>()->mesh->vertexList[2];
+	m_vertexTipOfCannon = m_gameObject->getComponent<Rendering>()->mesh->vertexList[2];
 }
 
 //---------------------------------------------------------------------------------------
@@ -68,9 +67,9 @@ void CannonScript::update()
 //---------------------------------------------------------------------------------------
 void CannonScript::spawnProjectile()
 {
-	GameObject & projectile = Entity::replicate(*m_projectile);
+	GameObject & projectile = Entity::replicate(*m_projectilePrototype);
 
-	Transform & cannonTransform = m_cannon->transform();
+	Transform & cannonTransform = m_gameObject->transform();
 	Vertex vertex = cannonTransform * m_vertexTipOfCannon;
 
 	// Update projectile's position and orientation to be located at tip of cannon.

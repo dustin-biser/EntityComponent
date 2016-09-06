@@ -8,15 +8,15 @@ Entity::Entity (
 	EntityID id,
 	const std::string & name
 )
-	: id(id),
-	  name(name)
+	: m_id(id),
+	  m_name(name)
 {
 
 }
 
 //---------------------------------------------------------------------------------------
 Entity::Entity()
-	: id(EntityID::NONE)
+	: m_id(EntityID::NONE)
 {
 
 }
@@ -24,11 +24,11 @@ Entity::Entity()
 //---------------------------------------------------------------------------------------
 EntityID Entity::getEntityID() const
 {
-	return id;
+	return m_id;
 }
 
 //---------------------------------------------------------------------------------------
 const std::string & Entity::getName() const
 {
-	return name;
+	return m_name;
 }

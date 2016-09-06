@@ -3,9 +3,8 @@
 //
 #include "ClockScript.hpp"
 
-#include <cstdlib>
-
 #include "Core/time.h"
+#include "Core/Utils.hpp"
 
 
 //---------------------------------------------------------------------------------------
@@ -13,11 +12,12 @@ static vec2 randomPositionBetween (
 	vec2 min,
 	vec2 max
 ) {
-	float t0 = rand() / static_cast<float>(RAND_MAX);
-	float t1 = rand() / static_cast<float>(RAND_MAX);
+	const float t0 = randFloat();
+	const float t1 = randFloat();
 
-	float x = (1.0f - t0) * min.x + t0 * max.x;
-	float y = (1.0f - t1) * min.y + t1 * max.y;
+	// Linearly interpolate between min and max.
+	const float x = (1.0f - t0) * min.x + t0 * max.x;
+	const float y = (1.0f - t1) * min.y + t1 * max.y;
 
 	return vec2(x, y);
 }
@@ -38,7 +38,11 @@ void ClockScript::init()
 		float scale_y = (100.0f / Screen::height);
 		Transform & transform = m_clock->transform();
 		transform.scale = vec2(scale_x, scale_y);
-		transform.position = randomPositionBetween(vec2(-0.8f, 0.0f), vec2(0.1f, 0.8f));
+		transform.position = randomPositionBetween(vec2(-0.8f, 0.8f), vec2(-0.8f, 0.8f));
+
+		Motion & motion = m_clock->addComponent<Motion>();
+		motion.velocity = vec2(randFloat(), randFloat()) * 0.1f;
+
 	}
 
 	// Hour Hand
@@ -85,6 +89,7 @@ void ClockScript::update()
 		m_minuteHand->transform().rotationAngle = -1.0f * ((minute + secondRatio) / 60.0f) * twoPI;
 		m_secondHand->transform().rotationAngle = -1.0f * secondRatio * twoPI;
 	}
+
 
 	//// Replicate ClockScript, which clones it's owning GameObject, and
 	//// GameObjects from child Transforms.

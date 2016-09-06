@@ -29,9 +29,9 @@ GameObject::GameObject(const std::string & name)
 
 //---------------------------------------------------------------------------------------
 GameObject::GameObject(const GameObject & other)
-	: Entity(EntityID::generateID(), other.name) // Generate a new EntityID
+	: Entity(EntityID::generateID(), other.m_name) // Generate a new EntityID
 {
-	const EntityID otherID = other.id;
+	const EntityID otherID = other.m_id;
 
 	ComponentPool<Transform> * transformPool = ComponentPoolLocator<Transform>::getPool();
 	Transform & transform = transformPool->createComponent(*this);
@@ -61,6 +61,7 @@ GameObject::GameObject(const GameObject & other)
 	ComponentPoolBase * scriptPool = ScriptSystem::getScriptPoolForEntity(otherID);
 	if (scriptPool) {
 		scriptPool->allocateComponent(*this);
+		ScriptSystem::addScriptPool(m_id, scriptPool);
 	}
 
 }
@@ -70,13 +71,13 @@ void GameObject::setActive (
 	bool activeStatus
 ) {
 	// Notify ComponentPools to set active status for Components associated with EnityID:
-	ComponentPoolLocator<Transform>::getPool()->setActive(this->id, activeStatus);
-	ComponentPoolLocator<Rendering>::getPool()->setActive(this->id , activeStatus);
-	ComponentPoolLocator<Motion>::getPool()->setActive(this->id, activeStatus);
-	ComponentPoolLocator<Physics>::getPool()->setActive(this->id, activeStatus);
+	ComponentPoolLocator<Transform>::getPool()->setActive(m_id, activeStatus);
+	ComponentPoolLocator<Rendering>::getPool()->setActive(m_id , activeStatus);
+	ComponentPoolLocator<Motion>::getPool()->setActive(m_id, activeStatus);
+	ComponentPoolLocator<Physics>::getPool()->setActive(m_id, activeStatus);
 
 	// Set associated Script's status.
-	ScriptSystem::setActive(this->id, activeStatus);
+	ScriptSystem::setActive(m_id, activeStatus);
 }
 
 //---------------------------------------------------------------------------------------
@@ -89,20 +90,20 @@ void GameObject::setParent (
 //---------------------------------------------------------------------------------------
 Transform & GameObject::transform () const
 {
-	return *ComponentPoolLocator<Transform>::getPool()->getComponent(this->id);
+	return *ComponentPoolLocator<Transform>::getPool()->getComponent(m_id);
 }
 
 //---------------------------------------------------------------------------------------
 void GameObject::destroy()
 {
-	//-- Notify ComponentPools to destroy Components associated with EnityID:
-	ComponentPoolLocator<Transform>::getPool()->destroyComponent(this->id);
-	ComponentPoolLocator<Rendering>::getPool()->destroyComponent(this->id);
-	ComponentPoolLocator<Motion>::getPool()->destroyComponent(this->id);
-	ComponentPoolLocator<Physics>::getPool()->destroyComponent(this->id);
+	removeComponent<Transform>();
+	removeComponent<Rendering>();
+	removeComponent<Motion>();
+	removeComponent<Physics>();
 
-	// TODO - Use ScriptSystem to iterate over all Script ComponentPools and
-	// call pool->destroyComponent(this->id).
-	//ComponentPoolLocator<Script>::getPool()->destroyComponent(this->id);
-
+	// If GameObject has an associated Script, destroy it.
+	ComponentPoolBase * scriptPool = ScriptSystem::getScriptPoolForEntity(m_id);
+	if (scriptPool) {
+		scriptPool->destroyComponent(m_id);
+	}
 }

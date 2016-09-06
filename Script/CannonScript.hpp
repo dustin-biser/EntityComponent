@@ -18,8 +18,7 @@ private:
 
 	void spawnProjectile();
 
-	GameObject * m_cannon;
-	GameObject * m_projectile;
+	GameObject * m_projectilePrototype;
 
 	Vertex m_vertexTipOfCannon;
 };

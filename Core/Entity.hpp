@@ -42,8 +42,8 @@ public:
 
 
 protected:
-	EntityID id;
-	std::string name;
+	EntityID m_id;
+	std::string m_name;
 };
 
 
