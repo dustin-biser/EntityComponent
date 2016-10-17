@@ -5,9 +5,6 @@
 
 #include "Script/ProjectileScript.hpp"
 
-// TODO - Remove after testing.
-#include "Core/ComponentPoolLocator.hpp"
-
 
 #include <algorithm>
 using std::max;
@@ -60,7 +57,12 @@ void CannonScript::update()
 	}
 
 	if (Input::keyDown(KEY::SPACE)) {
-		spawnProjectile();
+		// TODO - Remove 'doNTimes' after testing:
+		static int doNTimes = 2;
+		if (doNTimes) {
+			spawnProjectile();
+			--doNTimes;
+		}
 	}
 }
 

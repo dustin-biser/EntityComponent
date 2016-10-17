@@ -183,6 +183,7 @@ void ComponentPoolImpl<T>::destroyComponent (
 
 	// Remove unused id in map.
 	m_idToComponentMap.erase(id.value);
+	m_idToActiveStatusMap.erase(id.value);
 
 	// Swap pObject with last active in order to keep all
 	// active objects in front of pool.
